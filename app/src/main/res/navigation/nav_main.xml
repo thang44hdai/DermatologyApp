@@ -8,5 +8,13 @@
         android:id="@+id/mainScreen"
         android:name="com.example.safeaid.screens.main.MainScreen"
         android:label="" />
+    <fragment
+        android:id="@+id/cameraFragment"
+        android:name="com.example.safeaid.screens.camera.CameraFragment"
+        android:label="CameraFragment" />
+    <fragment
+        android:id="@+id/scanResultFragment"
+        android:name="com.example.safeaid.screens.camera.ScanResultFragment"
+        android:label="ScanResultFragment" />
 
 </navigation>

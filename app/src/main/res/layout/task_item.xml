@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="5dp"
-    android:background="@drawable/bg_task_item">
+    android:background="@drawable/bg_btn_scan">
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -7,9 +7,8 @@
         android:icon="@drawable/ic_home"
         android:title="Trang chủ" />
     <item
-        android:id="@+id/nav_scan"
-        android:icon="@drawable/ic_scan"
-        android:title="Chuẩn đoán" />
+        android:enabled="false"
+        android:title="" />
     <item
         android:id="@+id/nav_chat"
         android:icon="@drawable/ic_chat"

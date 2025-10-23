@@ -2,9 +2,12 @@ package com.example.safeaid.screens.main
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.dermatology.R
 import com.example.dermatology.databinding.FragmentMainScreenBinding
 import com.example.safeaid.core.ui.BaseFragment
+import com.example.safeaid.core.utils.setOnDebounceClick
 import com.example.safeaid.screens.camera.CameraFragment
 import com.example.safeaid.screens.finger.FingerFragment
 import com.example.safeaid.screens.home.HomeFragment
@@ -31,14 +34,9 @@ class MainScreen : BaseFragment<FragmentMainScreenBinding>() {
                     mainViewModel.currentPage = 0
                 }
 
-                R.id.nav_scan -> {
-                    replaceFragment(CameraFragment())
-                    mainViewModel.currentPage = 1
-                }
-
                 R.id.nav_chat -> {
                     replaceFragment(FingerFragment())
-                    mainViewModel.currentPage = 4
+                    mainViewModel.currentPage = 1
                 }
 
                 else -> {
@@ -51,9 +49,12 @@ class MainScreen : BaseFragment<FragmentMainScreenBinding>() {
 
         viewBinding.bottomNav.selectedItemId = when (mainViewModel.currentPage) {
             0 -> R.id.nav_home
-            1 -> R.id.nav_scan
-            2 -> R.id.nav_chat
+            1 -> R.id.nav_chat
             else -> R.id.nav_home
+        }
+
+        viewBinding.fab.setOnDebounceClick {
+            findNavController().navigate(R.id.cameraFragment)
         }
     }
 
