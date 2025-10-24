@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_main"
-    app:startDestination="@id/mainScreen">
+    app:startDestination="@id/loginFragment">
 
     <fragment
         android:id="@+id/mainScreen"
@@ -16,5 +16,13 @@
         android:id="@+id/scanResultFragment"
         android:name="com.example.safeaid.screens.camera.ScanResultFragment"
         android:label="ScanResultFragment" />
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.safeaid.screens.authenication.screen.LoginFragment"
+        android:label="LoginFragment" />
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.example.safeaid.screens.authenication.screen.SignUpFragment"
+        android:label="SignUpFragment" />
 
 </navigation>

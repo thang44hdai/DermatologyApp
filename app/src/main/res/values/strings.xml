@@ -8,4 +8,15 @@
     <string name="previous">Previous</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="tv_description">Mụn trứng cá là tình trạng da phổ biến do nang lông bị tắc nghẽn bởi bã nhờn và tế bào da chết, dẫn đến viêm nhiễm và các loại mụn như mụn đầu đen, mụn đầu trắng, mụn mủ, mụn bọc. Nguyên nhân chính bao gồm tuyến bã nhờn hoạt động quá mức, vi khuẩn phát triển, viêm và yếu tố di truyền hoặc nội tiết tố. Mụn thường xuất hiện ở mặt, lưng, ngực và có thể gây sẹo nếu không được điều trị đúng cách. </string>
+    <string name="login">Đăng nhập</string>
+    <string name="login_des">Chào mừng bạn quay trờ lại</string>
+    <string name="email">Email</string>
+    <string name="pw">Mật khẩu</string>
+    <string name="forget_pw">Quên mật khẩu?</string>
+    <string name="create_new_account">Tạo tài khoản mới</string>
+    <string name="signup">Đăng kí</string>
+    <string name="signup_des">Tạo một tài khoản để bạn có thể khám phá tất cả các chức năng</string>
+    <string name="name">Họ tên</string>
+    <string name="telephone">Số điện thoại</string>
+    <string name="confirm_pw">Xác nhận mật khẩu</string>
 </resources>

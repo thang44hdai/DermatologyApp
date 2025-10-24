@@ -11,6 +11,7 @@ import com.example.safeaid.core.utils.setOnDebounceClick
 import com.example.safeaid.screens.camera.CameraFragment
 import com.example.safeaid.screens.finger.FingerFragment
 import com.example.safeaid.screens.home.HomeFragment
+import dagger.hilt.android.AndroidEntryPoint
 
 class MainScreen : BaseFragment<FragmentMainScreenBinding>() {
     private val mainViewModel: MainViewModel by activityViewModels()

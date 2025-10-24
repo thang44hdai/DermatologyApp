@@ -38,16 +38,21 @@
 
         <androidx.camera.view.PreviewView
             android:id="@+id/cameraPreview"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginHorizontal="40dp"
-            android:layout_marginVertical="80dp"
-            android:background="@drawable/ic_mask"
-            app:layout_constraintBottom_toTopOf="@+id/btn_take"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="80dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ic_back"
+            app:layout_constraintTop_toBottomOf="@+id/ic_back"
             app:scaleType="fillCenter" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginVertical="200dp"
+            android:background="@drawable/ic_mask" />
 
         <TextView
             android:id="@+id/tv_title"
