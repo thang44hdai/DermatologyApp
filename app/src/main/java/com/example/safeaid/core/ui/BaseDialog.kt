@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.view.isVisible
 import com.example.dermatology.R
 import com.example.safeaid.core.utils.setOnDebounceClick
 
@@ -30,6 +31,8 @@ class BaseDialog(val context: Context) {
 
         dialogTitle.text = title
         dialogMessage.text = message
+
+        negativeBtn.isVisible = onClickNegative != null
 
         negativeBtn.setOnDebounceClick {
             onClickNegative?.invoke()
