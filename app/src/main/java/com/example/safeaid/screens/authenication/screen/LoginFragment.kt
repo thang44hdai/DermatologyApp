@@ -70,6 +70,5 @@ class LoginFragment() : BaseFragment<FragmentLoginBinding>() {
             }
         }
         state?.doIfFailure { }
-
     }
 }

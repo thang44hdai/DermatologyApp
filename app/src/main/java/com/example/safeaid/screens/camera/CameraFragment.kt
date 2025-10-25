@@ -3,6 +3,7 @@ package com.example.safeaid.screens.camera
 import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,16 +13,28 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.dermatology.R
 import com.example.dermatology.databinding.FragmentCameraBinding
 import com.example.safeaid.core.ui.BaseFragment
+import com.example.safeaid.core.utils.DataResult
+import com.example.safeaid.core.utils.doIfFailure
+import com.example.safeaid.core.utils.doIfSuccess
 import com.example.safeaid.core.utils.setOnDebounceClick
+import com.example.safeaid.screens.camera.viewmodel.PredictState
+import com.example.safeaid.screens.camera.viewmodel.PredictViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class CameraFragment : BaseFragment<FragmentCameraBinding>() {
+    private val viewModel: PredictViewModel by activityViewModels()
 
     private var imageCapture: ImageCapture? = null
 
@@ -40,8 +53,7 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>() {
     private val pickImageLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
-                findNavController().navigate(R.id.scanResultFragment)
-                Log.i("CameraFragment", "Ảnh chọn từ album: $uri")
+                viewModel.predict(imageUri = it, context = requireContext())
             }
         }
 
@@ -57,7 +69,12 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>() {
         }
     }
 
-    override fun onInitObserver() {}
+    override fun onInitObserver() {
+        viewModel.viewState
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+            .onEach { state -> updateUi(state) }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
+    }
 
     override fun onInitListener() {
         viewBinding.icBack.setOnDebounceClick {
@@ -127,7 +144,11 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>() {
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = Uri.fromFile(photoFile)
-                    Log.i("CameraFragment", "Ảnh được lưu tại: $savedUri")
+                    viewModel.predict(
+                        imageUri = savedUri,
+                        imageFile = photoFile,
+                        context = requireContext()
+                    )
                     Toast.makeText(
                         requireContext(),
                         "Ảnh đã lưu: ${photoFile.name}",
@@ -135,5 +156,22 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>() {
                     ).show()
                 }
             })
+    }
+
+    private fun updateUi(state: DataResult<PredictState>?) {
+        state?.doIfSuccess { data ->
+            when (data) {
+                is PredictState.PredictRes -> {
+                    val bundle = Bundle()
+                    bundle.putSerializable(
+                        ScanResultFragment.argKey, data.data
+                    )
+                    findNavController().navigate(R.id.scanResultFragment, bundle)
+                }
+
+                else -> {}
+            }
+        }
+        state?.doIfFailure { }
     }
 }

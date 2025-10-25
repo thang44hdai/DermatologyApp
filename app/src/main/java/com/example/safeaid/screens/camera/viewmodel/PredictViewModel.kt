@@ -1,0 +1,75 @@
+package com.example.safeaid.screens.camera.viewmodel
+
+import android.content.Context
+import android.net.Uri
+import androidx.lifecycle.viewModelScope
+import com.example.safeaid.core.base.BaseViewModel
+import com.example.safeaid.core.response.PredictResponse
+import com.example.safeaid.core.service.ApiService
+import com.example.safeaid.core.utils.ApiCaller
+import com.example.safeaid.core.utils.DataResult
+import com.example.safeaid.core.utils.doIfFailure
+import com.example.safeaid.core.utils.doIfSuccess
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
+import javax.inject.Inject
+
+@HiltViewModel
+class PredictViewModel @Inject constructor(
+    private val apiService: ApiService
+) : BaseViewModel<PredictState, PredictEvent>() {
+    fun predict(imageUri: Uri? = null, imageFile: File? = null, context: Context) {
+        if (imageUri == null && imageFile == null) {
+            return
+        }
+
+        viewModelScope.launch {
+            try {
+                val filePart = when {
+                    imageFile != null -> {
+                        val requestFile = imageFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                        MultipartBody.Part.createFormData("file", imageFile.name, requestFile)
+                    }
+                    imageUri != null -> {
+                        val inputStream = context.contentResolver.openInputStream(imageUri)
+                        val tempFile = File.createTempFile("upload_", ".jpg", context.cacheDir)
+                        tempFile.outputStream().use { output ->
+                            inputStream?.copyTo(output)
+                        }
+                        val requestFile = tempFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                        MultipartBody.Part.createFormData("file", tempFile.name, requestFile)
+                    }
+                    else -> null
+                }
+
+                filePart?.let { part ->
+                    ApiCaller.safeApiCall(
+                        apiCall = { apiService.predictImage(part) },
+                        callback = { result ->
+                            result.doIfSuccess {
+                                updateState(DataResult.Success(PredictState.PredictRes(it)))
+                            }
+                            result.doIfFailure {
+                            }
+                        }
+                    )
+                }
+            } catch (e: Exception) {
+            }
+        }
+    }
+
+
+    override fun onTriggerEvent(event: PredictEvent) {
+    }
+}
+
+sealed class PredictState {
+    class PredictRes(val data: PredictResponse) : PredictState()
+}
+
+sealed class PredictEvent

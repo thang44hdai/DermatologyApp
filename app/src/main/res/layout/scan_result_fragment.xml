@@ -18,13 +18,14 @@
 
         <TextView
             android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Mụn (Mụn trứng cá)"
+            android:layout_marginHorizontal="80dp"
+            android:gravity="center_horizontal"
+            android:text="Mụn (Mụn trứng cá)Mụn (Mụn trứng cá)Mụn (Mụn trứng cá)"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/ic_back"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/ic_back" />
@@ -38,7 +39,7 @@
             android:weightSum="2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ic_back">
+            app:layout_constraintTop_toBottomOf="@+id/tv_title">
 
             <LinearLayout
                 android:layout_width="match_parent"
