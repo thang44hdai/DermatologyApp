@@ -6,7 +6,7 @@ import java.io.Serializable
 
 data class PredictResponse(
     @SerializedName("all_predictions")
-    var allPredictions: List<AllPrediction?>? = null,
+    var allPredictions: List<AllPrediction>? = null,
     @SerializedName("confidence")
     var confidence: String? = null,
     @SerializedName("label_en")

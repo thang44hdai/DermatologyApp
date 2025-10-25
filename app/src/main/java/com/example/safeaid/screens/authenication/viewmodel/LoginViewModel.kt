@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.safeaid.core.base.BaseViewModel
 import com.example.safeaid.core.request.LoginRequest
 import com.example.safeaid.core.request.RefreshTokenRequest
+import com.example.safeaid.core.request.RegisterRequest
 import com.example.safeaid.core.service.ApiService
 import com.example.safeaid.core.utils.ApiCaller
 import com.example.safeaid.core.utils.DataResult
@@ -98,12 +99,31 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    fun registerAccount(email: String, userName: String, name: String, pw: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val request =
+                RegisterRequest(email = email, username = userName, fullName = name, password = pw)
+            ApiCaller.safeApiCall(
+                apiCall = { apiService.register(request) },
+                callback = { result ->
+                    result.doIfSuccess {
+                        updateState(DataResult.Success(LoginState.Register(isSuccess = true)))
+                    }
+                    result.doIfFailure {
+                        updateState(DataResult.Success(LoginState.Register(isSuccess = false)))
+                    }
+                }
+            )
+        }
+    }
+
     override fun onTriggerEvent(event: LoginEvent) {
     }
 }
 
 sealed class LoginState {
     class LoginRes(val isSuccess: Boolean) : LoginState()
+    class Register(val isSuccess: Boolean) : LoginState()
 }
 
 sealed class LoginEvent {}

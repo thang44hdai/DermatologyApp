@@ -11,6 +11,8 @@ import com.example.safeaid.core.utils.DataResult
 import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.doIfSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -22,11 +24,20 @@ import javax.inject.Inject
 class PredictViewModel @Inject constructor(
     private val apiService: ApiService
 ) : BaseViewModel<PredictState, PredictEvent>() {
+
+    private val _selectedImageUri = MutableStateFlow<Uri?>(null)
+    val selectedImageUri = _selectedImageUri.asStateFlow()
+
+    private fun setSelectedImage(uri: Uri) {
+        _selectedImageUri.value = uri
+    }
+
     fun predict(imageUri: Uri? = null, imageFile: File? = null, context: Context) {
         if (imageUri == null && imageFile == null) {
             return
         }
 
+        imageUri?.let { setSelectedImage(it) }
         viewModelScope.launch {
             try {
                 val filePart = when {
@@ -34,6 +45,7 @@ class PredictViewModel @Inject constructor(
                         val requestFile = imageFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
                         MultipartBody.Part.createFormData("file", imageFile.name, requestFile)
                     }
+
                     imageUri != null -> {
                         val inputStream = context.contentResolver.openInputStream(imageUri)
                         val tempFile = File.createTempFile("upload_", ".jpg", context.cacheDir)
@@ -43,6 +55,7 @@ class PredictViewModel @Inject constructor(
                         val requestFile = tempFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
                         MultipartBody.Part.createFormData("file", tempFile.name, requestFile)
                     }
+
                     else -> null
                 }
 

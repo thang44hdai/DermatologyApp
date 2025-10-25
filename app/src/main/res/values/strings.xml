@@ -17,6 +17,6 @@
     <string name="signup">Đăng kí</string>
     <string name="signup_des">Tạo một tài khoản để bạn có thể khám phá tất cả các chức năng</string>
     <string name="name">Họ tên</string>
-    <string name="telephone">Số điện thoại</string>
+    <string name="user_name">Tài khoản đăng nhập</string>
     <string name="confirm_pw">Xác nhận mật khẩu</string>
 </resources>

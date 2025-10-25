@@ -3,8 +3,10 @@ package com.example.safeaid.core.service
 import QuizCategoryResponse
 import com.example.safeaid.core.request.LoginRequest
 import com.example.safeaid.core.request.RefreshTokenRequest
+import com.example.safeaid.core.request.RegisterRequest
 import com.example.safeaid.core.response.LoginResponse
 import com.example.safeaid.core.response.PredictResponse
+import com.example.safeaid.core.response.RegisterResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -18,7 +20,9 @@ interface ApiService {
     suspend fun getCategoryQuiz(): Response<QuizCategoryResponse>
 
     @POST("auth/register")
-    suspend fun register(): Response<QuizCategoryResponse>
+    suspend fun register(
+        @Body request: RegisterRequest
+    ): Response<RegisterResponse>
 
     @POST("auth/login")
     suspend fun login(

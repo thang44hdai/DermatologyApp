@@ -5,7 +5,8 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingBottom="50dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -82,14 +83,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_email" />
 
             <EditText
-                android:id="@+id/tv_sdt"
+                android:id="@+id/tv_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/bg_edt"
                 android:ems="10"
-                android:hint="@string/telephone"
+                android:hint="@string/user_name"
                 android:inputType="text"
                 android:padding="15dp"
                 android:textColor="@color/black"
@@ -113,7 +114,7 @@
                 android:textColorHint="@color/secondary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_sdt" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_username" />
 
             <EditText
                 android:id="@+id/tv_confirm_pw"
@@ -138,12 +139,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="30dp"
-                android:background="@drawable/bg_btn_login"
                 android:layout_marginBottom="5dp"
+                android:background="@drawable/bg_btn_login"
                 android:text="@string/signup"
-                app:layout_constraintBottom_toBottomOf="parent"
                 android:textColor="@color/white"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_confirm_pw" />
