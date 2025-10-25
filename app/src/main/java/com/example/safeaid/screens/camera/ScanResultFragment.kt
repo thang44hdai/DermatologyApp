@@ -1,5 +1,6 @@
 package com.example.safeaid.screens.camera
 
+import android.util.Log
 import androidx.navigation.fragment.findNavController
 import com.example.dermatology.databinding.ScanResultFragmentBinding
 import com.example.safeaid.core.response.PredictResponse
@@ -30,6 +31,7 @@ class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
 
     override fun onInitListener() {
         viewBinding.icBack.setOnDebounceClick {
+            Log.i("hihihi", "clikc back")
             findNavController().popBackStack()
         }
     }

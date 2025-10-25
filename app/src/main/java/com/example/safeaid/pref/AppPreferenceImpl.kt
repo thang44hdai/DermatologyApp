@@ -42,7 +42,7 @@ class AppPreferenceImpl @Inject constructor(
                 emit(emptyPreferences())
             }
             .map { preference ->
-                preference[KEYS.REFRESH_TOKEN] ?: ""
+                preference[REFRESH_TOKEN] ?: ""
             }
     }
 

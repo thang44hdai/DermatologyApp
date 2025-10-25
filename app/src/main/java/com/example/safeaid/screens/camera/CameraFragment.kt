@@ -120,7 +120,6 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>() {
 
     // Hàm chụp ảnh
     private fun takePhoto() {
-        findNavController().navigate(R.id.scanResultFragment)
         val imageCapture = imageCapture ?: return
 
         val photoFile = File(
@@ -166,7 +165,7 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>() {
                     bundle.putSerializable(
                         ScanResultFragment.argKey, data.data
                     )
-                    findNavController().navigate(R.id.scanResultFragment, bundle)
+                    findNavController().navigate(R.id.action_cameraFragment_to_scanResultFragment, bundle)
                 }
 
                 else -> {}

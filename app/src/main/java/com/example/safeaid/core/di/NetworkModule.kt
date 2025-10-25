@@ -24,8 +24,14 @@ class NetworkModule {
         appPreference: AppPreference
     ): Interceptor = Interceptor { chain ->
         val originalRequest = chain.request()
+        val url = originalRequest.url.toString()
+
         val token = runBlocking {
-            appPreference.getToken().firstOrNull()
+            if (url.contains("auth/refresh", ignoreCase = true)) {
+                appPreference.getRefreshToken().firstOrNull()
+            } else {
+                appPreference.getToken().firstOrNull()
+            }
         }
 
         val newRequest = if (!token.isNullOrEmpty()) {
