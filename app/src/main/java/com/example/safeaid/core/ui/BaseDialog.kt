@@ -13,7 +13,6 @@ class BaseDialog(val context: Context) {
     private val builder = AlertDialog.Builder(context)
     private val inflater = LayoutInflater.from(context)
     private val dialogView = inflater.inflate(R.layout.dialog_base, null)
-
     private val dialog: AlertDialog = builder.setView(dialogView).create()
 
     fun setView(

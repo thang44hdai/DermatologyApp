@@ -11,6 +11,7 @@
     <string name="login">Đăng nhập</string>
     <string name="login_des">Chào mừng bạn quay trờ lại</string>
     <string name="email">Email</string>
+    <string name="tk">Tài khoản</string>
     <string name="pw">Mật khẩu</string>
     <string name="forget_pw">Quên mật khẩu?</string>
     <string name="create_new_account">Tạo tài khoản mới</string>

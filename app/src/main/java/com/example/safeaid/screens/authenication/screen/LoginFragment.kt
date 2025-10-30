@@ -11,6 +11,7 @@ import com.example.dermatology.databinding.FragmentLoginBinding
 import com.example.safeaid.core.ui.BaseDialog
 import com.example.safeaid.core.ui.BaseFragment
 import com.example.safeaid.core.utils.DataResult
+import com.example.safeaid.core.utils.ViewUtils
 import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.doIfSuccess
 import com.example.safeaid.core.utils.setOnDebounceClick
@@ -38,6 +39,9 @@ class LoginFragment() : BaseFragment<FragmentLoginBinding>() {
     }
 
     override fun onInitListener() {
+        viewBinding.root.setOnDebounceClick {
+            ViewUtils.hideKeyboardFrom(requireContext(), viewBinding.root)
+        }
         viewBinding.btnLogin.setOnDebounceClick {
             val userName = viewBinding.tvEmail.text.toString()
             val pw = viewBinding.tvPw.text.toString()

@@ -98,4 +98,5 @@ dependencies {
     implementation("androidx.room:room-ktx:2.5.0")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
+    implementation("com.airbnb.android:lottie:6.4.0")
 }

@@ -11,6 +11,7 @@ import com.example.dermatology.databinding.FragmentSignUpBinding
 import com.example.safeaid.core.ui.BaseDialog
 import com.example.safeaid.core.ui.BaseFragment
 import com.example.safeaid.core.utils.DataResult
+import com.example.safeaid.core.utils.ViewUtils
 import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.doIfSuccess
 import com.example.safeaid.core.utils.setOnDebounceClick
@@ -39,6 +40,9 @@ class SignUpFragment() : BaseFragment<FragmentSignUpBinding>() {
     }
 
     override fun onInitListener() {
+        viewBinding.root.setOnDebounceClick {
+            ViewUtils.hideKeyboardFrom(requireContext(), viewBinding.root)
+        }
         viewBinding.btnBack.setOnDebounceClick {
             findNavController().popBackStack()
         }
