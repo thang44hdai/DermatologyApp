@@ -5,8 +5,7 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="50dp">
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -103,7 +102,6 @@
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/bg_edt"
-                android:ems="10"
                 android:hint="@string/pw"
                 android:inputType="textPassword"
                 android:padding="15dp"
@@ -120,7 +118,6 @@
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/bg_edt"
-                android:ems="10"
                 android:hint="@string/confirm_pw"
                 android:inputType="textPassword"
                 android:padding="15dp"
@@ -130,21 +127,51 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_pw" />
 
+            <EditText
+                android:id="@+id/tv_gender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/bg_edt"
+                android:hint="@string/gender"
+                android:inputType="text"
+                android:padding="15dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/secondary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_confirm_pw" />
+
+            <EditText
+                android:id="@+id/tv_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/bg_edt"
+                android:hint="@string/date"
+                android:inputType="text"
+                android:padding="15dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/secondary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_gender" />
+
             <Button
                 android:id="@+id/btn_sign_up"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="30dp"
-                android:layout_marginBottom="5dp"
                 android:background="@drawable/bg_btn_login"
                 android:text="@string/signup"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_confirm_pw" />
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

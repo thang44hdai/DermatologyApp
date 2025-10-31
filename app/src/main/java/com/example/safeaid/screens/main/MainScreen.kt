@@ -55,7 +55,7 @@ class MainScreen : BaseFragment<FragmentMainScreenBinding>() {
         }
 
         viewBinding.fab.setOnDebounceClick {
-            findNavController().navigate(R.id.cameraFragment)
+            findNavController().navigate(R.id.action_mainScreen_to_cameraFragment)
         }
     }
 

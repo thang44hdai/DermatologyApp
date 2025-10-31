@@ -16,7 +16,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -102,7 +101,7 @@ class LoginViewModel @Inject constructor(
     fun registerAccount(email: String, userName: String, name: String, pw: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val request =
-                RegisterRequest(email = email, username = userName, fullName = name, password = pw)
+                RegisterRequest(email = email, username = userName, fullname = name, password = pw, )
             ApiCaller.safeApiCall(
                 apiCall = { apiService.register(request) },
                 callback = { result ->

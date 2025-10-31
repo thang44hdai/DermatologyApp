@@ -20,4 +20,6 @@
     <string name="name">Họ tên</string>
     <string name="user_name">Tài khoản đăng nhập</string>
     <string name="confirm_pw">Xác nhận mật khẩu</string>
+    <string name="date">Ngày sinh</string>
+    <string name="gender">Giới tính</string>
 </resources>
