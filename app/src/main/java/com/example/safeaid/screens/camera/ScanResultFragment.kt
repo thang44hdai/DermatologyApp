@@ -14,6 +14,7 @@ import com.example.safeaid.core.response.PredictResponse
 import com.example.safeaid.core.ui.BaseFragment
 import com.example.safeaid.core.utils.setOnDebounceClick
 import com.example.safeaid.screens.camera.viewmodel.PredictViewModel
+import com.example.safeaid.screens.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.onEach
 @AndroidEntryPoint
 class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
     private val viewModel: PredictViewModel by viewModels()
+    private val mainViewModel: MainViewModel by activityViewModels()
     private var predict: PredictResponse = PredictResponse()
 
     companion object {
@@ -70,6 +72,11 @@ class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
 
     override fun onInitListener() {
         viewBinding.btnBack.setOnDebounceClick {
+            findNavController().navigate(R.id.mainScreen)
+        }
+
+        viewBinding.btnMap.setOnDebounceClick {
+            mainViewModel.currentPage = 1
             findNavController().navigate(R.id.mainScreen)
         }
     }

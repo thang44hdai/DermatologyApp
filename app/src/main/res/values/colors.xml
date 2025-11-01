@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="primary">#5B84D8</color>
     <color name="secondary">#484C52</color>
+    <color name="blue">#EBF0FE</color>
 
 
     <color name="group_item">#E0E0E0</color>
@@ -19,4 +20,6 @@
     <color name="gray_neutral_3">#6A6868</color>
     <color name="pink_neutral">#9F2C57</color>
     <color name="violet_neutral_2">#9456B7</color>
+    <color name="red_600">#E53935</color>
+    <color name="gray_600">#F0F0F0</color>
 </resources>

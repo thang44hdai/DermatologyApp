@@ -3,10 +3,12 @@ package com.example.safeaid
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -18,6 +20,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.dermatology.R
 import com.example.dermatology.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
+import org.osmdroid.config.Configuration
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -75,6 +78,15 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Cấu hình OSM
+        Configuration.getInstance().load(
+            this,
+            PreferenceManager.getDefaultSharedPreferences(this)
+        )
     }
 
     private fun setUpNav() {

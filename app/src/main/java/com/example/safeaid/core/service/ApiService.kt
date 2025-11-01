@@ -4,7 +4,9 @@ import QuizCategoryResponse
 import com.example.safeaid.core.request.LoginRequest
 import com.example.safeaid.core.request.RefreshTokenRequest
 import com.example.safeaid.core.request.RegisterRequest
+import com.example.safeaid.core.response.HistoryResponse
 import com.example.safeaid.core.response.LoginResponse
+import com.example.safeaid.core.response.PharmacyResponse
 import com.example.safeaid.core.response.PredictResponse
 import com.example.safeaid.core.response.RegisterResponse
 import okhttp3.MultipartBody
@@ -14,6 +16,7 @@ import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Query
 
 interface ApiService {
     @GET("/api/quiz-categories/with-quizzes")
@@ -43,5 +46,18 @@ interface ApiService {
     suspend fun predictImage(
         @Part file: MultipartBody.Part
     ): Response<PredictResponse>
+
+
+    @GET("pharmacies/nearby/search")
+    suspend fun getPharmaciesNearBy(
+        @Query("latitude") latitude: String,
+        @Query("longitude") longitude: String,
+        @Query("radius_km") radiusKm: String?,
+        @Query("limit") limit: String?,
+    ): Response<List<PharmacyResponse>>
+
+    @GET("prediction/history")
+    suspend fun getHistoryList(
+    ): Response<HistoryResponse>
 
 }

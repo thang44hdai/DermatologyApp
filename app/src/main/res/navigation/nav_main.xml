@@ -11,6 +11,9 @@
         <action
             android:id="@+id/action_mainScreen_to_cameraFragment"
             app:destination="@id/cameraFragment" />
+        <action
+            android:id="@+id/action_mainScreen_to_historyFragment"
+            app:destination="@id/historyFragment" />
     </fragment>
     <fragment
         android:id="@+id/cameraFragment"
@@ -40,4 +43,20 @@
         android:id="@+id/signUpFragment"
         android:name="com.example.safeaid.screens.authenication.screen.SignUpFragment"
         android:label="SignUpFragment" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.safeaid.screens.profile.ProfileFragment"
+        android:label="ProfileFragment" />
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.example.safeaid.screens.history.HistoryFragment"
+        android:label="HistoryFragment" >
+        <action
+            android:id="@+id/action_historyFragment_to_detailHistoryFragment"
+            app:destination="@id/detailHistoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailHistoryFragment"
+        android:name="com.example.safeaid.screens.history.DetailHistoryFragment"
+        android:label="DetailHistoryFragment" />
 </navigation>

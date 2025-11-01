@@ -8,7 +8,6 @@ class MainViewModel : BaseViewModel<MainEvent, MainState>() {
     var currentPage = 0
     var currentItem = 0
 
-    var savedScrollPosition: Parcelable? = null
 
     override fun onTriggerEvent(event: MainState) {
     }

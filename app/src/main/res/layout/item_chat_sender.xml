@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:background="@drawable/bg_chat_sender"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/tv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Tôi có một cái lỗ có kích thước bằng đồng xu ở phần đầu của vết nứt ở mông (tôi biết thật đấy) nhưng tôi chỉ đang tự hỏi làm thế nào để loại bỏ nó ở nhà. Tôi bôi chất chống vi khuẩn lên đó bằng q - tip, nó kêu xèo xèo nhưng không có gì chảy ra hoặc thay đổi. Tôi phải làm gì? (Ở nhà)"
+        android:textColor="@color/black" />
+</androidx.constraintlayout.widget.ConstraintLayout>
