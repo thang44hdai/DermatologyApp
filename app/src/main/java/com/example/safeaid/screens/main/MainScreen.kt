@@ -43,7 +43,7 @@ class MainScreen : BaseFragment<FragmentMainScreenBinding>() {
                 R.id.nav_map -> {
                     replaceFragment(MapFragment())
                     mainViewModel.currentPage = 1
-                    viewBinding.fab.isVisible = true
+                    viewBinding.fab.isVisible = false
                 }
 
                 R.id.nav_chat -> {

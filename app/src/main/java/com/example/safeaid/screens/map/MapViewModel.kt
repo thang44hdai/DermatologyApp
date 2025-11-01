@@ -23,7 +23,7 @@ class MapViewModel @Inject constructor(
     fun searchPharmacyNear(
         latitude: String,
         longitude: String,
-        radiusKm: String = "10",
+        radiusKm: String = "100",
         limit: String? = null
     ) {
         viewModelScope.launch(Dispatchers.IO) {
