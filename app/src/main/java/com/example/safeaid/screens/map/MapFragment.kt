@@ -3,10 +3,12 @@ package com.example.safeaid.screens.map
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat.getCurrentLocation
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -29,10 +31,11 @@ import kotlinx.coroutines.flow.onEach
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Polyline
 
 @AndroidEntryPoint
 class MapFragment : BaseFragment<FragmentMapBinding>() {
-    private val viewModel: MapViewModel by viewModels()
+    private val viewModel: MapViewModel by activityViewModels()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     companion object {
@@ -50,7 +53,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
         val initMarker = Marker(viewBinding.mapView).apply {
             position = GeoPoint(20.980983103228652, 105.788156785282)
             setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-            title = "PTIT"
+            title = "Địa chỉ hiện tại"
             icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_my_location)
         }
         viewBinding.mapView.controller.setCenter(GeoPoint(20.980983103228652, 105.788156785282))
@@ -59,6 +62,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         requestLocationPermission()
+        viewModel.searchPharmacyNear("20.980983103228652", "105.788156785282")
     }
 
     override fun onInitObserver() {
@@ -86,7 +90,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
     }
 
     private fun addMarkers(pharmacies: List<PharmacyResponse>) {
-        pharmacies.forEach { pharmacy ->
+        pharmacies.forEachIndexed { idx, pharmacy ->
             if (pharmacy.latitude != null && pharmacy.longitude != null) {
                 val point =
                     GeoPoint(pharmacy.latitude, pharmacy.longitude)
@@ -96,6 +100,21 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
                 marker.title = pharmacy.name
                 marker.subDescription = "${pharmacy.address}\nGiờ mở cửa: ${pharmacy.openHours}"
                 viewBinding.mapView.overlays.add(marker)
+
+                if (idx == 0 && viewModel.isPredicted) {
+                    val currentLocation = GeoPoint(20.980983103228652, 105.788156785282)
+
+                    val line = Polyline()
+                    line.setPoints(listOf(currentLocation, point))
+                    line.title = "Đường đi tới ${pharmacy.name}"
+
+                    // Màu & độ rộng của đường
+                    line.outlinePaint.color = Color.RED
+                    line.outlinePaint.strokeWidth = 8f
+
+                    viewBinding.mapView.overlays.add(line)
+                    viewModel.isPredicted = false
+                }
             }
         }
         viewBinding.mapView.invalidate()

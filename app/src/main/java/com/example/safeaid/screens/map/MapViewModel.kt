@@ -20,10 +20,12 @@ import javax.inject.Inject
 class MapViewModel @Inject constructor(
     private val apiService: ApiService
 ) : BaseViewModel<MapState, MapEvent>() {
+    var isPredicted: Boolean = false
+
     fun searchPharmacyNear(
         latitude: String,
         longitude: String,
-        radiusKm: String = "100",
+        radiusKm: String = "10",
         limit: String? = null
     ) {
         viewModelScope.launch(Dispatchers.IO) {

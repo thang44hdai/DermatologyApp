@@ -8,7 +8,7 @@ data class PharmacyResponse(
     @SerializedName("address")
     var address: String? = null,
     @SerializedName("distance_km")
-    var distanceKm: Int? = null,
+    var distanceKm: String? = null,
     @SerializedName("id")
     var id: Int? = null,
     @SerializedName("latitude")
@@ -22,5 +22,5 @@ data class PharmacyResponse(
     @SerializedName("phone")
     var phone: String? = null,
     @SerializedName("ratings")
-    var ratings: Int? = null
+    var ratings: String? = null
 ) : Serializable
