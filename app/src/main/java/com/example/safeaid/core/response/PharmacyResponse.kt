@@ -12,9 +12,9 @@ data class PharmacyResponse(
     @SerializedName("id")
     var id: Int? = null,
     @SerializedName("latitude")
-    var latitude: Int? = null,
+    var latitude: Double,
     @SerializedName("longitude")
-    var longitude: Int? = null,
+    var longitude: Double,
     @SerializedName("name")
     var name: String? = null,
     @SerializedName("open_hours")

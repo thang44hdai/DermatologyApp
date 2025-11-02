@@ -89,7 +89,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
         pharmacies.forEach { pharmacy ->
             if (pharmacy.latitude != null && pharmacy.longitude != null) {
                 val point =
-                    GeoPoint(pharmacy.latitude!!.toDouble(), pharmacy.longitude!!.toDouble())
+                    GeoPoint(pharmacy.latitude, pharmacy.longitude)
                 val marker = Marker(viewBinding.mapView)
                 marker.position = point
                 marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
