@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat.getCurrentLocation
 import androidx.fragment.app.activityViewModels
@@ -23,15 +24,23 @@ import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.doIfSuccess
 import com.example.safeaid.screens.camera.ScanResultFragment
 import com.example.safeaid.screens.camera.viewmodel.PredictState
+import com.example.safeaid.screens.map.bottom_sheet.PharmacyBottomSheet
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
+import java.net.HttpURLConnection
+import java.net.URL
 
 @AndroidEntryPoint
 class MapFragment : BaseFragment<FragmentMapBinding>() {
@@ -79,7 +88,6 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
         state?.doIfSuccess { data ->
             when (data) {
                 is MapState.PharmaciesNearBy -> {
-                    Log.i("hihihi", "${data.data}")
                     addMarkers(data.data)
                 }
 
@@ -92,31 +100,112 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
     private fun addMarkers(pharmacies: List<PharmacyResponse>) {
         pharmacies.forEachIndexed { idx, pharmacy ->
             if (pharmacy.latitude != null && pharmacy.longitude != null) {
-                val point =
-                    GeoPoint(pharmacy.latitude, pharmacy.longitude)
-                val marker = Marker(viewBinding.mapView)
-                marker.position = point
-                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                marker.title = pharmacy.name
-                marker.subDescription = "${pharmacy.address}\nGiờ mở cửa: ${pharmacy.openHours}"
+                val point = GeoPoint(pharmacy.latitude, pharmacy.longitude)
+                val marker = Marker(viewBinding.mapView).apply {
+                    position = point
+                    setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                    title = pharmacy.name
+                    subDescription = "${pharmacy.address}\nGiờ mở cửa: ${pharmacy.openHours}"
+
+                    // 🟢 Sự kiện khi click vào marker
+                    setOnMarkerClickListener { clickedMarker, mapView ->
+                        mapView.controller.animateTo(clickedMarker.position)
+
+                        val bottomSheet = PharmacyBottomSheet.newInstance(pharmacy)
+                        bottomSheet.setOnClick(object :
+                            PharmacyBottomSheet.OnClickPharmacyBottomSheet {
+                            override fun onClickViewDetail(data: PharmacyResponse) {
+                            }
+
+                            override fun onClickDirection(data: PharmacyResponse) {
+                                val current = viewModel.currentLocation
+                                    ?: GeoPoint(20.980983103228652, 105.788156785282)
+                                val dest = GeoPoint(data.latitude!!, data.longitude!!)
+
+                                val apiKey =
+                                    "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImIwZjFlMGE3M2ExMDQ5OGQ4NTZmMDE2M2Q1ODJjMjExIiwiaCI6Im11cm11cjY0In0="
+                                val url =
+                                    "https://api.openrouteservice.org/v2/directions/foot-walking" +
+                                            "?api_key=$apiKey" +
+                                            "&start=${current.longitude},${current.latitude}" +
+                                            "&end=${dest.longitude},${dest.latitude}"
+
+                                // Dùng coroutine hoặc thread để gọi API
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    try {
+                                        val connection =
+                                            URL(url).openConnection() as HttpURLConnection
+                                        connection.requestMethod = "GET"
+                                        connection.connect()
+
+                                        val response =
+                                            connection.inputStream.bufferedReader().readText()
+                                        val json = JSONObject(response)
+                                        val coordinates = json
+                                            .getJSONArray("features")
+                                            .getJSONObject(0)
+                                            .getJSONObject("geometry")
+                                            .getJSONArray("coordinates")
+
+                                        Log.i("hihihi", "he: ${coordinates}")
+                                        val routePoints = mutableListOf<GeoPoint>()
+                                        for (i in 0 until coordinates.length()) {
+                                            val lon = coordinates.getJSONArray(i).getDouble(0)
+                                            val lat = coordinates.getJSONArray(i).getDouble(1)
+                                            routePoints.add(GeoPoint(lat, lon))
+                                        }
+
+                                        withContext(Dispatchers.Main) {
+                                            // Xóa polyline cũ
+                                            viewBinding.mapView.overlays.removeAll { it is Polyline }
+
+                                            // Vẽ polyline mới
+                                            val polyline = Polyline().apply {
+                                                setPoints(routePoints)
+                                                outlinePaint.color = Color.BLUE
+                                                outlinePaint.strokeWidth = 8f
+                                            }
+
+                                            viewBinding.mapView.overlays.add(polyline)
+                                            viewBinding.mapView.invalidate()
+
+                                            // Animate map tới tuyến đường
+                                            viewBinding.mapView.controller.animateTo(dest)
+                                            viewBinding.mapView.controller.setZoom(16.0)
+                                        }
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                        withContext(Dispatchers.Main) {
+                                            Toast.makeText(
+                                                requireContext(),
+                                                "Không thể tải đường đi",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+                                }
+                            }
+                        })
+                        bottomSheet.show(parentFragmentManager, "PharmacyBottomSheet")
+                        true
+                    }
+                }
+
                 viewBinding.mapView.overlays.add(marker)
 
                 if (idx == 0 && viewModel.isPredicted) {
-                    val currentLocation = GeoPoint(20.980983103228652, 105.788156785282)
-
-                    val line = Polyline()
-                    line.setPoints(listOf(currentLocation, point))
-                    line.title = "Đường đi tới ${pharmacy.name}"
-
-                    // Màu & độ rộng của đường
-                    line.outlinePaint.color = Color.RED
-                    line.outlinePaint.strokeWidth = 8f
-
+                    val line = Polyline().apply {
+                        setPoints(listOf(viewModel.currentLocation, point))
+                        title = "Đường đi tới ${pharmacy.name}"
+                        outlinePaint.color = Color.RED
+                        outlinePaint.strokeWidth = 8f
+                    }
                     viewBinding.mapView.overlays.add(line)
                     viewModel.isPredicted = false
                 }
             }
         }
+
         viewBinding.mapView.invalidate()
     }
 

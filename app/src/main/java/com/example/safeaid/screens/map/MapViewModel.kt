@@ -14,12 +14,14 @@ import com.example.safeaid.screens.authenication.viewmodel.LoginState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.osmdroid.util.GeoPoint
 import javax.inject.Inject
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
     private val apiService: ApiService
 ) : BaseViewModel<MapState, MapEvent>() {
+    val currentLocation = GeoPoint(20.980983103228652, 105.788156785282)
     var isPredicted: Boolean = false
 
     fun searchPharmacyNear(
