@@ -99,7 +99,6 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.i("hihihi", "onDestroy")
         try {
             val cameraProvider = ProcessCameraProvider.getInstance(requireContext()).get()
             cameraProvider.unbindAll()

@@ -29,8 +29,8 @@ class PharmacyBottomSheet : BottomSheetDialogFragment() {
     }
 
     interface OnClickPharmacyBottomSheet {
-        abstract fun onClickViewDetail(data: PharmacyResponse)
-        abstract fun onClickDirection(data: PharmacyResponse)
+        fun onClickViewDetail(data: PharmacyResponse)
+        fun onClickDirection(data: PharmacyResponse)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,7 +77,6 @@ class PharmacyBottomSheet : BottomSheetDialogFragment() {
 
     private fun setupUi() {
         pharmacy?.let { item ->
-            Log.i("hihihi", "${item}")
             binding.tvTitle.text = item.name ?: "Tên hiệu thuốc không rõ"
             binding.tvAddress.text = item.address ?: "Không có địa chỉ"
             binding.tvSdt.text = item.phone ?: "Không có số điện thoại"
@@ -99,6 +98,7 @@ class PharmacyBottomSheet : BottomSheetDialogFragment() {
     private fun setupListener() {
         binding.btnViewDetail.setOnClickListener {
             pharmacy?.let { it1 -> onClick?.onClickViewDetail(it1) }
+            dismiss()
         }
 
         binding.btnDirection.setOnClickListener {

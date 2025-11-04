@@ -36,6 +36,9 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
+import org.osmdroid.events.MapListener
+import org.osmdroid.events.ScrollEvent
+import org.osmdroid.events.ZoomEvent
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Marker
@@ -59,12 +62,12 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
     override fun onInit() {
         viewBinding.mapView.setTileSource(TileSourceFactory.MAPNIK)
         viewBinding.mapView.setMultiTouchControls(true)
-        viewBinding.mapView.controller.setZoom(16.0)
+        viewBinding.mapView.controller.setZoom(viewModel.zoomMap)
         val initMarker = Marker(viewBinding.mapView).apply {
             position = GeoPoint(20.980983103228652, 105.788156785282)
             setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
             title = "Địa chỉ hiện tại"
-            icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_my_location)
+            icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_current_location)
         }
         viewBinding.mapView.controller.setCenter(GeoPoint(20.980983103228652, 105.788156785282))
         viewBinding.mapView.overlays.add(initMarker)
@@ -73,13 +76,54 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         requestLocationPermission()
         viewModel.searchPharmacyNear("20.980983103228652", "105.788156785282")
+        if (viewModel.targetLocation != GeoPoint(0, 0)) {
+            viewBinding.mapView.controller.animateTo(viewModel.targetLocation)
+        }
     }
 
     override fun onInitObserver() {
         viewModel.viewState
             .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
-            .onEach { state -> updateUi(state) }
+            .onEach { state ->
+                updateUi(state)
+            }
             .launchIn(viewLifecycleOwner.lifecycleScope)
+
+        viewModel.mapState
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+            .onEach { data ->
+                viewBinding.mapView.overlays.removeAll { it is Polyline }
+
+                val polyline = Polyline().apply {
+                    setPoints(data)
+                    outlinePaint.color = Color.BLUE
+                    outlinePaint.strokeWidth = 8f
+                }
+
+                viewBinding.mapView.overlays.add(polyline)
+                viewBinding.mapView.invalidate()
+
+                val dest = data.lastOrNull()
+                if (dest != null) {
+                    viewBinding.mapView.controller.animateTo(dest)
+                    viewBinding.mapView.controller.setZoom(viewModel.zoomMap)
+                }
+            }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
+
+        viewBinding.mapView.addMapListener(object : MapListener {
+            override fun onScroll(event: ScrollEvent?): Boolean {
+                return true
+            }
+
+            override fun onZoom(event: ZoomEvent?): Boolean {
+                event?.let {
+                    val currentZoom = it.zoomLevel
+                    viewModel.zoomMap = currentZoom
+                }
+                return true
+            }
+        })
     }
 
     override fun onInitListener() {
@@ -107,10 +151,11 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
                     setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                     title = pharmacy.name
                     subDescription = "${pharmacy.address}\nGiờ mở cửa: ${pharmacy.openHours}"
+                    icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_location_map)
 
-                    // 🟢 Sự kiện khi click vào marker
                     setOnMarkerClickListener { clickedMarker, mapView ->
                         mapView.controller.animateTo(clickedMarker.position)
+                        viewModel.targetLocation = clickedMarker.position
 
                         val bottomSheet = PharmacyBottomSheet.newInstance(pharmacy)
                         bottomSheet.setOnClick(object :
@@ -119,76 +164,16 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
                                 val bundle = Bundle()
                                 bundle.putSerializable(PharmacyDetailFragment.ARG, data)
                                 bundle.putBoolean(PharmacyDetailFragment.IS_DIRECTION, false)
-                                findNavController().navigate(R.id.pharmacyDetailFragment, bundle)
+                                findNavController().navigate(
+                                    R.id.action_mainScreen_to_pharmacyDetailFragment,
+                                    bundle
+                                )
                             }
 
                             override fun onClickDirection(data: PharmacyResponse) {
                                 val current = viewModel.currentLocation
-                                    ?: GeoPoint(20.980983103228652, 105.788156785282)
-                                val dest = GeoPoint(data.latitude!!, data.longitude!!)
-
-                                val apiKey =
-                                    "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImIwZjFlMGE3M2ExMDQ5OGQ4NTZmMDE2M2Q1ODJjMjExIiwiaCI6Im11cm11cjY0In0="
-                                val url =
-                                    "https://api.openrouteservice.org/v2/directions/foot-walking" +
-                                            "?api_key=$apiKey" +
-                                            "&start=${current.longitude},${current.latitude}" +
-                                            "&end=${dest.longitude},${dest.latitude}"
-
-                                // Dùng coroutine hoặc thread để gọi API
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    try {
-                                        val connection =
-                                            URL(url).openConnection() as HttpURLConnection
-                                        connection.requestMethod = "GET"
-                                        connection.connect()
-
-                                        val response =
-                                            connection.inputStream.bufferedReader().readText()
-                                        val json = JSONObject(response)
-                                        val coordinates = json
-                                            .getJSONArray("features")
-                                            .getJSONObject(0)
-                                            .getJSONObject("geometry")
-                                            .getJSONArray("coordinates")
-
-                                        Log.i("hihihi", "he: ${coordinates}")
-                                        val routePoints = mutableListOf<GeoPoint>()
-                                        for (i in 0 until coordinates.length()) {
-                                            val lon = coordinates.getJSONArray(i).getDouble(0)
-                                            val lat = coordinates.getJSONArray(i).getDouble(1)
-                                            routePoints.add(GeoPoint(lat, lon))
-                                        }
-
-                                        withContext(Dispatchers.Main) {
-                                            // Xóa polyline cũ
-                                            viewBinding.mapView.overlays.removeAll { it is Polyline }
-
-                                            // Vẽ polyline mới
-                                            val polyline = Polyline().apply {
-                                                setPoints(routePoints)
-                                                outlinePaint.color = Color.BLUE
-                                                outlinePaint.strokeWidth = 8f
-                                            }
-
-                                            viewBinding.mapView.overlays.add(polyline)
-                                            viewBinding.mapView.invalidate()
-
-                                            // Animate map tới tuyến đường
-                                            viewBinding.mapView.controller.animateTo(dest)
-                                            viewBinding.mapView.controller.setZoom(16.0)
-                                        }
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
-                                        withContext(Dispatchers.Main) {
-                                            Toast.makeText(
-                                                requireContext(),
-                                                "Không thể tải đường đi",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-                                    }
-                                }
+                                val dest = GeoPoint(data.latitude, data.longitude)
+                                viewModel.getRoute(current, dest)
                             }
                         })
                         bottomSheet.show(parentFragmentManager, "PharmacyBottomSheet")

@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_mainScreen_to_historyFragment"
             app:destination="@id/historyFragment" />
+        <action
+            android:id="@+id/action_mainScreen_to_pharmacyDetailFragment"
+            app:destination="@id/pharmacyDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/cameraFragment"
@@ -63,4 +66,8 @@
         android:id="@+id/pharmacyDetailFragment"
         android:name="com.example.safeaid.screens.pharmacy.PharmacyDetailFragment"
         android:label="PharmacyDetailFragment" />
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.example.safeaid.screens.map.MapFragment"
+        android:label="MapFragment" />
 </navigation>
