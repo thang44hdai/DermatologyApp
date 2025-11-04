@@ -89,7 +89,7 @@
                 <View
                     android:id="@+id/line"
                     android:layout_width="0dp"
-                    android:layout_height="4dp"
+                    android:layout_height="2dp"
                     android:layout_marginHorizontal="50dp"
                     android:layout_marginTop="15dp"
                     android:background="#EEEDF0"
@@ -99,11 +99,12 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rcv_rate"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/line"
                     tools:itemCount="3"
@@ -117,7 +118,7 @@
                     android:layout_marginTop="15dp"
                     android:background="@drawable/bg_btn_login"
                     android:drawableEnd="@drawable/ic_go_to_location"
-                    android:paddingHorizontal="50dp"
+                    android:paddingHorizontal="100dp"
                     android:text="Chỉ đường"
                     android:textColor="@color/white"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -142,6 +143,30 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/bg_take" />
             </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/medicines"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="Tất cả sản phẩm"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="@+id/layout_infor"
+                app:layout_constraintTop_toBottomOf="@+id/layout_infor" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcv_medicines"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/medicines"
+                tools:listitem="@layout/item_medicine" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </layout>

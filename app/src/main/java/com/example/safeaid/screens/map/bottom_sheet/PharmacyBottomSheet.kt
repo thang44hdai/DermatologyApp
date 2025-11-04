@@ -98,10 +98,7 @@ class PharmacyBottomSheet : BottomSheetDialogFragment() {
 
     private fun setupListener() {
         binding.btnViewDetail.setOnClickListener {
-            Toast.makeText(requireContext(), "Xem chi tiết ${pharmacy?.name}", Toast.LENGTH_SHORT)
-                .show()
             pharmacy?.let { it1 -> onClick?.onClickViewDetail(it1) }
-            dismiss()
         }
 
         binding.btnDirection.setOnClickListener {

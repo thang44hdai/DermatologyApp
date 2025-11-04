@@ -25,6 +25,7 @@ import com.example.safeaid.core.utils.doIfSuccess
 import com.example.safeaid.screens.camera.ScanResultFragment
 import com.example.safeaid.screens.camera.viewmodel.PredictState
 import com.example.safeaid.screens.map.bottom_sheet.PharmacyBottomSheet
+import com.example.safeaid.screens.pharmacy.PharmacyDetailFragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
@@ -115,6 +116,10 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
                         bottomSheet.setOnClick(object :
                             PharmacyBottomSheet.OnClickPharmacyBottomSheet {
                             override fun onClickViewDetail(data: PharmacyResponse) {
+                                val bundle = Bundle()
+                                bundle.putSerializable(PharmacyDetailFragment.ARG, data)
+                                bundle.putBoolean(PharmacyDetailFragment.IS_DIRECTION, false)
+                                findNavController().navigate(R.id.pharmacyDetailFragment, bundle)
                             }
 
                             override fun onClickDirection(data: PharmacyResponse) {
