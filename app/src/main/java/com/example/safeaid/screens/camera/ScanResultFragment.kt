@@ -14,6 +14,7 @@ import com.example.safeaid.core.response.PredictResponse
 import com.example.safeaid.core.ui.BaseFragment
 import com.example.safeaid.core.utils.setOnDebounceClick
 import com.example.safeaid.screens.camera.viewmodel.PredictViewModel
+import com.example.safeaid.screens.home.adapter.ProductAdapter
 import com.example.safeaid.screens.main.MainViewModel
 import com.example.safeaid.screens.map.MapViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,6 +27,7 @@ class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
     private val mainViewModel: MainViewModel by activityViewModels()
     private val mapViewModel: MapViewModel by activityViewModels()
     private var predict: PredictResponse = PredictResponse()
+    private val adapter = ProductAdapter(listOf())
 
     companion object {
         const val argKey: String = "data"
@@ -37,7 +39,7 @@ class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
 
     override fun onInit() {
         predict = arguments?.getSerializable(argKey) as PredictResponse
-
+        viewBinding.rvProducts.adapter = adapter
         if (predict.success == true) {
             val confidencePercent = try {
                 val value = predict.data?.confidence?.substring(
@@ -55,6 +57,7 @@ class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
             viewBinding.tvDescription.text = predict.data?.disease?.description
             viewBinding.tvSymptomsDescription.text = predict.data?.disease?.symptoms
             viewBinding.tvTreatmentDescription.text = predict.data?.disease?.treatment
+            adapter.bindData(predict.data?.disease?.medicines ?: listOf())
             Glide.with(requireContext())
                 .load(predict.data?.disease?.imageUrl)
                 .into(viewBinding.imv1)

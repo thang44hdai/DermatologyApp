@@ -80,7 +80,7 @@ class PharmacyBottomSheet : BottomSheetDialogFragment() {
             binding.tvTitle.text = item.name ?: "Tên hiệu thuốc không rõ"
             binding.tvAddress.text = item.address ?: "Không có địa chỉ"
             binding.tvSdt.text = item.phone ?: "Không có số điện thoại"
-            binding.tvTime.text = "Giờ mở cửa: ${item.openHours ?: "Chưa cập nhật"}"
+            binding.tvTime.text = "Giờ mở cửa: ${item.openTime ?: "Chưa cập nhật"}"
 
             // ví dụ hiển thị ảnh nếu có adapter ảnh riêng
             binding.rcv.apply {

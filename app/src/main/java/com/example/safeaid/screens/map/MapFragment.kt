@@ -150,7 +150,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
                     position = point
                     setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                     title = pharmacy.name
-                    subDescription = "${pharmacy.address}\nGiờ mở cửa: ${pharmacy.openHours}"
+                    subDescription = "${pharmacy.address}\nGiờ mở cửa: ${pharmacy.openTime}"
                     icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_location_map)
 
                     setOnMarkerClickListener { clickedMarker, mapView ->

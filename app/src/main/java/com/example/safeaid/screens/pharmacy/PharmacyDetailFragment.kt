@@ -3,10 +3,12 @@ package com.example.safeaid.screens.pharmacy
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.example.dermatology.R
 import com.example.dermatology.databinding.FragmentPharmacyDetailBinding
 import com.example.safeaid.core.response.PharmacyResponse
 import com.example.safeaid.core.ui.BaseFragment
+import com.example.safeaid.screens.home.adapter.ProductAdapter
 import com.example.safeaid.screens.main.MainViewModel
 import com.example.safeaid.screens.pharmacy.adapter.RateAdapter
 import com.example.safeaid.screens.pharmacy.data.RateItem
@@ -16,6 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class PharmacyDetailFragment : BaseFragment<FragmentPharmacyDetailBinding>() {
     private val mainViewModel: MainViewModel by activityViewModels()
     private var data: PharmacyResponse? = null
+    private val adapter = ProductAdapter(listOf())
 
     companion object {
         const val ARG = "pharmacy"
@@ -28,6 +31,7 @@ class PharmacyDetailFragment : BaseFragment<FragmentPharmacyDetailBinding>() {
 
     override fun onInit() {
         data = arguments?.getSerializable(ARG) as PharmacyResponse?
+        viewBinding.rcvMedicines.adapter = adapter
         val isDirection = arguments?.getBoolean(IS_DIRECTION) ?: true
         viewBinding.btnDirection.isVisible = isDirection
         data?.let { bindPharmacyData(it) }
@@ -52,11 +56,26 @@ class PharmacyDetailFragment : BaseFragment<FragmentPharmacyDetailBinding>() {
                 RateItem(R.drawable.ic_milk, "Sản phẩm", "$100+")
             )
 
-            val adapter = RateAdapter(data)
+            val rateAdapter = RateAdapter(data)
 
             viewBinding.rcvRate.apply {
                 layoutManager = androidx.recyclerview.widget.GridLayoutManager(context, 3)
-                this.adapter = adapter
+                this.adapter = rateAdapter
+            }
+
+            val url = pharmacy.images?.firstOrNull()
+            if (url.isNullOrEmpty()) {
+                Glide.with(requireContext()).load(android.R.color.darker_gray).into(viewBinding.imv)
+            } else {
+                Glide.with(requireContext()).load(url).into(viewBinding.imv)
+            }
+
+            val logo = pharmacy.logoUrl
+            if (logo.isNullOrEmpty()) {
+                Glide.with(requireContext()).load(android.R.color.darker_gray)
+                    .into(viewBinding.logo)
+            } else {
+                Glide.with(requireContext()).load(logo).into(viewBinding.logo)
             }
 
             btnDirection.setOnClickListener {

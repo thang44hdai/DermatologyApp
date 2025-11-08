@@ -44,11 +44,12 @@ class BrandAdapter(private var items: List<PharmacyResponse>) :
         private val name: TextView = itemView.findViewById(R.id.tv_brand_name)
         fun bind(b: PharmacyResponse) {
             name.text = b.name
-            // no image url in brand schema; use placeholder
-            Glide.with(itemView.context)
-                .load(android.R.color.darker_gray)
-                .centerCrop()
-                .into(img)
+            val url = b.images?.firstOrNull()
+            if (url.isNullOrEmpty()) {
+                Glide.with(itemView.context).load(android.R.color.darker_gray).into(img)
+            } else {
+                Glide.with(itemView.context).load(url).centerCrop().into(img)
+            }
             main.setOnDebounceClick {
                 onClick?.onClick(b)
             }

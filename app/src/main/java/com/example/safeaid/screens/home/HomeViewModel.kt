@@ -6,6 +6,7 @@ import com.example.safeaid.core.base.BaseViewModel
 import com.example.safeaid.core.response.ListMedicineResponse
 import com.example.safeaid.core.response.ListPharmacyResponse
 import com.example.safeaid.core.response.MedicineResponse
+import com.example.safeaid.core.response.UserResponse
 import com.example.safeaid.core.service.ApiService
 import com.example.safeaid.core.utils.ApiCaller
 import com.example.safeaid.core.utils.DataResult
@@ -26,7 +27,26 @@ class HomeViewModel @Inject constructor(
     private val medicineResponse = MutableStateFlow<List<MedicineResponse>>(listOf())
     val _medicineResponse = medicineResponse.asStateFlow()
 
+    private val user = MutableStateFlow<UserResponse>(UserResponse())
+    val _user = user.asStateFlow()
+
+
     fun loadHomeData() {
+        // Load user info
+        viewModelScope.launch(Dispatchers.IO) {
+            ApiCaller.safeApiCall(
+                apiCall = { apiService.getUserInfo() },
+                callback = { result ->
+                    result.doIfSuccess { data ->
+                        user.value = data
+                    }
+                    result.doIfFailure {
+                    }
+                }
+            )
+        }
+
+        // Load medicines
         viewModelScope.launch(Dispatchers.IO) {
             ApiCaller.safeApiCall(
                 apiCall = { apiService.getMedicines() },

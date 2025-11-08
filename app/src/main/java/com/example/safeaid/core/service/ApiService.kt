@@ -11,6 +11,7 @@ import com.example.safeaid.core.response.LoginResponse
 import com.example.safeaid.core.response.PharmacyResponse
 import com.example.safeaid.core.response.PredictResponse
 import com.example.safeaid.core.response.RegisterResponse
+import com.example.safeaid.core.response.UserResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -67,5 +68,8 @@ interface ApiService {
     @GET("prediction/history")
     suspend fun getHistoryList(
     ): Response<HistoryResponse>
+
+    @GET("auth/me")
+    suspend fun getUserInfo(): Response<UserResponse>
 
 }

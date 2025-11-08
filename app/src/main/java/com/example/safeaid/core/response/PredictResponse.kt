@@ -35,11 +35,13 @@ data class Disease(
     @SerializedName("disease_name")
     var diseaseName: String? = null,
     @SerializedName("id")
-    var id: Int? = null,
+    var id: String? = null,
     @SerializedName("image_url")
     var imageUrl: String? = null,
     @SerializedName("symptoms")
     var symptoms: String? = null,
     @SerializedName("treatment")
-    var treatment: String? = null
+    var treatment: String? = null,
+    @SerializedName("medicines")
+    var medicines: List<MedicineResponse> = listOf()
 ) : Serializable

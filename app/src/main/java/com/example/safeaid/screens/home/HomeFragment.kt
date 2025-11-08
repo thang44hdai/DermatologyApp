@@ -48,13 +48,31 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
             .onEach { data -> medicinesAdapter.bindData(data) }
             .launchIn(viewLifecycleOwner.lifecycleScope)
+        viewModel._user
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+            .onEach { data ->
+                viewBinding.tvName.text = data.fullname
+                if (data.avatarUrl == null) {
+                    com.bumptech.glide.Glide.with(requireContext())
+                        .load(R.drawable.ic_default_avatar)
+                        .circleCrop()
+                        .into(viewBinding.avatar)
+                } else {
+                    com.bumptech.glide.Glide.with(requireContext())
+                        .load(data.avatarUrl)
+                        .circleCrop()
+                        .into(viewBinding.avatar)
+                }
+
+            }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
     override fun onInitListener() {
         viewBinding.tvSeeAll.setOnClickListener {
         }
 
-        brandAdapter.setOnClick(object: BrandAdapter.OnClickBrand{
+        brandAdapter.setOnClick(object : BrandAdapter.OnClickBrand {
             override fun onClick(item: PharmacyResponse) {
                 val bundle = Bundle()
                 bundle.putSerializable(PharmacyDetailFragment.ARG, item)

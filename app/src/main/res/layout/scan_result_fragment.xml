@@ -173,6 +173,34 @@
                     app:layout_constraintStart_toStartOf="@+id/tv_treatment"
                     app:layout_constraintTop_toBottomOf="@id/tv_treatment" />
 
+                <TextView
+                    android:id="@+id/tv_medicine_suggest"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Thuốc gợi ý"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="@id/layout_image"
+                    app:layout_constraintStart_toStartOf="@+id/tv_treatment"
+                    app:layout_constraintTop_toBottomOf="@id/tv_treatment_description" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_products"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingStart="12dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_medicine_suggest"
+                    tools:listitem="@layout/item_product" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
 
