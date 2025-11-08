@@ -27,5 +27,15 @@ data class MedicineResponse(
     @SerializedName("suitable_for")
     var suitableFor: String? = null,
     @SerializedName("type")
-    var type: String? = null
+    var type: String? = null,
+    @SerializedName("last_updated")
+    var lastUpdated: String? = null,
+    @SerializedName("link_id")
+    var linkId: Int? = null,
+    @SerializedName("medicine_id")
+    var medicineId: Int? = null,
+    @SerializedName("medicine_name")
+    var medicineName: String? = null,
+    @SerializedName("stock")
+    var stock: String? = null,
 ) : Serializable

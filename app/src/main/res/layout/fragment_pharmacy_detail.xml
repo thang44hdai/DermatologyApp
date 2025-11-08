@@ -25,6 +25,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_marginBottom="-50dp"
                 android:background="@drawable/bg_gradient_fade_bottom"
                 app:layout_constraintBottom_toBottomOf="@+id/btn_back"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -159,7 +160,7 @@
                 android:id="@+id/rcv_medicines"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="12dp"
                 android:clipToPadding="false"
                 android:orientation="horizontal"
                 android:paddingStart="20dp"

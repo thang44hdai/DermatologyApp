@@ -53,10 +53,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             .onEach { data ->
                 viewBinding.tvName.text = data.fullname
                 if (data.avatarUrl == null) {
-                    com.bumptech.glide.Glide.with(requireContext())
-                        .load(R.drawable.ic_default_avatar)
-                        .circleCrop()
-                        .into(viewBinding.avatar)
+                    viewBinding.avatar.setImageResource(R.drawable.ic_default_avatar)
                 } else {
                     com.bumptech.glide.Glide.with(requireContext())
                         .load(data.avatarUrl)

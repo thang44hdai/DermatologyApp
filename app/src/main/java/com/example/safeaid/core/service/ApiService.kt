@@ -8,6 +8,7 @@ import com.example.safeaid.core.request.RefreshTokenRequest
 import com.example.safeaid.core.request.RegisterRequest
 import com.example.safeaid.core.response.HistoryResponse
 import com.example.safeaid.core.response.LoginResponse
+import com.example.safeaid.core.response.PharmacyDetailResponse
 import com.example.safeaid.core.response.PharmacyResponse
 import com.example.safeaid.core.response.PredictResponse
 import com.example.safeaid.core.response.RegisterResponse
@@ -15,6 +16,7 @@ import com.example.safeaid.core.response.UserResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.Path
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -64,6 +66,11 @@ interface ApiService {
 
     @GET("pharmacies/")
     suspend fun getPharmacies(): Response<ListPharmacyResponse>
+
+    @GET("medicines/pharmacy/{pharmacy_id}/medicines")
+    suspend fun getPharmacyMedicines(
+        @Path("pharmacy_id") pharmacyId: String
+    ): Response<PharmacyDetailResponse>
 
     @GET("prediction/history")
     suspend fun getHistoryList(
