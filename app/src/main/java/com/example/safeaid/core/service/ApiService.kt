@@ -1,6 +1,8 @@
 package com.example.safeaid.core.service
 
 import QuizCategoryResponse
+import com.example.safeaid.core.response.ListMedicineResponse
+import com.example.safeaid.core.response.ListPharmacyResponse
 import com.example.safeaid.core.request.LoginRequest
 import com.example.safeaid.core.request.RefreshTokenRequest
 import com.example.safeaid.core.request.RegisterRequest
@@ -55,6 +57,12 @@ interface ApiService {
         @Query("radius_km") radiusKm: String?,
         @Query("limit") limit: String?,
     ): Response<List<PharmacyResponse>>
+
+    @GET("medicines/")
+    suspend fun getMedicines(): Response<ListMedicineResponse>
+
+    @GET("pharmacies/")
+    suspend fun getPharmacies(): Response<ListPharmacyResponse>
 
     @GET("prediction/history")
     suspend fun getHistoryList(
