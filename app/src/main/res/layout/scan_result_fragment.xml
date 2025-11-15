@@ -32,14 +32,13 @@
                     android:src="@drawable/ic_arrow_left"
                     android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:visibility="visible" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/tv_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="80dp"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
                     android:gravity="center_horizontal"
                     android:text="Mụn (99%)"
@@ -81,27 +80,6 @@
                             android:layout_marginTop="5dp"
                             android:text="Ảnh quét" />
                     </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:visibility="gone">
-
-                        <ImageView
-                            android:id="@+id/imv2"
-                            android:layout_width="match_parent"
-                            android:layout_height="150dp"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/bg_take" />
-
-                        <TextView
-                            android:id="@+id/tv2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Ảnh bệnh" />
-                    </LinearLayout>
                 </LinearLayout>
 
                 <!-- Tổng quan -->
@@ -129,6 +107,32 @@
                     app:layout_constraintStart_toStartOf="@+id/tv_summary"
                     app:layout_constraintTop_toBottomOf="@id/tv_summary" />
 
+                <LinearLayout
+                    android:id="@+id/layout_imv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="@+id/tv_description"
+                    app:layout_constraintStart_toStartOf="@+id/tv_description"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_description">
+
+                    <ImageView
+                        android:id="@+id/imv2"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/bg_take" />
+
+                    <TextView
+                        android:id="@+id/tv2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ảnh phân tích vùng bị bệnh"
+                        android:textStyle="italic" />
+                </LinearLayout>
+
                 <TextView
                     android:id="@+id/tv_symptoms"
                     android:layout_width="wrap_content"
@@ -139,7 +143,7 @@
                     android:textSize="15sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@id/tv_description"
-                    app:layout_constraintTop_toBottomOf="@id/tv_description" />
+                    app:layout_constraintTop_toBottomOf="@id/layout_imv" />
 
                 <TextView
                     android:id="@+id/tv_symptoms_description"

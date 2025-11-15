@@ -37,7 +37,7 @@ import java.util.Locale
 
 @AndroidEntryPoint
 class CameraFragment : BaseFragment<FragmentCameraBinding>() {
-    private val viewModel: PredictViewModel by viewModels()
+    private val viewModel: PredictViewModel by activityViewModels()
 
     private var imageCapture: ImageCapture? = null
 

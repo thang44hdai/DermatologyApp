@@ -6,6 +6,7 @@ import com.example.safeaid.core.response.ListPharmacyResponse
 import com.example.safeaid.core.request.LoginRequest
 import com.example.safeaid.core.request.RefreshTokenRequest
 import com.example.safeaid.core.request.RegisterRequest
+import com.example.safeaid.core.response.DetectBoundaryResponse
 import com.example.safeaid.core.response.HistoryResponse
 import com.example.safeaid.core.response.LoginResponse
 import com.example.safeaid.core.response.PharmacyDetailResponse
@@ -78,5 +79,11 @@ interface ApiService {
 
     @GET("auth/me")
     suspend fun getUserInfo(): Response<UserResponse>
+
+    @Multipart
+    @POST("prediction/detect-boundary")
+    suspend fun detectBoundary(
+        @Part file: MultipartBody.Part
+    ): Response<DetectBoundaryResponse>
 
 }

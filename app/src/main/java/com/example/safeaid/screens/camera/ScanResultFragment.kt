@@ -1,5 +1,6 @@
 package com.example.safeaid.screens.camera
 
+import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -12,7 +13,11 @@ import com.example.dermatology.R
 import com.example.dermatology.databinding.ScanResultFragmentBinding
 import com.example.safeaid.core.response.PredictResponse
 import com.example.safeaid.core.ui.BaseFragment
+import com.example.safeaid.core.utils.DataResult
+import com.example.safeaid.core.utils.doIfFailure
+import com.example.safeaid.core.utils.doIfSuccess
 import com.example.safeaid.core.utils.setOnDebounceClick
+import com.example.safeaid.screens.camera.viewmodel.PredictState
 import com.example.safeaid.screens.camera.viewmodel.PredictViewModel
 import com.example.safeaid.screens.home.adapter.ProductAdapter
 import com.example.safeaid.screens.main.MainViewModel
@@ -23,7 +28,7 @@ import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
 class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
-    private val viewModel: PredictViewModel by viewModels()
+    private val viewModel: PredictViewModel by activityViewModels()
     private val mainViewModel: MainViewModel by activityViewModels()
     private val mapViewModel: MapViewModel by activityViewModels()
     private var predict: PredictResponse = PredictResponse()
@@ -62,17 +67,15 @@ class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
                 .load(predict.data?.disease?.imageUrl)
                 .into(viewBinding.imv1)
         }
+
+        viewModel.detectBoundary(requireContext())
     }
 
     override fun onInitObserver() {
-//        viewModel.selectedImageUri
-//            .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
-//            .onEach { uri ->
-//                uri?.let {
-//                    viewBinding.imv1.setImageURI(it)
-//                }
-//            }
-//            .launchIn(viewLifecycleOwner.lifecycleScope)
+        viewModel.viewState
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+            .onEach { updateUi(it) }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
     override fun onInitListener() {
@@ -85,5 +88,23 @@ class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
             mapViewModel.isPredicted = true
             findNavController().navigate(R.id.mainScreen)
         }
+    }
+
+    private fun updateUi(state: DataResult<PredictState>?) {
+        state?.doIfSuccess { data ->
+            when (data) {
+                is PredictState.PredictRes -> {
+                }
+
+                is PredictState.DetectBoundaryRes -> {
+                    Glide.with(requireContext())
+                        .load(data.data.imageUrl)
+                        .into(viewBinding.imv2)
+                }
+
+                else -> {}
+            }
+        }
+        state?.doIfFailure { }
     }
 }
