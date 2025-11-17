@@ -109,7 +109,6 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>() {
     }
 
 
-    // Hàm khởi động camera
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 
@@ -137,7 +136,6 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>() {
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
-    // Hàm chụp ảnh
     private fun takePhoto() {
         val imageCapture = imageCapture ?: return
 
@@ -167,11 +165,6 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>() {
                         imageFile = photoFile,
                         context = requireContext()
                     )
-                    Toast.makeText(
-                        requireContext(),
-                        "Ảnh đã lưu: ${photoFile.name}",
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
             })
     }

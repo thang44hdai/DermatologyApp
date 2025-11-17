@@ -114,5 +114,4 @@ class PharmacyDetailFragment : BaseFragment<FragmentPharmacyDetailBinding>() {
             }
         }
     }
-
 }

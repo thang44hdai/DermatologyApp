@@ -7,11 +7,13 @@ import com.example.dermatology.databinding.ScanResultFragmentBinding
 import com.example.safeaid.core.response.Scan
 import com.example.safeaid.core.ui.BaseFragment
 import com.example.safeaid.core.utils.setOnDebounceClick
+import com.example.safeaid.screens.home.adapter.ProductAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class DetailHistoryFragment : BaseFragment<ScanResultFragmentBinding>() {
     private lateinit var data: Scan
+    private val adapter = ProductAdapter(listOf())
 
     companion object {
         const val ARG: String = "scan"
@@ -25,6 +27,7 @@ class DetailHistoryFragment : BaseFragment<ScanResultFragmentBinding>() {
         viewBinding.btnBack.isVisible = false
         viewBinding.btnMap.isVisible = false
         viewBinding.icBack.isVisible = true
+        viewBinding.layoutImv.isVisible = false
         data = arguments?.getSerializable(ARG) as Scan
         Glide.with(requireContext())
             .load(data.imageUrl)
@@ -32,6 +35,7 @@ class DetailHistoryFragment : BaseFragment<ScanResultFragmentBinding>() {
         viewBinding.tvTitle.text = data.disease?.diseaseName
         viewBinding.tvSymptomsDescription.text = data.disease?.description
         viewBinding.tv1.text = "Ảnh quét " + data.diagnosisHistory?.createdAt
+        viewBinding.rvProducts.adapter = adapter
     }
 
     override fun onInitObserver() {
