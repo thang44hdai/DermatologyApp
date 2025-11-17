@@ -123,7 +123,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/bg_take" />
+                        android:src="@color/white"
+                        android:visibility="gone" />
+
+                    <ProgressBar
+                        android:id="@+id/progress_bar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:indeterminateTint="@color/primary" />
 
                     <TextView
                         android:id="@+id/tv2"

@@ -2,6 +2,7 @@ package com.example.safeaid.screens.camera
 
 import android.os.Bundle
 import android.util.Log
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -97,9 +98,16 @@ class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
                 }
 
                 is PredictState.DetectBoundaryRes -> {
-                    Glide.with(requireContext())
-                        .load(data.data.imageUrl)
-                        .into(viewBinding.imv2)
+                    if (!data.isLoading) {
+                        viewBinding.progressBar.isVisible = false
+                        viewBinding.imv2.isVisible = true
+                        Glide.with(requireContext())
+                            .load(data.data.imageUrl)
+                            .into(viewBinding.imv2)
+                    } else {
+                        viewBinding.progressBar.isVisible = true
+                        viewBinding.imv2.isVisible = false
+                    }
                 }
 
                 else -> {}

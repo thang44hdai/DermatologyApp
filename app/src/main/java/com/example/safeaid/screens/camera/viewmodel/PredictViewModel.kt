@@ -43,6 +43,8 @@ class PredictViewModel @Inject constructor(
             return
         }
 
+        updateState(DataResult.Loading)
+
         if (imageFile != null) {
             selectedImageFile = imageFile
             selectedImageUri = null
@@ -125,7 +127,14 @@ class PredictViewModel @Inject constructor(
                         apiCall = { apiService.detectBoundary(part) },
                         callback = { result ->
                             result.doIfSuccess {
-                                updateState(DataResult.Success(PredictState.DetectBoundaryRes(it)))
+                                updateState(
+                                    DataResult.Success(
+                                        PredictState.DetectBoundaryRes(
+                                            isLoading = false,
+                                            data = it
+                                        )
+                                    )
+                                )
                             }
                             result.doIfFailure {}
                         }
@@ -143,7 +152,8 @@ class PredictViewModel @Inject constructor(
 
 sealed class PredictState {
     class PredictRes(val data: PredictResponse) : PredictState()
-    class DetectBoundaryRes(val data: DetectBoundaryResponse) : PredictState()
+    class DetectBoundaryRes(val isLoading: Boolean = true, val data: DetectBoundaryResponse) :
+        PredictState()
 }
 
 sealed class PredictEvent

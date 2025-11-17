@@ -13,6 +13,7 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -25,6 +26,7 @@ import com.example.safeaid.core.ui.BaseFragment
 import com.example.safeaid.core.utils.DataResult
 import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.doIfSuccess
+import com.example.safeaid.core.utils.onLoading
 import com.example.safeaid.core.utils.setOnDebounceClick
 import com.example.safeaid.screens.camera.viewmodel.PredictState
 import com.example.safeaid.screens.camera.viewmodel.PredictViewModel
@@ -183,6 +185,8 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>() {
                         ScanResultFragment.argKey, data.data
                     )
 
+                    viewBinding.progressBar.isVisible = false
+
                     findNavController().navigate(
                         R.id.action_cameraFragment_to_scanResultFragment,
                         bundle
@@ -193,5 +197,8 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>() {
             }
         }
         state?.doIfFailure { }
+        state?.onLoading {
+            viewBinding.progressBar.isVisible = true
+        }
     }
 }
