@@ -25,6 +25,7 @@ import com.example.safeaid.core.utils.doIfSuccess
 import com.example.safeaid.screens.camera.ScanResultFragment
 import com.example.safeaid.screens.camera.viewmodel.PredictState
 import com.example.safeaid.screens.map.bottom_sheet.PharmacyBottomSheet
+import com.example.safeaid.screens.map.utils.PharmacyUtils
 import com.example.safeaid.screens.pharmacy.PharmacyDetailFragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -50,6 +51,8 @@ import java.net.URL
 class MapFragment : BaseFragment<FragmentMapBinding>() {
     private val viewModel: MapViewModel by activityViewModels()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var allPharmacies = listOf<PharmacyResponse>()
+    private var dropdownDialog: PharmacyDropdownDialog? = null
 
     companion object {
         private const val REQUEST_LOCATION_PERMISSION = 1001
@@ -127,13 +130,73 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
     }
 
     override fun onInitListener() {
+        setupSearchDropdown()
+    }
+
+    private fun setupSearchDropdown() {
+        // Setup focus listener to show dialog
+        viewBinding.tvFilter.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                showDropdownDialog()
+            }
+        }
+
+        // Also show dialog when user clicks
+        viewBinding.tvFilter.setOnClickListener {
+            showDropdownDialog()
+        }
+    }
+
+    private fun showDropdownDialog() {
+        if (dropdownDialog == null || dropdownDialog?.isAdded == false) {
+            dropdownDialog = PharmacyDropdownDialog()
+            dropdownDialog?.show(childFragmentManager, "PharmacyDropdown")
+            dropdownDialog?.setAllPharmacies(allPharmacies)
+            dropdownDialog?.attachSearchEditText(viewBinding.tvFilter)
+            dropdownDialog?.setOnPharmacyClickListener { pharmacy ->
+                showPharmacyBottomSheet(pharmacy)
+                viewBinding.tvFilter.setText(pharmacy.name)
+                viewBinding.tvFilter.clearFocus()
+                dropdownDialog?.dismiss()
+            }
+        }
+    }
+
+    private fun showPharmacyBottomSheet(pharmacy: PharmacyResponse) {
+        // Animate to pharmacy location
+        val point = GeoPoint(pharmacy.latitude, pharmacy.longitude)
+        viewBinding.mapView.controller.animateTo(point)
+        viewModel.targetLocation = point
+
+        val bottomSheet = PharmacyBottomSheet.newInstance(pharmacy)
+        bottomSheet.setOnClick(object : PharmacyBottomSheet.OnClickPharmacyBottomSheet {
+            override fun onClickViewDetail(data: PharmacyResponse) {
+                val bundle = Bundle()
+                bundle.putSerializable(PharmacyDetailFragment.ARG, data)
+                bundle.putBoolean(PharmacyDetailFragment.IS_DIRECTION, false)
+                findNavController().navigate(
+                    R.id.action_mainScreen_to_pharmacyDetailFragment,
+                    bundle
+                )
+            }
+
+            override fun onClickDirection(data: PharmacyResponse) {
+                val current = viewModel.currentLocation
+                val dest = GeoPoint(data.latitude, data.longitude)
+                viewModel.getRoute(current, dest)
+            }
+        })
+        bottomSheet.show(parentFragmentManager, "PharmacyBottomSheet")
     }
 
     private fun updateUi(state: DataResult<MapState>?) {
         state?.doIfSuccess { data ->
             when (data) {
                 is MapState.PharmaciesNearBy -> {
+                    allPharmacies = data.data
                     addMarkers(data.data)
+                    // Update dropdown if it's showing
+                    dropdownDialog?.setAllPharmacies(data.data)
                 }
 
                 else -> {}

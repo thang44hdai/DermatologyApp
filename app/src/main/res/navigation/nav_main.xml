@@ -17,6 +17,9 @@
         <action
             android:id="@+id/action_mainScreen_to_pharmacyDetailFragment"
             app:destination="@id/pharmacyDetailFragment" />
+        <action
+            android:id="@+id/action_mainScreen_to_pharmacySearchFragment"
+            app:destination="@id/pharmacySearchFragment" />
     </fragment>
     <fragment
         android:id="@+id/cameraFragment"
@@ -70,4 +73,12 @@
         android:id="@+id/mapFragment"
         android:name="com.example.safeaid.screens.map.MapFragment"
         android:label="MapFragment" />
+    <fragment
+        android:id="@+id/pharmacySearchFragment"
+        android:name="com.example.safeaid.screens.map.PharmacySearchFragment"
+        android:label="PharmacySearchFragment">
+        <action
+            android:id="@+id/action_pharmacySearchFragment_to_pharmacyDetailFragment"
+            app:destination="@id/pharmacyDetailFragment" />
+    </fragment>
 </navigation>
