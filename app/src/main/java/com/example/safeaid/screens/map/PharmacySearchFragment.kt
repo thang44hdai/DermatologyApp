@@ -3,8 +3,8 @@ package com.example.safeaid.screens.map
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -18,14 +18,23 @@ import com.example.safeaid.core.utils.DataResult
 import com.example.safeaid.core.utils.doIfSuccess
 import com.example.safeaid.screens.map.adapter.PharmacySearchAdapter
 import com.example.safeaid.screens.map.utils.PharmacyUtils
+import com.example.safeaid.screens.map.viewmodel.MapState
+import com.example.safeaid.screens.map.viewmodel.MapViewModel
+import com.example.safeaid.screens.map.viewmodel.PharmacySearchViewModel
+import com.example.safeaid.screens.map.viewmodel.SortState
 import com.example.safeaid.screens.pharmacy.PharmacyDetailFragment
 import dagger.hilt.android.AndroidEntryPoint
+import io.realm.kotlin.query.Sort
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PharmacySearchFragment : BaseFragment<FragmentPharmacySearchBinding>() {
     private val viewModel: MapViewModel by activityViewModels()
+    private val filterViewModel: PharmacySearchViewModel by viewModels()
     private lateinit var adapter: PharmacySearchAdapter
     private var allPharmacies = listOf<PharmacyResponse>()
     private var selectedFilters = mutableSetOf<String>()
@@ -56,12 +65,18 @@ class PharmacySearchFragment : BaseFragment<FragmentPharmacySearchBinding>() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 filterPharmacies(s.toString())
             }
+
             override fun afterTextChanged(s: Editable?) {}
         })
 
+        lifecycleScope.launch(Dispatchers.Main) {
+            viewBinding.edtSearch.setText(viewModel.filterState.first())
+        }
+
         // Sort button
         viewBinding.btnSort.setOnClickListener {
-            // Toggle sort order
+            adapter.submitList(listOf())
+            sort()
         }
     }
 
@@ -96,27 +111,20 @@ class PharmacySearchFragment : BaseFragment<FragmentPharmacySearchBinding>() {
         val filtered = PharmacyUtils.filterPharmacies(allPharmacies, query)
         adapter.submitList(filtered)
         updateResultCount(filtered.size)
+        viewModel.filter(query)
     }
 
-    private fun toggleFilter(filter: String) {
-        if (selectedFilters.contains(filter)) {
-            selectedFilters.remove(filter)
-        } else {
-            selectedFilters.add(filter)
-        }
-        applyFilters()
-    }
-
-    private fun applyFilters() {
-        val filtered = PharmacyUtils.filterPharmaciesByCriteria(
-            pharmacies = allPharmacies,
-            is24h = selectedFilters.contains("24/7"),
-            maxDistanceKm = if (selectedFilters.contains("5 km")) 5.0 else null,
-            minRating = if (selectedFilters.contains("> 4 sao")) 4.0 else null
-        )
-
+    private fun sort() {
+        val query: SortState =
+            if (filterViewModel.sortState == SortState.DECREASE) SortState.INCREASE else SortState.DECREASE
+        val filtered = PharmacyUtils.sortByDistance(allPharmacies, query)
         adapter.submitList(filtered)
-        updateResultCount(filtered.size)
+        filterViewModel.sortState = query
+        if (query == SortState.DECREASE) {
+            viewBinding.tvSort.text = "Xa nhất"
+        } else {
+            viewBinding.tvSort.text = "Gần nhất"
+        }
     }
 
     private fun updateResultCount(count: Int) {

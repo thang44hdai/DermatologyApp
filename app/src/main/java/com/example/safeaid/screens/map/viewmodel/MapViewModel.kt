@@ -1,22 +1,18 @@
-package com.example.safeaid.screens.map
+package com.example.safeaid.screens.map.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.safeaid.core.base.BaseViewModel
-import com.example.safeaid.core.request.RegisterRequest
 import com.example.safeaid.core.response.PharmacyResponse
 import com.example.safeaid.core.service.ApiService
 import com.example.safeaid.core.utils.ApiCaller
 import com.example.safeaid.core.utils.DataResult
 import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.doIfSuccess
-import com.example.safeaid.screens.authenication.viewmodel.LoginState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.json.JSONArray
 import org.json.JSONObject
 import org.osmdroid.util.GeoPoint
 import java.net.HttpURLConnection
@@ -34,6 +30,12 @@ class MapViewModel @Inject constructor(
 
     private val _mapState = MutableStateFlow<MutableList<GeoPoint>>(mutableListOf())
     val mapState: StateFlow<MutableList<GeoPoint>> = _mapState
+    private val _filterState = MutableStateFlow<String>("")
+    val filterState: StateFlow<String> = _filterState
+
+    fun filter(query: String) {
+        _filterState.value = query
+    }
 
     fun searchPharmacyNear(
         latitude: String,

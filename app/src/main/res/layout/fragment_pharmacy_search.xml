@@ -63,7 +63,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
                         android:background="@null"
-                        android:hint="Hiệu thuốc Pharmacity Hà Đông"
+                        android:hint="Tìm kiếm theo tên, địa chỉ"
                         android:inputType="text"
                         android:maxLines="1"
                         android:textColor="#333333"
@@ -116,12 +116,6 @@
                     android:text="110 Trần Phú, Hà Đông, Hà Nội"
                     android:textColor="#333333"
                     android:textSize="14sp" />
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_arrow_down"
-                    app:tint="#666666" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -159,6 +153,7 @@
                     app:tint="@color/primary" />
 
                 <TextView
+                    android:id="@+id/tv_sort"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
@@ -170,6 +165,7 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:layout_marginStart="4dp"
+                    android:visibility="gone"
                     android:src="@drawable/ic_arrow_down"
                     app:tint="@color/primary" />
             </LinearLayout>

@@ -1,10 +1,7 @@
 package com.example.safeaid.screens.camera
 
-import android.os.Bundle
-import android.util.Log
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -22,7 +19,7 @@ import com.example.safeaid.screens.camera.viewmodel.PredictState
 import com.example.safeaid.screens.camera.viewmodel.PredictViewModel
 import com.example.safeaid.screens.home.adapter.ProductAdapter
 import com.example.safeaid.screens.main.MainViewModel
-import com.example.safeaid.screens.map.MapViewModel
+import com.example.safeaid.screens.map.viewmodel.MapViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
