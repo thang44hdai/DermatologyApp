@@ -27,6 +27,7 @@ class MapViewModel @Inject constructor(
     var targetLocation = GeoPoint(0, 0)
     var zoomMap: Double = 16.0
     var isPredicted: Boolean = false
+    var directionToLocation: PharmacyResponse? = null
 
     private val _mapState = MutableStateFlow<MutableList<GeoPoint>>(mutableListOf())
     val mapState: StateFlow<MutableList<GeoPoint>> = _mapState

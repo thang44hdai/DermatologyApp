@@ -225,6 +225,12 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
                     viewBinding.mapView.overlays.add(line)
                     viewModel.isPredicted = false
                 }
+                if (viewModel.directionToLocation != null) {
+                    val target = viewModel.directionToLocation
+                    val current = viewModel.currentLocation
+                    val dest = GeoPoint(target?.latitude ?: 0.0, target?.longitude ?: 0.0)
+                    viewModel.getRoute(current, dest)
+                }
             }
         }
 

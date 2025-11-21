@@ -16,6 +16,7 @@ import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.doIfSuccess
 import com.example.safeaid.screens.home.adapter.ProductAdapter
 import com.example.safeaid.screens.main.MainViewModel
+import com.example.safeaid.screens.map.viewmodel.MapViewModel
 import com.example.safeaid.screens.pharmacy.adapter.RateAdapter
 import com.example.safeaid.screens.pharmacy.data.RateItem
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,6 +26,7 @@ import kotlinx.coroutines.flow.onEach
 @AndroidEntryPoint
 class PharmacyDetailFragment : BaseFragment<FragmentPharmacyDetailBinding>() {
     private val mainViewModel: MainViewModel by activityViewModels()
+    private val mapViewModel: MapViewModel by activityViewModels()
     private val viewModel: PharmacyViewModel by viewModels()
     private var data: PharmacyResponse? = null
     private val adapter = ProductAdapter(listOf())
@@ -105,6 +107,7 @@ class PharmacyDetailFragment : BaseFragment<FragmentPharmacyDetailBinding>() {
             }
 
             btnDirection.setOnClickListener {
+                mapViewModel.directionToLocation = this@PharmacyDetailFragment.data
                 mainViewModel.currentPage = 1
                 findNavController().navigate(R.id.mainScreen)
             }
