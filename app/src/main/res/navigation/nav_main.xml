@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_main"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/mainScreen">
 
     <fragment
         android:id="@+id/mainScreen"
@@ -20,6 +20,9 @@
         <action
             android:id="@+id/action_mainScreen_to_pharmacySearchFragment"
             app:destination="@id/pharmacySearchFragment" />
+        <action
+            android:id="@+id/action_mainScreen_to_medicineDetailFragment"
+            app:destination="@id/medicineDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/cameraFragment"
@@ -81,4 +84,8 @@
             android:id="@+id/action_pharmacySearchFragment_to_pharmacyDetailFragment"
             app:destination="@id/pharmacyDetailFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/medicineDetailFragment"
+        android:name="com.example.safeaid.screens.medicine.MedicineDetailFragment"
+        android:label="MedicineDetailFragment" />
 </navigation>

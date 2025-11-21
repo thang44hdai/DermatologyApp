@@ -16,6 +16,7 @@ import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.doIfSuccess
 import com.example.safeaid.screens.home.adapter.BrandAdapter
 import com.example.safeaid.screens.home.adapter.ProductAdapter
+import com.example.safeaid.screens.medicine.MedicineDetailFragment
 import com.example.safeaid.screens.pharmacy.PharmacyDetailFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
@@ -24,7 +25,14 @@ import kotlinx.coroutines.flow.onEach
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     private val brandAdapter = BrandAdapter(listOf())
-    private val medicinesAdapter = ProductAdapter(listOf())
+    private val medicinesAdapter = ProductAdapter(listOf()) { medicine ->
+        val bundle = Bundle()
+        bundle.putSerializable(MedicineDetailFragment.ARG_MEDICINE, medicine)
+        findNavController().navigate(
+            R.id.action_mainScreen_to_medicineDetailFragment,
+            bundle
+        )
+    }
     private val viewModel: HomeViewModel by activityViewModels()
 
     override fun isHostFragment(): Boolean {

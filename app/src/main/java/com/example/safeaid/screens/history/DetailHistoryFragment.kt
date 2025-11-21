@@ -13,7 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class DetailHistoryFragment : BaseFragment<ScanResultFragmentBinding>() {
     private lateinit var data: Scan
-    private val adapter = ProductAdapter(listOf())
+    private val adapter = ProductAdapter(listOf(), null)
 
     companion object {
         const val ARG: String = "scan"

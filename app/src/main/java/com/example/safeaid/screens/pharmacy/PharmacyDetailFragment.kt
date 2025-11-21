@@ -29,7 +29,7 @@ class PharmacyDetailFragment : BaseFragment<FragmentPharmacyDetailBinding>() {
     private val mapViewModel: MapViewModel by activityViewModels()
     private val viewModel: PharmacyViewModel by viewModels()
     private var data: PharmacyResponse? = null
-    private val adapter = ProductAdapter(listOf())
+    private val adapter = ProductAdapter(listOf(), null)
 
     companion object {
         const val ARG = "pharmacy"

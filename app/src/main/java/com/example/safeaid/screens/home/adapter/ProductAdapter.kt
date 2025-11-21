@@ -13,8 +13,10 @@ import com.example.safeaid.core.response.MedicineResponse
 import com.example.safeaid.core.response.PharmacyResponse
 import com.example.safeaid.models.Product
 
-class ProductAdapter(private var items: List<MedicineResponse>) :
-    RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
+class ProductAdapter(
+    private var items: List<MedicineResponse>,
+    private val onItemClick: ((MedicineResponse) -> Unit)? = null
+) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.item_product, parent, false)
@@ -32,7 +34,7 @@ class ProductAdapter(private var items: List<MedicineResponse>) :
         notifyDataSetChanged()
     }
 
-    class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val img: ImageView = itemView.findViewById(R.id.img_product)
         private val name: TextView = itemView.findViewById(R.id.tv_product_name)
         private val price: TextView = itemView.findViewById(R.id.tv_price)
@@ -45,6 +47,10 @@ class ProductAdapter(private var items: List<MedicineResponse>) :
                 Glide.with(itemView.context).load(android.R.color.darker_gray).into(img)
             } else {
                 Glide.with(itemView.context).load(url).centerCrop().into(img)
+            }
+
+            itemView.setOnClickListener {
+                onItemClick?.invoke(p)
             }
         }
     }

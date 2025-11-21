@@ -30,7 +30,7 @@ class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
     private val mainViewModel: MainViewModel by activityViewModels()
     private val mapViewModel: MapViewModel by activityViewModels()
     private var predict: PredictResponse = PredictResponse()
-    private val adapter = ProductAdapter(listOf())
+    private val adapter = ProductAdapter(listOf(), null)
 
     companion object {
         const val argKey: String = "data"
