@@ -96,30 +96,35 @@
                         android:layout_marginStart="12dp"
                         android:layout_weight="1"
                         android:background="@android:color/transparent"
-                        android:hint="Tìm kiếm thương hiệu, sản phẩm theo tên"
+                        android:hint="Tìm kiếm tên thương hiệu, sản phẩm"
                         android:imeOptions="actionSearch"
                         android:inputType="text"
-                        android:maxLines="1"
                         android:textColor="@color/black"
                         android:textColorHint="@color/gray_neutral_4"
                         android:textSize="14sp" />
 
-                    <ImageView
-                        android:id="@+id/btn_clear_search"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginStart="8dp"
-                        android:src="@drawable/ic_close"
-                        android:visibility="gone"
-                        app:tint="@color/gray_neutral_4" />
+                    <TextView
+                        android:id="@+id/tag_search_mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_search_tag"
+                        android:paddingHorizontal="6dp"
+                        android:paddingVertical="6dp"
+                        android:text="Tất cả"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center" />
 
                 </LinearLayout>
 
-                <!-- Banner -->
+                <!-- Quick Action Banner -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/banner"
                     android:layout_width="0dp"
-                    android:layout_height="160dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
                     app:cardCornerRadius="16dp"
@@ -128,13 +133,71 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/search_container">
 
-                    <ImageView
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@drawable/bg_banner_gradient"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/thumnail" />
+                        android:padding="20dp">
 
+                        <!-- Health Tip Icon -->
+                        <ImageView
+                            android:id="@+id/iv_health_tip"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/ic_first_aid"
+                            android:tint="@color/white"
+                            android:alpha="0.9"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <!-- Health Tip Text -->
+                        <TextView
+                            android:id="@+id/tv_health_tip"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:text="Mẹo: Rửa mặt 2 lần/ngày giúp da sạch và khỏe mạnhMẹo: Rửa mặt 2 lần/ngày giúp da sạch và khỏe mạnh"
+                            android:textColor="@color/white"
+                            android:textSize="13sp"
+                            android:ellipsize="end"
+                            app:layout_constraintEnd_toStartOf="@id/btn_quick_scan"
+                            app:layout_constraintStart_toEndOf="@id/iv_health_tip"
+                            app:layout_constraintTop_toTopOf="@id/iv_health_tip" />
+
+                        <!-- Quick Scan Button -->
+                        <LinearLayout
+                            android:id="@+id/btn_quick_scan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:background="@drawable/bg_quick_action_button"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="10dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_camera"
+                                app:tint="@color/primary" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:text="Quét da"
+                                android:textColor="@color/primary"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
 
                 <!-- Brands Section -->

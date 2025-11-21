@@ -15,7 +15,7 @@ object MedicineUtils {
     }
 
     /**
-     * Filter medicines by search query
+     * Filter medicines by search query (only by name)
      */
     fun filterMedicines(
         medicines: List<MedicineResponse>,
@@ -27,12 +27,7 @@ object MedicineUtils {
 
         return medicines.filter { medicine ->
             val name = medicine.name?.normalize() ?: ""
-            val description = medicine.description?.normalize() ?: ""
-            val genericName = medicine.genericName?.normalize() ?: ""
-
-            name.contains(normalizedQuery, ignoreCase = true) ||
-                    description.contains(normalizedQuery, ignoreCase = true) ||
-                    genericName.contains(normalizedQuery, ignoreCase = true)
+            name.contains(normalizedQuery, ignoreCase = true)
         }
     }
 
