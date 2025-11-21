@@ -84,40 +84,24 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Location Dropdown -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/locationCard"
+        <!-- Active Filters -->
+        <HorizontalScrollView
+            android:id="@+id/activeFiltersScroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
+            android:layout_marginTop="8dp"
+            android:scrollbars="none"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/topBar">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupActiveFilters"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="16dp">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_location"
-                    app:tint="@color/primary" />
-
-                <TextView
-                    android:id="@+id/tvLocation"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_weight="1"
-                    android:text="110 Trần Phú, Hà Đông, Hà Nội"
-                    android:textColor="#333333"
-                    android:textSize="14sp" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                app:singleSelection="false" />
+        </HorizontalScrollView>
 
         <!-- Result Header -->
         <LinearLayout
@@ -127,7 +111,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="16dp"
-            app:layout_constraintTop_toBottomOf="@id/locationCard">
+            app:layout_constraintTop_toBottomOf="@id/activeFiltersScroll">
 
             <TextView
                 android:id="@+id/tvResultCount"

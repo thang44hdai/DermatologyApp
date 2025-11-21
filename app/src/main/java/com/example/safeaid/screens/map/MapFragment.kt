@@ -125,11 +125,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
     }
 
     override fun onInitListener() {
-        viewBinding.icSearch.setOnClickListener {
-            mockDataMap()
-            navigateToFilterScreen()
-        }
-        viewBinding.tvFilter.setOnClickListener {
+        viewBinding.layoutSearch.setOnClickListener {
             navigateToFilterScreen()
         }
         viewBinding.btnDelete.setOnDebounceClick {

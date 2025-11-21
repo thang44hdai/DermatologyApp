@@ -95,4 +95,21 @@ object PharmacyUtils {
 
         return filtered
     }
+
+    /**
+     * Sort pharmacies by distance
+     */
+//    fun sortByDistance(
+//        pharmacies: List<PharmacyResponse>,
+//        sortState: com.example.safeaid.screens.map.viewmodel.SortState
+//    ): List<PharmacyResponse> {
+//        return when (sortState) {
+//            com.example.safeaid.screens.map.viewmodel.SortState.INCREASE -> {
+//                pharmacies.sortedBy { it.distanceKm?.toDoubleOrNull() ?: Double.MAX_VALUE }
+//            }
+//            com.example.safeaid.screens.map.viewmodel.SortState.DECREASE -> {
+//                pharmacies.sortedByDescending { it.distanceKm?.toDoubleOrNull() ?: 0.0 }
+//            }
+//        }
+//    }
 }

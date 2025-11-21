@@ -9,7 +9,6 @@ class PharmacySearchViewModel @Inject constructor() :
     BaseViewModel<PharmacySearchState, PharmacySearchEvent>() {
     var sortState: SortState = SortState.DECREASE
 
-
     override fun onTriggerEvent(event: PharmacySearchEvent) {
     }
 }

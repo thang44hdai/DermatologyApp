@@ -19,12 +19,13 @@ import com.example.safeaid.core.utils.doIfSuccess
 import com.example.safeaid.screens.map.adapter.PharmacySearchAdapter
 import com.example.safeaid.screens.map.utils.PharmacyUtils
 import com.example.safeaid.screens.map.viewmodel.MapState
+import com.example.safeaid.screens.map.bottom_sheet.PharmacyFilterBottomSheet
+import com.example.safeaid.screens.map.bottom_sheet.PharmacyFilterCriteria
 import com.example.safeaid.screens.map.viewmodel.MapViewModel
 import com.example.safeaid.screens.map.viewmodel.PharmacySearchViewModel
 import com.example.safeaid.screens.map.viewmodel.SortState
 import com.example.safeaid.screens.pharmacy.PharmacyDetailFragment
 import dagger.hilt.android.AndroidEntryPoint
-import io.realm.kotlin.query.Sort
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
@@ -37,7 +38,8 @@ class PharmacySearchFragment : BaseFragment<FragmentPharmacySearchBinding>() {
     private val filterViewModel: PharmacySearchViewModel by viewModels()
     private lateinit var adapter: PharmacySearchAdapter
     private var allPharmacies = listOf<PharmacyResponse>()
-    private var selectedFilters = mutableSetOf<String>()
+    private var currentFilterCriteria = PharmacyFilterCriteria()
+    private var currentSearchQuery = ""
 
     override fun isHostFragment(): Boolean = false
 
@@ -63,7 +65,8 @@ class PharmacySearchFragment : BaseFragment<FragmentPharmacySearchBinding>() {
         viewBinding.edtSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                filterPharmacies(s.toString())
+                currentSearchQuery = s.toString()
+                applyAllFilters()
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -73,10 +76,13 @@ class PharmacySearchFragment : BaseFragment<FragmentPharmacySearchBinding>() {
             viewBinding.edtSearch.setText(viewModel.filterState.first())
         }
 
-        // Sort button
         viewBinding.btnSort.setOnClickListener {
             adapter.submitList(listOf())
             sort()
+        }
+
+        viewBinding.btnFilter.setOnClickListener {
+            showFilterBottomSheet()
         }
     }
 
@@ -107,11 +113,38 @@ class PharmacySearchFragment : BaseFragment<FragmentPharmacySearchBinding>() {
         }
     }
 
-    private fun filterPharmacies(query: String) {
-        val filtered = PharmacyUtils.filterPharmacies(allPharmacies, query)
+    private fun applyAllFilters() {
+        var filtered = PharmacyUtils.filterPharmacies(allPharmacies, currentSearchQuery)
+        
+        filtered = PharmacyUtils.filterPharmaciesByCriteria(
+            pharmacies = filtered,
+            is24h = currentFilterCriteria.is24h,
+            maxDistanceKm = currentFilterCriteria.maxDistance,
+            minRating = currentFilterCriteria.minRating
+        )
+        
         adapter.submitList(filtered)
         updateResultCount(filtered.size)
-        viewModel.filter(query)
+        viewModel.filter(currentSearchQuery)
+    }
+
+    private fun showFilterBottomSheet() {
+        val filterSheet = PharmacyFilterBottomSheet.newInstance(currentFilterCriteria)
+        filterSheet.setOnApplyFilterListener { criteria ->
+            currentFilterCriteria = criteria
+            applyAllFilters()
+        }
+        filterSheet.show(childFragmentManager, "PharmacyFilter")
+    }
+
+
+    private fun addFilterChip(text: String, onClose: () -> Unit) {
+        val chip = com.google.android.material.chip.Chip(requireContext()).apply {
+            this.text = text
+            isCloseIconVisible = true
+            setOnCloseIconClickListener { onClose() }
+        }
+        viewBinding.chipGroupActiveFilters.addView(chip)
     }
 
     private fun sort() {
