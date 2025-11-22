@@ -30,6 +30,9 @@ class PharmacyFilterBottomSheet : BottomSheetDialogFragment() {
         return binding.root
     }
 
+    override fun getTheme(): Int =
+        com.google.android.material.R.style.Theme_Design_BottomSheetDialog
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupListeners()

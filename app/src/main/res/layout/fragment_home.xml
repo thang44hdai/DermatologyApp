@@ -68,7 +68,7 @@
                 </LinearLayout>
 
                 <!-- Search Bar -->
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/search_container"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -84,41 +84,50 @@
                     app:layout_constraintTop_toBottomOf="@id/header">
 
                     <ImageView
+                        android:id="@+id/ic"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/ic_search"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
                         app:tint="@color/gray_neutral_4" />
 
                     <EditText
                         android:id="@+id/edt_search"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="1"
+                        android:layout_marginHorizontal="12dp"
                         android:background="@android:color/transparent"
-                        android:hint="Tìm kiếm tên thương hiệu, sản phẩm"
+                        android:hint="Tìm kiếm tên thương hiệu, sản phẩmm tên thương hiệu, sản phẩmm tên thương hiệu, sản phẩm"
                         android:imeOptions="actionSearch"
-                        android:inputType="text"
                         android:textColor="@color/black"
                         android:textColorHint="@color/gray_neutral_4"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/tag_search_mode"
+                        app:layout_constraintStart_toEndOf="@+id/ic"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/tag_search_mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_search_tag"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center"
                         android:paddingHorizontal="6dp"
                         android:paddingVertical="6dp"
                         android:text="Tất cả"
                         android:textColor="@color/white"
                         android:textSize="12sp"
                         android:textStyle="bold"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:gravity="center" />
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <!-- Quick Action Banner -->
                 <androidx.cardview.widget.CardView
@@ -144,9 +153,9 @@
                             android:id="@+id/iv_health_tip"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
+                            android:alpha="0.9"
                             android:src="@drawable/ic_first_aid"
                             android:tint="@color/white"
-                            android:alpha="0.9"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -156,10 +165,10 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="12dp"
+                            android:ellipsize="end"
                             android:text="Mẹo: Rửa mặt 2 lần/ngày giúp da sạch và khỏe mạnhMẹo: Rửa mặt 2 lần/ngày giúp da sạch và khỏe mạnh"
                             android:textColor="@color/white"
                             android:textSize="13sp"
-                            android:ellipsize="end"
                             app:layout_constraintEnd_toStartOf="@id/btn_quick_scan"
                             app:layout_constraintStart_toEndOf="@id/iv_health_tip"
                             app:layout_constraintTop_toTopOf="@id/iv_health_tip" />
@@ -171,15 +180,15 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="12dp"
                             android:background="@drawable/bg_quick_action_button"
+                            android:clickable="true"
+                            android:focusable="true"
                             android:gravity="center"
                             android:orientation="horizontal"
                             android:paddingHorizontal="16dp"
                             android:paddingVertical="10dp"
-                            android:clickable="true"
-                            android:focusable="true"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent">
+                            app:layout_constraintTop_toTopOf="parent">
 
                             <ImageView
                                 android:layout_width="20dp"
@@ -232,6 +241,7 @@
                     android:layout_marginTop="12dp"
                     android:clipToPadding="false"
                     android:orientation="horizontal"
+                    android:paddingVertical="5dp"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -268,8 +278,8 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_marginEnd="8dp"
-                        android:src="@drawable/ic_sort"
                         android:contentDescription="sort"
+                        android:src="@drawable/ic_sort"
                         app:tint="@color/primary" />
 
                     <TextView
@@ -295,10 +305,10 @@
                     android:paddingEnd="12dp"
                     android:paddingBottom="24dp"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:spanCount="2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/layout_products_label"
+                    app:spanCount="2"
                     tools:listitem="@layout/item_product" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

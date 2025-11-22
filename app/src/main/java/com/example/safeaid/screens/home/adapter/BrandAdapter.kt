@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.safeaid.models.Brand
 import com.bumptech.glide.Glide
@@ -39,7 +39,7 @@ class BrandAdapter(private var items: List<PharmacyResponse>) :
 
     inner class BrandViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
-        private val main: LinearLayout = itemView.findViewById(R.id.main)
+        private val main: CardView = itemView.findViewById(R.id.main)
         private val img: ImageView = itemView.findViewById(R.id.img_brand)
         private val name: TextView = itemView.findViewById(R.id.tv_brand_name)
         fun bind(b: PharmacyResponse) {

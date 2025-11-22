@@ -3,15 +3,12 @@ package com.example.safeaid.screens.home.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.dermatology.R
 import com.example.safeaid.core.response.MedicineResponse
-import com.example.safeaid.core.response.PharmacyResponse
-import com.example.safeaid.models.Product
 
 class ProductAdapter(
     private var items: List<MedicineResponse>,

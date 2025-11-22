@@ -59,7 +59,7 @@ class PharmacySearchFragment : BaseFragment<FragmentPharmacySearchBinding>() {
 
     override fun onInitListener() {
         viewBinding.btnBack.setOnClickListener {
-            findNavController().navigateUp()
+            findNavController().popBackStack()
         }
 
         viewBinding.edtSearch.addTextChangedListener(object : TextWatcher {

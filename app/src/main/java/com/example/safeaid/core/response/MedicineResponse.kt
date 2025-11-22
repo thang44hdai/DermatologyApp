@@ -1,9 +1,12 @@
 package com.example.safeaid.core.response
 
+
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class MedicineResponse(
+    @SerializedName("brand")
+    var brand: BrandResponse? = null,
     @SerializedName("created_at")
     var createdAt: String? = null,
     @SerializedName("description")
@@ -27,15 +30,16 @@ data class MedicineResponse(
     @SerializedName("suitable_for")
     var suitableFor: String? = null,
     @SerializedName("type")
-    var type: String? = null,
-    @SerializedName("last_updated")
-    var lastUpdated: String? = null,
-    @SerializedName("link_id")
-    var linkId: Int? = null,
-    @SerializedName("medicine_id")
-    var medicineId: Int? = null,
-    @SerializedName("medicine_name")
-    var medicineName: String? = null,
-    @SerializedName("stock")
-    var stock: String? = null,
+    var type: String? = null
+) : Serializable
+
+data class BrandResponse(
+    @SerializedName("description")
+    var description: String? = null,
+    @SerializedName("id")
+    var id: String? = null,
+    @SerializedName("logo_path")
+    var logoPath: String? = null,
+    @SerializedName("name")
+    var name: String? = null
 ) : Serializable

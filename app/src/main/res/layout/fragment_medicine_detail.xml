@@ -13,18 +13,6 @@
             android:layout_height="wrap_content"
             android:background="@color/white">
 
-            <!-- Product Image -->
-            <ImageView
-                android:id="@+id/img_product"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:background="@color/white"
-                android:contentDescription="product image"
-                android:scaleType="centerInside"
-                app:layout_constraintHeight_percent="0.5"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/bg_take" />
-
             <!-- Back Button -->
             <ImageView
                 android:id="@+id/btn_back"
@@ -35,14 +23,50 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chi tiết sản phẩm"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/btn_back" />
+            <!-- Product Image -->
+            <ImageView
+                android:id="@+id/img_product"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:contentDescription="product image"
+                android:scaleType="centerInside"
+                app:layout_constraintHeight_percent="0.5"
+                app:layout_constraintTop_toBottomOf="@+id/btn_back"
+                tools:src="@drawable/bg_take" />
+
+            <!-- Authenticity Badge -->
+            <TextView
+                android:id="@+id/tv_authenticity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_authenticity_badge"
+                android:gravity="center"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:text="Sản phẩm 100% chính hãng, mẫu mã có thể thay đổi theo lô hàng"
+                android:textColor="@color/primary"
+                android:textSize="11sp"
+                app:layout_constraintTop_toBottomOf="@+id/img_product" />
+
             <!-- Product Details Container -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_product_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-50dp"
-                android:background="@drawable/bg_medicine_detail"
-                android:padding="20dp"
+                android:layout_marginTop="20dp"
+                android:paddingVertical="20dp"
                 app:layout_constraintTop_toBottomOf="@id/img_product">
 
                 <!-- Product Title -->
@@ -50,79 +74,384 @@
                     android:id="@+id/tv_product_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:lineSpacingExtra="4dp"
-                    android:text="Gel Chấm Giảm Mụn Cấp Tốc Murad Rapid Relief Acne Spot Treatment 15ml"
+                    android:text="Gel Giảm Mụn Và Thâm Mụn CeraVe Blemish Control Gel 40ml"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Gel Chấm Giảm Mụn Cấp Tốc Murad Rapid Relief Acne Spot Treatment 15ml" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <!-- Description Header -->
+                <!-- Brand -->
                 <TextView
-                    android:id="@+id/tv_description_header"
+                    android:id="@+id/tv_brand"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Mô Tả"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Thương hiệu: GH Creation"
+                    android:textColor="@color/gray_neutral_4"
+                    android:textSize="13sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_product_title" />
-
-                <!-- Description Text -->
-                <TextView
-                    android:id="@+id/tv_description"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:lineSpacingExtra="4dp"
-                    android:text="Là Gel Chấm Mụn Đến Từ Thương Hiệu Murad. Sản Phẩm Được Điều Chế Từ Công Thức Chuyên Biệt, Với Sức Mạnh Tối Đa Giúp Ức Chế Tình Trạng Sưng Viêm, Tấy Đỏ Của Nốt Mụn Trong Vòng 4 Giờ. 97% Người Dùng Đồng Ý Tình Trạng Mụn Của Họ Đã Cải Thiện Rõ Rệt Chỉ Sau 1 Ngày Sử Dụng."
-                    android:textColor="@color/gray_neutral_4"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_description_header"
-                    tools:text="Là Gel Chấm Mụn Đến Từ Thương Hiệu Murad. Sản Phẩm Được Điều Chế Từ Công Thức Chuyên Biệt, Với Sức Mạnh Tối Đa Giúp Ức Chế Tình Trạng Sưng Viêm, Tấy Đỏ Của Nốt Mụn Trong Vòng 4 Giờ. 97% Người Dùng Đồng Ý Tình Trạng Mụn Của Họ Đã Cải Thiện Rõ Rệt Chỉ Sau 1 Ngày Sử Dụng." />
 
                 <!-- Price -->
                 <TextView
                     android:id="@+id/tv_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="₫776,000"
-                    android:textColor="@color/black"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="12dp"
+                    android:text="890.000 đ/Hộp"
+                    android:textColor="@color/primary"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_description"
-                    tools:text="₫776,000" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_brand" />
+
+                <!-- Shipping Info -->
+                <TextView
+                    android:id="@+id/tv_shipping_info"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="8dp"
+                    android:lineSpacingExtra="2dp"
+                    android:text="Giá đã bao gồm thuế. Phí vận chuyển và các chi phí khác (nếu có) sẽ được thể hiện khi đặt hàng."
+                    android:textColor="@color/gray_neutral_4"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_price" />
+
+                <!-- Rating -->
+                <LinearLayout
+                    android:id="@+id/layout_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="12dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_shipping_info">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_star"
+                        app:tint="@color/primary" />
+
+                    <TextView
+                        android:id="@+id/tv_rating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="3.6k"
+                        android:textColor="@color/black"
+                        android:textSize="13sp" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="12dp"
+                        android:layout_marginHorizontal="8dp"
+                        android:background="@color/gray_neutral_4" />
+
+                    <TextView
+                        android:id="@+id/tv_sold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Đã bán 1.8k"
+                        android:textColor="@color/gray_neutral_4"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/view1"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/gray_600"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_rating" />
+                <!-- Features -->
+                <LinearLayout
+                    android:id="@+id/layout_features"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="20dp"
+                    app:layout_constraintTop_toBottomOf="@id/layout_rating">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="8dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_verified"
+                            app:tint="@color/primary" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center"
+                            android:text="Đủ thuốc chuẩn"
+                            android:textColor="@color/gray_neutral_4"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="8dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_delivery"
+                            app:tint="@color/primary" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center"
+                            android:text="Giao hàng siêu tốc"
+                            android:textColor="@color/gray_neutral_4"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="8dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_free_shipping"
+                            app:tint="@color/primary" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center"
+                            android:text="Miễn phí vận chuyển"
+                            android:textColor="@color/gray_neutral_4"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+
+                <View
+                    android:id="@+id/view2"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/gray_600"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_features" />
+                <!-- Category Section -->
+                <TextView
+                    android:id="@+id/tv_category_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="24dp"
+                    android:text="Phân loại sản phẩm"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/layout_features" />
+
+                <TextView
+                    android:id="@+id/tv_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_category_chip"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:text="Tuýp"
+                    android:textColor="@color/primary"
+                    android:textSize="13sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_category_header" />
+
+
+                <View
+                    android:id="@+id/view3"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/gray_600"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_category" />
+                <!-- Product Info Section -->
+                <LinearLayout
+                    android:id="@+id/layout_product_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toBottomOf="@id/tv_category">
+
+                    <!-- Section Header -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Mô tả sản phẩm"
+                            android:textColor="@color/black"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/btn_view_all"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Xem chi tiết"
+                            android:textColor="@color/primary"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+
+                    <!-- Description -->
+                    <TextView
+                        android:id="@+id/tv_description_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginTop="12dp"
+                        android:text="Danh mục"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginTop="4dp"
+                        android:lineSpacingExtra="4dp"
+                        android:text="Sản phẩm hỗ trợ giảm mụn"
+                        android:textColor="@color/gray_neutral_4"
+                        android:textSize="14sp" />
+
+                    <!-- Usage -->
+                    <TextView
+                        android:id="@+id/tv_usage_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginTop="16dp"
+                        android:text="Công dụng"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_usage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginTop="4dp"
+                        android:lineSpacingExtra="4dp"
+                        android:text="Gel dưỡng da cao ẩm, giúp giảm mụn, giảm thâm mụn, hỗ trợ thu nhỏ lỗ chân lông và làm da."
+                        android:textColor="@color/gray_neutral_4"
+                        android:textSize="14sp" />
+
+                    <!-- Specification -->
+                    <TextView
+                        android:id="@+id/tv_spec_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginTop="16dp"
+                        android:text="Quy cách"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_specification"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginTop="4dp"
+                        android:text="40ml"
+                        android:textColor="@color/gray_neutral_4"
+                        android:textSize="14sp" />
+
+                    <!-- Note -->
+                    <TextView
+                        android:id="@+id/tv_note_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginTop="16dp"
+                        android:text="Lưu ý"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_note"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginTop="4dp"
+                        android:lineSpacingExtra="4dp"
+                        android:text="Một thông tin quan trọng cần chú ý tham khảo: Đọc kỹ hướng dẫn sử dụng trước khi dùng"
+                        android:textColor="@color/gray_neutral_4"
+                        android:textSize="14sp" />
+                </LinearLayout>
 
                 <!-- Find Pharmacy Button -->
                 <LinearLayout
                     android:id="@+id/btn_find_pharmacy"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="24dp"
                     android:background="@drawable/bg_btn_login"
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:paddingHorizontal="20dp"
-                    android:paddingVertical="16dp"
+                    android:paddingVertical="12dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_price">
+                    app:layout_constraintTop_toBottomOf="@id/layout_product_info">
 
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:contentDescription="link"
-                        android:src="@drawable/ic_link"
-                        android:tint="@color/white" />
+                        android:src="@drawable/ic_location"
+                        app:tint="@color/white" />
 
                     <TextView
                         android:layout_width="wrap_content"
