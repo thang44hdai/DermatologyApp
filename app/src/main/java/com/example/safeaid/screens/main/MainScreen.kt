@@ -28,25 +28,44 @@ class MainScreen : BaseFragment<FragmentMainScreenBinding>() {
 
     override fun onInitListener() {
         viewBinding.bottomNav.setOnItemSelectedListener {
-            val position = when (it.itemId) {
-                R.id.nav_home -> 0
-                R.id.nav_map -> 1
-                R.id.nav_chat -> 2
-                R.id.nav_profile -> 3
-                else -> 0
+            when (it.itemId) {
+                R.id.nav_home -> {
+                    viewBinding.viewPager.setCurrentItem(0, false)
+                    true
+                }
+                R.id.nav_map -> {
+                    viewBinding.viewPager.setCurrentItem(1, false)
+                    true
+                }
+                R.id.nav_chat -> {
+                    findNavController().navigate(R.id.action_mainScreen_to_chatBotFragment)
+                    false // Don't update bottom nav selection
+                }
+                R.id.nav_profile -> {
+                    viewBinding.viewPager.setCurrentItem(2, false)
+                    true
+                }
+                else -> {
+                    viewBinding.viewPager.setCurrentItem(0, false)
+                    true
+                }
             }
-            viewBinding.viewPager.setCurrentItem(position, false)
-            true
         }
 
         viewBinding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 mainViewModel.currentPage = position
+
+                val menuItemId = when (position) {
+                    0 -> R.id.nav_home
+                    1 -> R.id.nav_map
+                    2 -> R.id.nav_profile
+                    else -> R.id.nav_home
+                }
+                viewBinding.bottomNav.menu.findItem(menuItemId)?.isChecked = true
                 
-                viewBinding.bottomNav.menu.getItem(position).isChecked = true
-                
-                viewBinding.fab.isVisible = position == 0 || position == 3
+                viewBinding.fab.isVisible = position == 0 || position == 2
             }
         })
 
@@ -55,6 +74,18 @@ class MainScreen : BaseFragment<FragmentMainScreenBinding>() {
         viewBinding.fab.setOnDebounceClick {
             findNavController().navigate(R.id.action_mainScreen_to_cameraFragment)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Restore bottom nav selection when returning from ChatBot
+        val menuItemId = when (mainViewModel.currentPage) {
+            0 -> R.id.nav_home
+            1 -> R.id.nav_map
+            2 -> R.id.nav_profile
+            else -> R.id.nav_home
+        }
+        viewBinding.bottomNav.menu.findItem(menuItemId)?.isChecked = true
     }
 
     private fun setupViewPager() {

@@ -1,11 +1,15 @@
 package com.example.safeaid.core.service
 
 import QuizCategoryResponse
+import com.example.safeaid.core.request.ChatRequest
 import com.example.safeaid.core.response.ListMedicineResponse
 import com.example.safeaid.core.response.ListPharmacyResponse
 import com.example.safeaid.core.request.LoginRequest
 import com.example.safeaid.core.request.RefreshTokenRequest
 import com.example.safeaid.core.request.RegisterRequest
+import com.example.safeaid.core.response.ChatResponse
+import com.example.safeaid.core.response.ConversationResponse
+import com.example.safeaid.core.response.DetailConversationResponse
 import com.example.safeaid.core.response.DetectBoundaryResponse
 import com.example.safeaid.core.response.HistoryResponse
 import com.example.safeaid.core.response.LoginResponse
@@ -86,4 +90,19 @@ interface ApiService {
         @Part file: MultipartBody.Part
     ): Response<DetectBoundaryResponse>
 
+    @POST("chat")
+    suspend fun postChat(
+        @Body request: ChatRequest
+    ): Response<ChatResponse>
+
+    @GET("chat/sessions")
+    suspend fun getListConversation(
+    ): Response<ConversationResponse>
+
+    @GET("chat/sessions/{session_id}/messages")
+    suspend fun getDetailChatBot(
+        @Path("session_id") session: String,
+        @Query("limit") limit: String? = null,
+        @Query("offset") offset: String? = null,
+    ): Response<DetailConversationResponse>
 }

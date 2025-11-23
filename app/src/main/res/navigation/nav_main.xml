@@ -23,6 +23,9 @@
         <action
             android:id="@+id/action_mainScreen_to_medicineDetailFragment"
             app:destination="@id/medicineDetailFragment" />
+        <action
+            android:id="@+id/action_mainScreen_to_chatBotFragment"
+            app:destination="@id/chatBotFragment" />
     </fragment>
     <fragment
         android:id="@+id/cameraFragment"
@@ -88,4 +91,8 @@
         android:id="@+id/medicineDetailFragment"
         android:name="com.example.safeaid.screens.medicine.MedicineDetailFragment"
         android:label="MedicineDetailFragment" />
+    <fragment
+        android:id="@+id/chatBotFragment"
+        android:name="com.example.safeaid.screens.chatbot.ChatBotFragment"
+        android:label="ChatBotFragment" />
 </navigation>

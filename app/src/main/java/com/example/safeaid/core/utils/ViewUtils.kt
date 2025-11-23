@@ -200,3 +200,8 @@ object Utils {
 
     }
 }
+
+fun String.removeVietnameseAccents(): String {
+    val temp = java.text.Normalizer.normalize(this, java.text.Normalizer.Form.NFD)
+    return temp.replace("\\p{InCombiningDiacriticalMarks}+".toRegex(), "")
+}
