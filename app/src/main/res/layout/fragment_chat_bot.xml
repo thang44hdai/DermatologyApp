@@ -52,7 +52,7 @@
                 android:layout_marginTop="20dp"
                 android:text="Pharma AI"
                 android:textColor="@color/black"
-                android:textSize="15sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/ic_back"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -63,14 +63,14 @@
                 android:id="@+id/rcv"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_marginVertical="20dp"
                 android:layout_marginTop="30dp"
                 android:background="@drawable/bg_chat_content"
                 android:clipToPadding="false"
                 android:paddingHorizontal="20dp"
-                android:paddingTop="20dp"
-                android:paddingBottom="50dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/layoutChat"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv"
                 tools:listitem="@layout/item_chat_sender" />
@@ -103,6 +103,53 @@
                     app:layout_constraintEnd_toEndOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/loading_overlay"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/layoutChat"
+                app:layout_constraintTop_toTopOf="@+id/rcv">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="32dp">
+
+                        <ProgressBar
+                            android:id="@+id/progress_loading"
+                            style="?android:attr/progressBarStyleLarge"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:indeterminateTint="@color/blue" />
+
+                        <TextView
+                            android:id="@+id/tv_loading_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="Đang kết nối..."
+                            android:textColor="@color/black"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <include
@@ -112,19 +159,19 @@
             android:layout_height="match_parent"
             android:layout_gravity="end" />
 
-<!--        <com.google.android.material.navigation.NavigationView-->
-<!--            android:id="@+id/nav_filter"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_gravity="end"-->
-<!--            android:fitsSystemWindows="true"-->
-<!--            tools:openDrawer="right">-->
+        <!--        <com.google.android.material.navigation.NavigationView-->
+        <!--            android:id="@+id/nav_filter"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            android:layout_gravity="end"-->
+        <!--            android:fitsSystemWindows="true"-->
+        <!--            tools:openDrawer="right">-->
 
-<!--            <FrameLayout-->
-<!--                android:id="@+id/frame_layout"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent" />-->
-<!--        </com.google.android.material.navigation.NavigationView>-->
+        <!--            <FrameLayout-->
+        <!--                android:id="@+id/frame_layout"-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="match_parent" />-->
+        <!--        </com.google.android.material.navigation.NavigationView>-->
 
     </androidx.drawerlayout.widget.DrawerLayout>
 </layout>

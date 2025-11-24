@@ -57,8 +57,24 @@ class ChatAdapter : ListAdapter<ChatMessage, RecyclerView.ViewHolder>(ChatDiffCa
 
     class ReceiverViewHolder(private val binding: ItemChatReceiverBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        
+        private val medicineSourceAdapter = MedicineSourceAdapter { source ->
+        }
+
+        init {
+            binding.rcvSources.adapter = medicineSourceAdapter
+        }
+
         fun bind(message: ChatMessage) {
             binding.tv.text = message.content
+
+            // Show sources if available
+            if (message.sources != null && message.sources.isNotEmpty()) {
+                binding.layoutSources.visibility = android.view.View.VISIBLE
+                medicineSourceAdapter.submitList(message.sources)
+            } else {
+                binding.layoutSources.visibility = android.view.View.GONE
+            }
         }
     }
 

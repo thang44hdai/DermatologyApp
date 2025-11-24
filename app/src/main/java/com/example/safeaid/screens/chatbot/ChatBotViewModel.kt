@@ -46,6 +46,9 @@ class ChatBotViewModel @Inject constructor(
     private val _isConnected = MutableStateFlow(false)
     val isConnected: StateFlow<Boolean> = _isConnected
 
+    private val _connectionStatus = MutableStateFlow<String?>(null)
+    val connectionStatus: StateFlow<String?> = _connectionStatus
+
     private var allSessions = listOf<Session>()
     private var currentStreamingMessageId: String? = null
     private val streamingContent = StringBuilder()
@@ -67,8 +70,19 @@ class ChatBotViewModel @Inject constructor(
                 .collect { response ->
                     when (response) {
                         is SocketResponse.Status -> {
-                            if (response.status == "connected") {
-                                _isConnected.value = true
+                            when (response.status) {
+                                "connected" -> {
+                                    _isConnected.value = true
+                                    _connectionStatus.value = null
+                                }
+                                "disconnected" -> {
+                                    _isConnected.value = false
+                                    _connectionStatus.value = "Mất kết nối..."
+                                }
+                                "reconnecting" -> {
+                                    _isConnected.value = false
+                                    _connectionStatus.value = "Đang kết nối lại..."
+                                }
                             }
                         }
                         else -> handleSocketResponse(response)
@@ -206,15 +220,13 @@ class ChatBotViewModel @Inject constructor(
     private fun handleSocketResponse(response: SocketResponse) {
         when (response) {
             is SocketResponse.Status -> {
-                // Handle status updates if needed
             }
 
             is SocketResponse.Start -> {
-                // Update session ID if this is a new conversation
                 if (_currentSession.value == null) {
                     _currentSession.value = Session(
                         id = response.sessionId,
-                        title = "New Conversation",
+                        title = "",
                         lastMessage = null,
                         messageCount = "0"
                     )
@@ -222,7 +234,6 @@ class ChatBotViewModel @Inject constructor(
             }
 
             is SocketResponse.Chunk -> {
-                // Append chunk content
                 streamingContent.append(response.content)
                 updateStreamingMessage(streamingContent.toString(), isStreaming = true)
             }

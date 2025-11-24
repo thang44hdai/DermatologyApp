@@ -67,6 +67,25 @@ class ChatBotFragment : BaseFragment<FragmentChatBotBinding>() {
                 viewBinding.edtInput.isEnabled = isConnected
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)
+
+        viewModel.connectionStatus
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+            .onEach { status ->
+                if (status != null) {
+                    viewBinding.loadingOverlay.visibility = android.view.View.VISIBLE
+                    viewBinding.tvLoadingStatus.text = status
+                } else {
+                    viewBinding.loadingOverlay.visibility = android.view.View.GONE
+                }
+            }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
+
+        viewModel.currentSession
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+            .onEach { session ->
+                conversationAdapter.setSelectedSession(session?.id)
+            }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
     override fun onInitListener() {

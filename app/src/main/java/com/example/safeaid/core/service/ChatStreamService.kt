@@ -1,14 +1,15 @@
 package com.example.safeaid.core.service
 
+import com.example.safeaid.common.Const.WS_URL
 import com.example.safeaid.core.request.ChatRequest
 import com.example.safeaid.core.response.SocketResponse
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -23,65 +24,115 @@ class ChatStreamService @Inject constructor(
     private val gson: Gson
 ) {
     companion object {
-        private const val WS_URL = "ws://192.168.100.178:8000/chat/ws"
+        private const val MAX_RECONNECT_ATTEMPTS = 5
+        private const val RECONNECT_DELAY_MS = 3000L
     }
 
     private var webSocket: WebSocket? = null
-    private val _messageFlow = MutableSharedFlow<SocketResponse>()
-    val messageFlow: Flow<SocketResponse> = _messageFlow.asSharedFlow()
+    private var currentToken: String? = null
+    private var shouldReconnect = true
 
     fun connect(token: String): Flow<SocketResponse> = callbackFlow {
-        val wsRequest = Request.Builder()
-            .url("$WS_URL?token=$token")
-            .build()
+        currentToken = token
+        shouldReconnect = true
+        var reconnectAttempts = 0
 
-        webSocket = okHttpClient.newWebSocket(wsRequest, object : WebSocketListener() {
-            override fun onOpen(webSocket: WebSocket, response: Response) {
-                // WebSocket đã mở, sẵn sàng nhận tin nhắn
-                trySend(
-                    SocketResponse.Status(
-                        type = "status",
-                        status = "connected"
-                    )
-                )
-            }
+        suspend fun attemptConnect() {
+            val wsRequest = Request.Builder()
+                .url("$WS_URL?token=$token")
+                .build()
 
-            override fun onMessage(webSocket: WebSocket, text: String) {
-                try {
-                    val socketResponse = parseSocketResponse(text)
-                    if (socketResponse != null)
-                        trySend(socketResponse)
-                } catch (e: Exception) {
+            webSocket = okHttpClient.newWebSocket(wsRequest, object : WebSocketListener() {
+                override fun onOpen(webSocket: WebSocket, response: Response) {
+                    reconnectAttempts = 0
                     trySend(
-                        SocketResponse.Error(
-                            type = "error",
-                            error = "Parse error",
-                            detail = e.message
+                        SocketResponse.Status(
+                            type = "status",
+                            status = "connected"
                         )
                     )
                 }
-            }
 
-            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                trySend(
-                    SocketResponse.Error(
-                        type = "error",
-                        error = "WebSocket failure",
-                        detail = t.message
+                override fun onMessage(webSocket: WebSocket, text: String) {
+                    try {
+                        val socketResponse = parseSocketResponse(text)
+                        if (socketResponse != null) {
+                            trySend(socketResponse)
+                        }
+                    } catch (e: Exception) {
+                        trySend(
+                            SocketResponse.Error(
+                                type = "error",
+                                error = "Parse error",
+                                detail = e.message
+                            )
+                        )
+                    }
+                }
+
+                override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+                    trySend(
+                        SocketResponse.Status(
+                            type = "status",
+                            status = "disconnected"
+                        )
                     )
-                )
-            }
 
-            override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-                webSocket.close(1000, null)
-            }
+                    // Auto reconnect
+                    if (shouldReconnect && reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+                        reconnectAttempts++
+                        trySend(
+                            SocketResponse.Status(
+                                type = "status",
+                                status = "reconnecting"
+                            )
+                        )
+                        
+                        // Delay và reconnect
+                        kotlinx.coroutines.GlobalScope.launch {
+                            delay(RECONNECT_DELAY_MS)
+                            attemptConnect()
+                        }
+                    } else {
+                        trySend(
+                            SocketResponse.Error(
+                                type = "error",
+                                error = "WebSocket failure",
+                                detail = "Không thể kết nối sau $MAX_RECONNECT_ATTEMPTS lần thử"
+                            )
+                        )
+                    }
+                }
 
-            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-                close()
-            }
-        })
+                override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
+                    webSocket.close(1000, null)
+                }
+
+                override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+                    if (shouldReconnect && reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+                        reconnectAttempts++
+                        trySend(
+                            SocketResponse.Status(
+                                type = "status",
+                                status = "reconnecting"
+                            )
+                        )
+                        
+                        kotlinx.coroutines.GlobalScope.launch {
+                            delay(RECONNECT_DELAY_MS)
+                            attemptConnect()
+                        }
+                    } else {
+                        close()
+                    }
+                }
+            })
+        }
+
+        attemptConnect()
 
         awaitClose {
+            shouldReconnect = false
             disconnect()
         }
     }
@@ -92,6 +143,7 @@ class ChatStreamService @Inject constructor(
     }
 
     fun disconnect() {
+        shouldReconnect = false
         webSocket?.close(1000, "Client closed")
         webSocket = null
     }
@@ -100,8 +152,11 @@ class ChatStreamService @Inject constructor(
         val jsonObject = JsonParser.parseString(json).asJsonObject
         val type = jsonObject.get("type")?.asString ?: ""
 
-        if (type == "ping" || type == "pong")
+        // Ignore ping/pong messages
+        if (type == "ping" || type == "pong") {
             return null
+        }
+
         return when (type) {
             "status" -> gson.fromJson(json, SocketResponse.Status::class.java)
             "start" -> gson.fromJson(json, SocketResponse.Start::class.java)
