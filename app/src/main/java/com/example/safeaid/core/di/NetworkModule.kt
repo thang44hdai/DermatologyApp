@@ -3,6 +3,8 @@ package com.example.safeaid.core.di
 import com.example.safeaid.common.Const.BASE_URL
 import com.example.safeaid.core.service.ApiService
 import com.example.safeaid.pref.AppPreference
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -53,6 +55,14 @@ class NetworkModule {
         return OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGson(): Gson {
+        return GsonBuilder()
+            .setLenient()
+            .create()
     }
 
     @Provides

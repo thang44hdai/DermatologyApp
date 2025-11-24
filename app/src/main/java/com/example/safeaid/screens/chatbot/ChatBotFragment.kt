@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.onEach
 class ChatBotFragment : BaseFragment<FragmentChatBotBinding>() {
     private val viewModel: ChatBotViewModel by viewModels()
     private lateinit var conversationAdapter: ConversationAdapter
+    private lateinit var chatAdapter: ChatAdapter
     private lateinit var drawerBinding: DrawerChatConversationsBinding
 
     override fun isHostFragment(): Boolean {
@@ -30,6 +31,7 @@ class ChatBotFragment : BaseFragment<FragmentChatBotBinding>() {
     override fun onInit() {
         setupDrawer()
         setupConversationList()
+        setupChatList()
         loadConversations()
     }
 
@@ -38,6 +40,31 @@ class ChatBotFragment : BaseFragment<FragmentChatBotBinding>() {
             .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
             .onEach { conversations ->
                 conversationAdapter.submitList(conversations)
+            }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
+
+        viewModel.messages
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+            .onEach { messages ->
+                chatAdapter.submitList(messages)
+                if (messages.isNotEmpty()) {
+                    viewBinding.rcv.smoothScrollToPosition(messages.size - 1)
+                }
+            }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
+
+        viewModel.isLoading
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+            .onEach { isLoading ->
+                viewBinding.btnSend.isEnabled = !isLoading
+            }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
+
+        viewModel.isConnected
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+            .onEach { isConnected ->
+                viewBinding.btnSend.isEnabled = isConnected && !viewModel.isLoading.value
+                viewBinding.edtInput.isEnabled = isConnected
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)
     }
@@ -57,7 +84,7 @@ class ChatBotFragment : BaseFragment<FragmentChatBotBinding>() {
 
         drawerBinding.btnNewChat.setOnClickListener {
             viewModel.createNewConversation()
-            viewBinding.drawerLayout.closeDrawer(GravityCompat.START)
+            viewBinding.drawerLayout.closeDrawer(GravityCompat.END)
         }
 
         drawerBinding.edtSearchConversation.addTextChangedListener(object : TextWatcher {
@@ -71,7 +98,10 @@ class ChatBotFragment : BaseFragment<FragmentChatBotBinding>() {
 
         viewBinding.btnSend.setOnDebounceClick {
             val message = viewBinding.edtInput.text.toString()
-            viewModel.sendMessage(message)
+            if (message.isNotBlank()) {
+                viewModel.sendMessage(message)
+                viewBinding.edtInput.text?.clear()
+            }
         }
     }
 
@@ -83,12 +113,20 @@ class ChatBotFragment : BaseFragment<FragmentChatBotBinding>() {
     private fun setupConversationList() {
         conversationAdapter = ConversationAdapter { session ->
             viewModel.selectConversation(session)
-            viewBinding.drawerLayout.closeDrawer(GravityCompat.START)
+            viewBinding.drawerLayout.closeDrawer(GravityCompat.END)
         }
 
         drawerBinding.rvConversations.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = conversationAdapter
+        }
+    }
+
+    private fun setupChatList() {
+        chatAdapter = ChatAdapter()
+        viewBinding.rcv.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = chatAdapter
         }
     }
 
