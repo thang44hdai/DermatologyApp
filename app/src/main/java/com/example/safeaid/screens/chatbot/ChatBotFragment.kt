@@ -65,8 +65,14 @@ class ChatBotFragment : BaseFragment<FragmentChatBotBinding>() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 viewModel.searchConversations(s.toString())
             }
+
             override fun afterTextChanged(s: Editable?) {}
         })
+
+        viewBinding.btnSend.setOnDebounceClick {
+            val message = viewBinding.edtInput.text.toString()
+            viewModel.sendMessage(message)
+        }
     }
 
     private fun setupDrawer() {

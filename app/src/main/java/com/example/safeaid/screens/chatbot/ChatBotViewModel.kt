@@ -3,6 +3,7 @@ package com.example.safeaid.screens.chatbot
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.safeaid.core.base.BaseViewModel
+import com.example.safeaid.core.request.ChatRequest
 import com.example.safeaid.core.response.Session
 import com.example.safeaid.core.service.ApiService
 import com.example.safeaid.core.utils.ApiCaller
@@ -105,10 +106,26 @@ class ChatBotViewModel @Inject constructor(
                 },
                 callback = { result ->
                     result.doIfSuccess { response ->
-                        // Handle messages - TODO: Update chat UI
                     }
                     result.doIfFailure {
                         // Handle error
+                    }
+                }
+            )
+        }
+    }
+
+    fun sendMessage(text: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val request = ChatRequest(message = text, sessionId = currentSession.value?.id)
+            ApiCaller.safeApiCall(
+                apiCall = {
+                    apiService.postChat(request)
+                },
+                callback = { result ->
+                    result.doIfSuccess { response ->
+                    }
+                    result.doIfFailure {
                     }
                 }
             )

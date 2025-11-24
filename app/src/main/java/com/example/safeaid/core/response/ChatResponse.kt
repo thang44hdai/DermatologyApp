@@ -12,16 +12,16 @@ data class ChatResponse(
     @SerializedName("session_id")
     var sessionId: String? = null,
     @SerializedName("sources")
-    var sources: List<Source?>? = null
-) : Serializable {
-    data class Source(
-        @SerializedName("image_url")
-        var imageUrl: String? = null,
-        @SerializedName("medicine_id")
-        var medicineId: Int? = null,
-        @SerializedName("name")
-        var name: String? = null,
-        @SerializedName("price")
-        var price: String? = null
-    ) : Serializable
-}
+    var sources: List<Source> = listOf()
+) : Serializable
+
+data class Source(
+    @SerializedName("image_url")
+    var imageUrl: String? = null,
+    @SerializedName("medicine_id")
+    var medicineId: Int? = null,
+    @SerializedName("name")
+    var name: String? = null,
+    @SerializedName("price")
+    var price: String? = null
+) : Serializable
