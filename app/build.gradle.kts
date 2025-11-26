@@ -105,4 +105,7 @@ dependencies {
 
     implementation("org.osmdroid:osmdroid-android:6.1.20")
 
+    // Google Sign-In
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+
 }

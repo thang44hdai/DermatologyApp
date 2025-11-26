@@ -4,6 +4,7 @@ import QuizCategoryResponse
 import com.example.safeaid.core.request.ChatRequest
 import com.example.safeaid.core.response.ListMedicineResponse
 import com.example.safeaid.core.response.ListPharmacyResponse
+import com.example.safeaid.core.request.GoogleLoginRequest
 import com.example.safeaid.core.request.LoginRequest
 import com.example.safeaid.core.request.RefreshTokenRequest
 import com.example.safeaid.core.request.RegisterRequest
@@ -40,6 +41,11 @@ interface ApiService {
     @POST("auth/login")
     suspend fun login(
         @Body request: LoginRequest
+    ): Response<LoginResponse>
+
+    @POST("auth/google-login")
+    suspend fun googleLogin(
+        @Body request: GoogleLoginRequest
     ): Response<LoginResponse>
 
     @GET("auth/test-token")
