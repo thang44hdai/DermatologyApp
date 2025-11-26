@@ -19,6 +19,8 @@ import com.example.safeaid.core.response.PharmacyResponse
 import com.example.safeaid.core.response.PredictResponse
 import com.example.safeaid.core.response.RegisterResponse
 import com.example.safeaid.core.response.UserResponse
+import com.example.safeaid.core.response.ReminderCalendarResponse
+import com.example.safeaid.core.response.ReminderDayDetailResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -111,4 +113,15 @@ interface ApiService {
         @Query("limit") limit: String? = null,
         @Query("offset") offset: String? = null,
     ): Response<DetailConversationResponse>
+
+    @GET("reminders/calendar")
+    suspend fun getReminderCalendar(
+        @Query("start_date") startDate: String? = null,
+        @Query("end_date") endDate: String? = null
+    ): Response<ReminderCalendarResponse>
+
+    @GET("reminders/calendar/{target_date}")
+    suspend fun getReminderDayDetail(
+        @Path("target_date") targetDate: String
+    ): Response<ReminderDayDetailResponse>
 }

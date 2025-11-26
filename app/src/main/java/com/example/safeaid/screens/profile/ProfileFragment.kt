@@ -43,6 +43,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         viewBinding.btnHistory.setOnDebounceClick {
             findNavController().navigate(R.id.action_mainScreen_to_historyFragment)
         }
+
+        viewBinding.btnReminder.setOnDebounceClick {
+            findNavController().navigate(R.id.action_mainScreen_to_reminderCalendarFragment)
+        }
     }
 
 }

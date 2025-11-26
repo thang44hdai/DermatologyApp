@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_mainScreen_to_chatBotFragment"
             app:destination="@id/chatBotFragment" />
+        <action
+            android:id="@+id/action_mainScreen_to_reminderCalendarFragment"
+            app:destination="@id/reminderCalendarFragment" />
     </fragment>
     <fragment
         android:id="@+id/cameraFragment"
@@ -95,4 +98,8 @@
         android:id="@+id/chatBotFragment"
         android:name="com.example.safeaid.screens.chatbot.ChatBotFragment"
         android:label="ChatBotFragment" />
+    <fragment
+        android:id="@+id/reminderCalendarFragment"
+        android:name="com.example.safeaid.screens.reminder.ReminderCalendarFragment"
+        android:label="ReminderCalendarFragment" />
 </navigation>
