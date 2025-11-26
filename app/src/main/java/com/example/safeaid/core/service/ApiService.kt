@@ -43,7 +43,7 @@ interface ApiService {
         @Body request: LoginRequest
     ): Response<LoginResponse>
 
-    @POST("auth/google-login")
+    @POST("auth/google")
     suspend fun googleLogin(
         @Body request: GoogleLoginRequest
     ): Response<LoginResponse>

@@ -28,6 +28,7 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingExcept
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import androidx.credentials.CredentialManager
+import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import kotlinx.coroutines.launch
 
 class LoginFragment() : BaseFragment<FragmentLoginBinding>() {
@@ -69,10 +70,7 @@ class LoginFragment() : BaseFragment<FragmentLoginBinding>() {
     }
 
     private fun signInWithGoogle() {
-        val googleIdOption = GetGoogleIdOption.Builder()
-            .setServerClientId(getString(R.string.default_web_client_id))
-            .setFilterByAuthorizedAccounts(false)
-            .setAutoSelectEnabled(true)
+        val googleIdOption = GetSignInWithGoogleOption.Builder(getString(R.string.default_web_client_id))
             .build()
 
         val request = GetCredentialRequest.Builder()
@@ -103,7 +101,7 @@ class LoginFragment() : BaseFragment<FragmentLoginBinding>() {
                     val googleIdTokenCredential = GoogleIdTokenCredential
                         .createFrom(credential.data)
                     val idToken = googleIdTokenCredential.idToken
-                    
+                    Log.i("LoginFragment", "idToken$idToken")
                     if (idToken != null) {
                         Log.d("LoginFragment", "Google Sign-In successful")
                         viewModel.googleLogin(idToken)
