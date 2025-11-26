@@ -1,8 +1,11 @@
 package com.example.safeaid.screens.authenication.screen
 
-import android.content.Intent
 import android.util.Log
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.credentials.Credential
+import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
+import androidx.credentials.exceptions.GetCredentialException
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -19,37 +22,24 @@ import com.example.safeaid.core.utils.doIfSuccess
 import com.example.safeaid.core.utils.setOnDebounceClick
 import com.example.safeaid.screens.authenication.viewmodel.LoginState
 import com.example.safeaid.screens.authenication.viewmodel.LoginViewModel
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import androidx.credentials.CredentialManager
+import kotlinx.coroutines.launch
 
 class LoginFragment() : BaseFragment<FragmentLoginBinding>() {
     private val viewModel: LoginViewModel by activityViewModels()
-    private lateinit var googleSignInClient: GoogleSignInClient
-    private val googleSignInLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-        handleGoogleSignInResult(task)
-    }
+    private lateinit var credentialManager: CredentialManager
 
     override fun isHostFragment(): Boolean {
         return true
     }
 
     override fun onInit() {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-
-        googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
-
+        credentialManager = CredentialManager.create(requireContext())
         viewModel.verifyToken()
     }
 
@@ -79,31 +69,77 @@ class LoginFragment() : BaseFragment<FragmentLoginBinding>() {
     }
 
     private fun signInWithGoogle() {
-        val signInIntent = googleSignInClient.signInIntent
-        googleSignInLauncher.launch(signInIntent)
-    }
+        val googleIdOption = GetGoogleIdOption.Builder()
+            .setServerClientId(getString(R.string.default_web_client_id))
+            .setFilterByAuthorizedAccounts(false)
+            .setAutoSelectEnabled(true)
+            .build()
 
-    private fun handleGoogleSignInResult(completedTask: Task<GoogleSignInAccount>) {
-        try {
-            val account = completedTask.getResult(ApiException::class.java)
-            // Signed in successfully
-            account?.idToken?.let { idToken ->
-                viewModel.googleLogin(idToken)
-            } ?: run {
-                showErrorDialog("Không thể lấy thông tin từ Google. Vui lòng thử lại.")
-            }
-        } catch (e: ApiException) {
-            when (e.statusCode) {
-                12501 -> {
-                    // User cancelled
-                    // Do nothing
-                }
-                else -> {
-                    showErrorDialog("Đăng nhập Google thất bại: ${e.message}")
-                }
+        val request = GetCredentialRequest.Builder()
+            .addCredentialOption(googleIdOption)
+            .build()
+
+        lifecycleScope.launch {
+            try {
+                val result: GetCredentialResponse = credentialManager.getCredential(
+                    request = request,
+                    context = requireContext()
+                )
+                handleSignInResult(result.credential)
+            } catch (e: GetCredentialException) {
+                Log.e("LoginFragment", "Google Sign-In failed", e)
+                showErrorDialog("Đã xảy ra lỗi không mong muốn. Vui lòng thử lại.")
+            } catch (e: Exception) {
+                Log.e("LoginFragment", "Unexpected error during Google Sign-In", e)
+                showErrorDialog("Đã xảy ra lỗi không mong muốn. Vui lòng thử lại.")
             }
         }
     }
+
+    private fun handleSignInResult(credential: Credential) {
+        when {
+            credential is CustomCredential && credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL -> {
+                try {
+                    val googleIdTokenCredential = GoogleIdTokenCredential
+                        .createFrom(credential.data)
+                    val idToken = googleIdTokenCredential.idToken
+                    
+                    if (idToken != null) {
+                        Log.d("LoginFragment", "Google Sign-In successful")
+                        viewModel.googleLogin(idToken)
+                    } else {
+                        showErrorDialog("Không thể lấy ID token từ Google. Vui lòng thử lại.")
+                    }
+                } catch (e: GoogleIdTokenParsingException) {
+                    Log.e("LoginFragment", "Failed to parse Google ID token", e)
+                    showErrorDialog("Lỗi xử lý thông tin đăng nhập. Vui lòng thử lại.")
+                }
+            }
+            else -> {
+                Log.w("LoginFragment", "Unexpected credential type")
+                showErrorDialog("Loại xác thực không được hỗ trợ.")
+            }
+        }
+    }
+
+//    private fun handleSignInError(e: GetCredentialException) {
+//        when {
+//            e is com.google.android.libraries.identity.googleid.GetGoogleIdOptionException -> {
+//                when (e.errorCode) {
+//                    com.google.android.libraries.identity.googleid.GetGoogleIdOptionException.ERROR_NO_CREDENTIAL_AVAILABLE -> {
+//                        // User cancelled or no account available
+//                        // Do nothing, user can try again
+//                    }
+//                    else -> {
+//                        showErrorDialog("Đăng nhập Google thất bại: ${e.message}")
+//                    }
+//                }
+//            }
+//            else -> {
+//                showErrorDialog("Đăng nhập Google thất bại: ${e.message ?: "Lỗi không xác định"}")
+//            }
+//        }
+//    }
 
     private fun showErrorDialog(message: String) {
         val dialog = BaseDialog(requireContext())

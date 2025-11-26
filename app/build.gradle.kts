@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.play.services.location)
+    implementation(libs.googleid)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -105,7 +106,9 @@ dependencies {
 
     implementation("org.osmdroid:osmdroid-android:6.1.20")
 
-    // Google Sign-In
+    // Google Identity Services - Credential Manager
+    implementation("androidx.credentials:credentials:1.2.2")
+    implementation("androidx.credentials:credentials-play-services-auth:1.2.2")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 
 }
