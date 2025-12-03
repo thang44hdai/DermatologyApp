@@ -81,7 +81,7 @@ class ReminderCalendarFragment : BaseFragment<FragmentReminderCalendarBinding>()
         }
 
         viewBinding.btnAdd.setOnDebounceClick {
-            findNavController().navigate(R.id.createMedicineReminderFragment)
+            findNavController().navigate(R.id.action_reminderCalendarFragment_to_createMedicineReminderFragment)
         }
     }
 

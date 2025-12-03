@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="50dp"
                 android:backgroundTint="@color/primary"
-                android:src="@drawable/ic_camera"
+                android:src="@drawable/ic_scan_2"
                 android:tint="@android:color/white"
                 app:elevation="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"

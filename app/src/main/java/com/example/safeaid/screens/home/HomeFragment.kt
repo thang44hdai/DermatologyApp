@@ -45,12 +45,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     private var allMedicines = listOf<MedicineResponse>()
     private var allBrands = listOf<PharmacyResponse>()
     private var currentSearchQuery = ""
-    private var sortType = SortType.NONE
     private var searchMode = SearchMode.ALL
-
-    enum class SortType {
-        NONE, PRICE_ASC, PRICE_DESC, NAME_ASC, NAME_DESC
-    }
 
     enum class SearchMode {
         ALL, BRANDS, PRODUCTS
@@ -196,14 +191,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        // Sort button
-        viewBinding.btnSort.setOnClickListener {
-            showSortDialog()
-        }
-
         // See all products
-        viewBinding.tvSeeAll.setOnClickListener {
-            // Could navigate to a full products list screen
+        viewBinding.layoutProductsLabel.setOnClickListener {
+            findNavController().navigate(R.id.action_mainScreen_to_allProductsFragment)
         }
 
         // Pull to refresh
@@ -238,52 +228,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             }
         }
 
-        // Filter and sort products
+        // Filter products
         when (searchMode) {
             SearchMode.ALL, SearchMode.PRODUCTS -> {
                 var filteredProducts = MedicineUtils.filterMedicines(allMedicines, currentSearchQuery)
-
-                // Apply sort
-                filteredProducts = when (sortType) {
-                    SortType.PRICE_ASC -> MedicineUtils.sortByPrice(filteredProducts, ascending = true)
-                    SortType.PRICE_DESC -> MedicineUtils.sortByPrice(filteredProducts, ascending = false)
-                    SortType.NAME_ASC -> MedicineUtils.sortByName(filteredProducts, ascending = true)
-                    SortType.NAME_DESC -> MedicineUtils.sortByName(filteredProducts, ascending = false)
-                    SortType.NONE -> filteredProducts
-                }
-
                 medicinesAdapter.bindData(filteredProducts)
             }
             SearchMode.BRANDS -> {
                 // Hide products section
             }
         }
-    }
-
-    private fun showSortDialog() {
-        val sortOptions = arrayOf(
-            "Mặc định",
-            "Giá: Thấp đến cao",
-            "Giá: Cao đến thấp",
-            "Tên: A-Z",
-            "Tên: Z-A"
-        )
-
-        androidx.appcompat.app.AlertDialog.Builder(requireContext())
-            .setTitle("Sắp xếp theo")
-            .setItems(sortOptions) { _, which ->
-                sortType = when (which) {
-                    0 -> SortType.NONE
-                    1 -> SortType.PRICE_ASC
-                    2 -> SortType.PRICE_DESC
-                    3 -> SortType.NAME_ASC
-                    4 -> SortType.NAME_DESC
-                    else -> SortType.NONE
-                }
-                applyFiltersAndSort()
-            }
-            .setNegativeButton("Hủy", null)
-            .show()
     }
 
     private fun updateUi(state: DataResult<HomeState>?) {
