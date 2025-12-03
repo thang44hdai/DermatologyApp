@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_main"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/mainScreen">
 
     <fragment
         android:id="@+id/mainScreen"
@@ -10,10 +10,18 @@
         android:label="">
         <action
             android:id="@+id/action_mainScreen_to_cameraFragment"
-            app:destination="@id/cameraFragment" />
+            app:destination="@id/cameraFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
         <action
             android:id="@+id/action_mainScreen_to_historyFragment"
-            app:destination="@id/historyFragment" />
+            app:destination="@id/historyFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
         <action
             android:id="@+id/action_mainScreen_to_pharmacyDetailFragment"
             app:destination="@id/pharmacyDetailFragment" />
@@ -24,11 +32,26 @@
             android:id="@+id/action_mainScreen_to_medicineDetailFragment"
             app:destination="@id/medicineDetailFragment" />
         <action
+            android:id="@+id/action_mainScreen_to_allProductsFragment"
+            app:destination="@id/allProductsFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
+        <action
             android:id="@+id/action_mainScreen_to_chatBotFragment"
-            app:destination="@id/chatBotFragment" />
+            app:destination="@id/chatBotFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
         <action
             android:id="@+id/action_mainScreen_to_reminderCalendarFragment"
-            app:destination="@id/reminderCalendarFragment" />
+            app:destination="@id/reminderCalendarFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
     </fragment>
     <fragment
         android:id="@+id/cameraFragment"
@@ -65,7 +88,7 @@
     <fragment
         android:id="@+id/historyFragment"
         android:name="com.example.safeaid.screens.history.HistoryFragment"
-        android:label="HistoryFragment" >
+        android:label="HistoryFragment">
         <action
             android:id="@+id/action_historyFragment_to_detailHistoryFragment"
             app:destination="@id/detailHistoryFragment" />
@@ -94,6 +117,14 @@
         android:id="@+id/medicineDetailFragment"
         android:name="com.example.safeaid.screens.medicine.MedicineDetailFragment"
         android:label="MedicineDetailFragment" />
+    <fragment
+        android:id="@+id/allProductsFragment"
+        android:name="com.example.safeaid.screens.products.AllProductsFragment"
+        android:label="AllProductsFragment">
+        <action
+            android:id="@+id/action_allProductsFragment_to_medicineDetailFragment"
+            app:destination="@id/medicineDetailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/chatBotFragment"
         android:name="com.example.safeaid.screens.chatbot.ChatBotFragment"

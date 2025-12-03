@@ -38,6 +38,12 @@ class HomeViewModel @Inject constructor(
                         user.value = data
                     }
                     result.doIfFailure {
+                        // Use mock user data if API fails
+                        user.value = UserResponse(
+                            fullname = "Người dùng",
+                            email = "user@example.com",
+                            avatarUrl = null
+                        )
                     }
                 }
             )
@@ -52,6 +58,8 @@ class HomeViewModel @Inject constructor(
                         medicineResponse.value = data.medicines
                     }
                     result.doIfFailure {
+                        // Use mock data if API fails
+                        medicineResponse.value = com.example.safeaid.core.data.MockDataSource.getMockMedicines()
                     }
                 }
             )
@@ -65,6 +73,11 @@ class HomeViewModel @Inject constructor(
                         updateState(DataResult.Success(HomeState.PharmaciesList(data)))
                     }
                     result.doIfFailure {
+                        // Use mock data if API fails
+                        val mockPharmacies = com.example.safeaid.core.data.MockDataSource.getMockPharmacies()
+                        updateState(DataResult.Success(HomeState.PharmaciesList(
+                            ListPharmacyResponse(pharmacies = mockPharmacies)
+                        )))
                     }
                 }
             )
