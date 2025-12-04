@@ -1,4 +1,4 @@
-package com.example.safeaid.screens.reminder
+package com.example.safeaid.screens.reminder.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.dermatology.R
 import com.example.dermatology.databinding.ItemCalendarDayBinding
 import com.example.safeaid.core.utils.setOnDebounceClick
+import com.example.safeaid.screens.reminder.CalendarDay
 
 class CalendarDayAdapter(
     private val onDayClick: (CalendarDay) -> Unit

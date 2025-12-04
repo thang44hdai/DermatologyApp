@@ -1,13 +1,12 @@
-package com.example.safeaid.screens.reminder
+package com.example.safeaid.screens.reminder.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.dermatology.R
 import com.example.dermatology.databinding.ItemMedicineReminderBinding
-import com.example.safeaid.core.utils.setOnDebounceClick
+import com.example.safeaid.screens.reminder.MedicineReminder
 
 class MedicineReminderAdapter(
     private val onCheckChanged: (MedicineReminder, Boolean) -> Unit
@@ -33,14 +32,21 @@ class MedicineReminderAdapter(
         fun bind(medicine: MedicineReminder) {
             binding.tvMedicineName.text = medicine.name
             binding.tvMedicineInfo.text = "${medicine.status} • ${medicine.dosage}"
-            if (medicine.isTaken) {
-                binding.checkbox.setBackgroundResource(R.drawable.ic_check_box_ticked)
+            binding.tvTime.text = medicine.time
+            binding.switchTaken.isChecked = medicine.isTaken
+
+            // Show/hide note
+            if (medicine.note.isNotBlank()) {
+                binding.tvNote.visibility = android.view.View.VISIBLE
+                binding.tvNote.text = "Ghi chú: ${medicine.note}"
+                binding.divider.visibility = android.view.View.VISIBLE
             } else {
-                binding.checkbox.setBackgroundResource(R.drawable.ic_check_box_no_select)
+                binding.tvNote.visibility = android.view.View.GONE
+                binding.divider.visibility = android.view.View.GONE
             }
 
-            binding.checkbox.setOnDebounceClick {
-                onCheckChanged(medicine, !medicine.isTaken)
+            binding.switchTaken.setOnCheckedChangeListener { _, isChecked ->
+                onCheckChanged(medicine, isChecked)
             }
         }
     }

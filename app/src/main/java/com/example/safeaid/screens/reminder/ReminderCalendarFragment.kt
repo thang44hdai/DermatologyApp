@@ -8,15 +8,16 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.dermatology.R
 import com.example.dermatology.databinding.FragmentReminderCalendarBinding
 import com.example.safeaid.core.ui.BaseFragment
 import com.example.safeaid.core.utils.setOnDebounceClick
+import com.example.safeaid.screens.reminder.adapter.CalendarDayAdapter
+import com.example.safeaid.screens.reminder.adapter.ReminderTimeAdapter
+import com.example.safeaid.screens.reminder.viewmodel.ReminderCalendarViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class ReminderCalendarFragment : BaseFragment<FragmentReminderCalendarBinding>() {
@@ -80,7 +81,7 @@ class ReminderCalendarFragment : BaseFragment<FragmentReminderCalendarBinding>()
         }
 
         viewBinding.btnAdd.setOnDebounceClick {
-            // TODO: Navigate to add reminder screen
+            findNavController().navigate(R.id.createMedicineReminderFragment)
         }
     }
 

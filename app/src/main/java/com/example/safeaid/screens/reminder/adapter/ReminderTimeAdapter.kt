@@ -1,4 +1,4 @@
-package com.example.safeaid.screens.reminder
+package com.example.safeaid.screens.reminder.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dermatology.databinding.ItemReminderTimeBinding
+import com.example.safeaid.screens.reminder.MedicineReminder
+import com.example.safeaid.screens.reminder.ReminderTime
 
 class ReminderTimeAdapter(
     private val onMedicineCheckChanged: (MedicineReminder, Boolean) -> Unit

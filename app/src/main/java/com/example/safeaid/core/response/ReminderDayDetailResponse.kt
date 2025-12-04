@@ -23,6 +23,8 @@ data class ReminderSchedule(
     val dosage: String? = null,
     @SerializedName("status")
     val status: String? = null,
+    @SerializedName("note")
+    val note: String? = null,
     @SerializedName("is_taken")
     val isTaken: Boolean = false
 ) : Serializable

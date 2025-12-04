@@ -1,4 +1,4 @@
-package com.example.safeaid.screens.reminder
+package com.example.safeaid.screens.reminder.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.example.safeaid.core.base.BaseViewModel
@@ -6,6 +6,9 @@ import com.example.safeaid.core.service.ApiService
 import com.example.safeaid.core.utils.ApiCaller
 import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.doIfSuccess
+import com.example.safeaid.screens.reminder.CalendarDay
+import com.example.safeaid.screens.reminder.MedicineReminder
+import com.example.safeaid.screens.reminder.ReminderTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +17,6 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.days
 
 @HiltViewModel
 class ReminderCalendarViewModel @Inject constructor(
@@ -130,6 +132,8 @@ class ReminderCalendarViewModel @Inject constructor(
                                         name = schedule.medicineName ?: "Unknown",
                                         dosage = schedule.dosage ?: "",
                                         status = schedule.status ?: "",
+                                        time = schedule.time ?: "",
+                                        note = schedule.note ?: "",
                                         isTaken = schedule.isTaken
                                     )
                                 }

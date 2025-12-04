@@ -19,5 +19,7 @@ data class MedicineReminder(
     val name: String,
     val dosage: String,
     val status: String,
+    val time: String = "",
+    val note: String = "",
     val isTaken: Boolean = false
 )

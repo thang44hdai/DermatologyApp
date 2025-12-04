@@ -4,28 +4,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="5dp"
-    android:layout_marginTop="2dp"
     android:layout_marginBottom="12dp"
+    app:cardBackgroundColor="#F8F9FA"
     app:cardCornerRadius="12dp"
-    app:cardElevation="0dp">
+    app:cardElevation="2dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="12dp">
+        android:padding="16dp">
 
+        <!-- Medicine Icon -->
         <ImageView
             android:id="@+id/iv_medicine_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@drawable/bg_medicine_icon"
-            android:padding="8dp"
+            android:padding="10dp"
             android:src="@drawable/ic_ai"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tint="@color/gray_600" />
 
+        <!-- Time (top right) -->
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#8E8E8E"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="08:00" />
+
+        <!-- Medicine Name -->
         <TextView
             android:id="@+id/tv_medicine_name"
             android:layout_width="0dp"
@@ -33,13 +46,14 @@
             android:layout_marginStart="12dp"
             android:layout_marginEnd="12dp"
             android:textColor="@color/black"
-            android:textSize="15sp"
+            android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/checkbox"
+            app:layout_constraintEnd_toStartOf="@+id/tv_time"
             app:layout_constraintStart_toEndOf="@+id/iv_medicine_icon"
             app:layout_constraintTop_toTopOf="@+id/iv_medicine_icon"
             tools:text="Amoxicilline" />
 
+        <!-- Medicine Info (status • dosage) -->
         <TextView
             android:id="@+id/tv_medicine_info"
             android:layout_width="0dp"
@@ -48,21 +62,60 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="12dp"
             android:textColor="#8E8E8E"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/checkbox"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_medicine_icon"
             app:layout_constraintTop_toBottomOf="@+id/tv_medicine_name"
             tools:text="Trước Khi Ăn • 2 Viên" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/checkbox"
+        <!-- Note Section -->
+        <TextView
+            android:id="@+id/tv_note"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="#E8EDF2"
+            android:padding="12dp"
+            android:textColor="#6B7280"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_medicine_icon"
+            tools:text="Ghi chú: Ngày uống 3 lần, mỗi lần 2 viên" />
+
+        <!-- Divider -->
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:background="#E0E0E0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_note" />
+
+        <!-- Toggle Section -->
+        <TextView
+            android:id="@+id/tv_toggle_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_check_box_no_select"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="12dp"
+            android:text="Dùng thuốc"
+            android:textColor="#6B7280"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_taken"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:theme="@style/SwitchTheme"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_toggle_label"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/tv_toggle_label" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
