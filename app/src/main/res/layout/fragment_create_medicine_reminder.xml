@@ -214,8 +214,11 @@
                         android:id="@+id/btn_add_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_add_blue"
+                        android:drawablePadding="5dp"
+                        android:gravity="center_vertical"
                         android:text="Thêm mới"
-                        android:textColor="@color/blue"
+                        android:textColor="@color/primary"
                         android:textSize="14sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -284,39 +287,46 @@
                 </LinearLayout>
 
                 <!-- Sử dụng khi ăn? -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Sử dụng khi ăn?"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <RadioGroup
-                    android:id="@+id/radio_group_meal"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <RadioButton
-                        android:id="@+id/radio_truoc"
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Trước"
-                        android:textColor="@color/black" />
+                        android:text="Sử dụng khi ăn?"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
 
-                    <RadioButton
-                        android:id="@+id/radio_sau"
-                        android:layout_width="0dp"
+                    <RadioGroup
+                        android:id="@+id/radio_group_meal"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:checked="true"
-                        android:text="Sau"
-                        android:textColor="@color/black" />
-                </RadioGroup>
+                        android:layout_marginStart="80dp"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/radio_truoc"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Trước"
+                            android:textColor="@color/black" />
+
+                        <RadioButton
+                            android:id="@+id/radio_sau"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:checked="true"
+                            android:text="Sau"
+                            android:textColor="@color/black" />
+                    </RadioGroup>
+
+                </LinearLayout>
 
                 <!-- Ghi chú thêm -->
                 <TextView
@@ -328,29 +338,41 @@
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
-                <EditText
-                    android:id="@+id/edt_note"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_dialog_base"
-                    android:gravity="top|start"
-                    android:hint="Ví dụ: Uống nhiều nước, kiêng đồ chua..."
-                    android:inputType="textMultiLine"
-                    android:maxLength="500"
-                    android:padding="16dp"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/gray_600"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="4dp"
-                    android:text="200/500"
-                    android:textColor="@color/gray_600"
-                    android:textSize="12sp" />
+                    android:layout_marginTop="8dp">
+
+                    <EditText
+                        android:id="@+id/edt_note"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:background="@drawable/bg_dialog_base"
+                        android:gravity="top|start"
+                        android:hint="Ví dụ: Uống nhiều nước, kiêng đồ chua..."
+                        android:inputType="textMultiLine"
+                        android:maxLength="500"
+                        android:padding="16dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="#B5B5B5"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tv_note_counter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_margin="12dp"
+                        android:layout_marginTop="4dp"
+                        android:drawableStart="@drawable/ic_book_medicine"
+                        android:gravity="center_vertical"
+                        android:text="0/500"
+                        android:textColor="#8E8E8E"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/edt_note"
+                        app:layout_constraintEnd_toEndOf="@+id/edt_note" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <!-- Đặt tư động thông báo? -->
                 <LinearLayout
@@ -393,7 +415,6 @@
                     app:icon="@drawable/ic_add"
                     app:iconGravity="textEnd"
                     app:iconTint="@color/white" />
-
             </LinearLayout>
         </ScrollView>
 
