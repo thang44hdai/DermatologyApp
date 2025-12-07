@@ -24,13 +24,25 @@
             app:popExitAnim="@anim/slide_out_left" />
         <action
             android:id="@+id/action_mainScreen_to_pharmacyDetailFragment"
-            app:destination="@id/pharmacyDetailFragment" />
+            app:destination="@id/pharmacyDetailFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
         <action
             android:id="@+id/action_mainScreen_to_pharmacySearchFragment"
-            app:destination="@id/pharmacySearchFragment" />
+            app:destination="@id/pharmacySearchFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
         <action
             android:id="@+id/action_mainScreen_to_medicineDetailFragment"
-            app:destination="@id/medicineDetailFragment" />
+            app:destination="@id/medicineDetailFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
         <action
             android:id="@+id/action_mainScreen_to_allProductsFragment"
             app:destination="@id/allProductsFragment"

@@ -2,6 +2,7 @@ package com.example.safeaid.screens.home
 
 import androidx.lifecycle.viewModelScope
 import com.example.safeaid.core.base.BaseViewModel
+import com.example.safeaid.core.response.CategoryResponse
 import com.example.safeaid.core.response.ListPharmacyResponse
 import com.example.safeaid.core.response.MedicineResponse
 import com.example.safeaid.core.response.UserResponse
@@ -27,6 +28,8 @@ class HomeViewModel @Inject constructor(
     private val user = MutableStateFlow<UserResponse>(UserResponse())
     val _user = user.asStateFlow()
 
+    private val categories = MutableStateFlow<List<CategoryResponse>>(listOf())
+    val _categories = categories.asStateFlow()
 
     fun loadHomeData() {
         // Load user info
@@ -78,6 +81,21 @@ class HomeViewModel @Inject constructor(
                         updateState(DataResult.Success(HomeState.PharmaciesList(
                             ListPharmacyResponse(pharmacies = mockPharmacies)
                         )))
+                    }
+                }
+            )
+        }
+
+        // Load categories
+        viewModelScope.launch(Dispatchers.IO) {
+            ApiCaller.safeApiCall(
+                apiCall = { apiService.getCategories() },
+                callback = { result ->
+                    result.doIfSuccess { data ->
+                        categories.value = data
+                    }
+                    result.doIfFailure {
+                        categories.value = listOf()
                     }
                 }
             )

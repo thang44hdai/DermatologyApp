@@ -9,6 +9,7 @@ import com.example.safeaid.core.request.GoogleLoginRequest
 import com.example.safeaid.core.request.LoginRequest
 import com.example.safeaid.core.request.RefreshTokenRequest
 import com.example.safeaid.core.request.RegisterRequest
+import com.example.safeaid.core.response.CategoryResponse
 import com.example.safeaid.core.response.ChatResponse
 import com.example.safeaid.core.response.ConversationResponse
 import com.example.safeaid.core.response.CreateReminderResponse
@@ -131,4 +132,7 @@ interface ApiService {
     suspend fun createReminder(
         @Body request: CreateReminderRequest
     ): Response<CreateReminderResponse>
+
+    @GET("categories/")
+    suspend fun getCategories(): Response<List<CategoryResponse>>
 }

@@ -20,6 +20,7 @@ import com.example.safeaid.core.utils.DataResult
 import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.doIfSuccess
 import com.example.safeaid.screens.home.adapter.BrandAdapter
+import com.example.safeaid.screens.home.adapter.CategoryAdapter
 import com.example.safeaid.screens.home.adapter.ProductAdapter
 import com.example.safeaid.screens.home.utils.BrandUtils
 import com.example.safeaid.screens.home.utils.MedicineUtils
@@ -40,6 +41,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             bundle
         )
     }
+    private val categoryAdapter = CategoryAdapter(listOf()) { category ->
+        // TODO: Navigate to category detail
+        android.widget.Toast.makeText(
+            requireContext(),
+            "Danh mục: ${category.name}",
+            android.widget.Toast.LENGTH_SHORT
+        ).show()
+    }
     private val viewModel: HomeViewModel by activityViewModels()
 
     private var allMedicines = listOf<MedicineResponse>()
@@ -56,9 +65,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     }
 
     override fun onInit() {
-        viewBinding.rvProducts.layoutManager = GridLayoutManager(requireContext(), 2)
+        viewBinding.rvProducts.layoutManager = GridLayoutManager(requireContext(), 3)
         viewBinding.rvProducts.adapter = medicinesAdapter
         viewBinding.rvBrands.adapter = brandAdapter
+        viewBinding.rvCategories.adapter = categoryAdapter
 
         // Setup SwipeRefreshLayout
         viewBinding.swipeRefresh.setColorSchemeColors(
@@ -176,6 +186,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                         .circleCrop()
                         .into(viewBinding.avatar)
                 }
+            }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
+
+        viewModel._categories
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+            .onEach { data ->
+                categoryAdapter.updateData(data)
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)
     }
