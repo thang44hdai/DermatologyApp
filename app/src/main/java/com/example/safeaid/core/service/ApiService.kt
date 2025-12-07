@@ -2,6 +2,7 @@ package com.example.safeaid.core.service
 
 import QuizCategoryResponse
 import com.example.safeaid.core.request.ChatRequest
+import com.example.safeaid.core.request.CreateReminderRequest
 import com.example.safeaid.core.response.ListMedicineResponse
 import com.example.safeaid.core.response.ListPharmacyResponse
 import com.example.safeaid.core.request.GoogleLoginRequest
@@ -10,6 +11,7 @@ import com.example.safeaid.core.request.RefreshTokenRequest
 import com.example.safeaid.core.request.RegisterRequest
 import com.example.safeaid.core.response.ChatResponse
 import com.example.safeaid.core.response.ConversationResponse
+import com.example.safeaid.core.response.CreateReminderResponse
 import com.example.safeaid.core.response.DetailConversationResponse
 import com.example.safeaid.core.response.DetectBoundaryResponse
 import com.example.safeaid.core.response.HistoryResponse
@@ -124,4 +126,9 @@ interface ApiService {
     suspend fun getReminderDayDetail(
         @Path("target_date") targetDate: String
     ): Response<ReminderDayDetailResponse>
+
+    @POST("reminders/")
+    suspend fun createReminder(
+        @Body request: CreateReminderRequest
+    ): Response<CreateReminderResponse>
 }

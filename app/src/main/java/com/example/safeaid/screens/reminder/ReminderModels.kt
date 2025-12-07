@@ -23,3 +23,10 @@ data class MedicineReminder(
     val note: String = "",
     val isTaken: Boolean = false
 )
+
+data class TimePeriodItem(
+    val id: String = java.util.UUID.randomUUID().toString(),
+    var time: String = "",
+    var dosage: String = "1",
+    var unit: String = "Viên"
+)

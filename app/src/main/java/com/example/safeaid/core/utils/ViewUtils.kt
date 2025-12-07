@@ -187,7 +187,7 @@ object Utils {
 
     inline fun <reified T> String?.fromJsonToList(): List<T> {
         val type = object : TypeToken<List<T>>() {}.type
-        return Gson().fromJson(this, type)  ?: arrayListOf()
+        return Gson().fromJson(this, type) ?: arrayListOf()
     }
 
 
@@ -197,7 +197,32 @@ object Utils {
         val newTypeface = Typeface.create(currentTypeface, fontWeight)
 
         this.typeface = newTypeface
+    }
 
+    fun getPeriodFromTime(time: String): String {
+        if (time.isEmpty()) return "morning"
+
+        val hour = try {
+            time.split(":")[0].toInt()
+        } catch (e: Exception) {
+            return "morning"
+        }
+
+        return when (hour) {
+            in 0..11 -> "morning"
+            in 12..13 -> "noon"
+            in 14..17 -> "afternoon"
+            else -> "evening"
+        }
+    }
+
+    fun getPeriodFromTimeVn(time: String): String {
+        when (time) {
+            "morning" -> return "Buổi sáng"
+            "noon" -> return "Buổi trưa"
+            "afternoon" -> return "Buổi chiều"
+            else -> return "Buổi tối"
+        }
     }
 }
 

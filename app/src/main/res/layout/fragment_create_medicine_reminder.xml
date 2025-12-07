@@ -47,7 +47,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/header">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -55,30 +55,45 @@
 
                 <!-- Tên thuốc -->
                 <TextView
+                    android:id="@+id/tv1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Tên thuốc"
                     android:textColor="@color/black"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <Spinner
-                    android:id="@+id/spinner_medicine"
+                <TextView
+                    android:id="@+id/tv_medicine_dropdown"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_dialog_base"
-                    android:paddingHorizontal="16dp" />
+                    android:drawableStart="@drawable/ic_medicine"
+                    android:drawableEnd="@drawable/ic_arrow_down"
+                    android:drawablePadding="12dp"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="16dp"
+                    android:text="Chọn thuốc"
+                    android:textColor="@color/gray_600"
+                    android:textSize="15sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv1" />
 
                 <!-- Đơn vị -->
                 <TextView
+                    android:id="@+id/tv2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="Đơn vị"
                     android:textColor="@color/black"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_medicine_dropdown" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rcv_unit"
@@ -87,24 +102,32 @@
                     android:layout_marginTop="8dp"
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv2"
                     tools:itemCount="8"
                     tools:listitem="@layout/item_selection_chip" />
 
                 <!-- Thời gian sử dụng thuốc -->
                 <TextView
+                    android:id="@+id/tv3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="Thời gian sử dụng thuốc"
                     android:textColor="@color/black"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rcv_unit" />
 
                 <LinearLayout
+                    android:id="@+id/ll1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv3">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -171,13 +194,16 @@
 
                 <!-- Tần suất sử dụng thuốc -->
                 <TextView
+                    android:id="@+id/tv4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="Tần suất sử dụng thuốc"
                     android:textColor="@color/black"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ll1" />
 
                 <TextView
                     android:id="@+id/tv_frequency"
@@ -189,17 +215,22 @@
                     android:drawableEnd="@drawable/ic_arrow_down"
                     android:drawablePadding="8dp"
                     android:gravity="center_vertical"
+                    android:hint="Chọn các ngày trong tuần muốn nhắc"
                     android:paddingHorizontal="16dp"
-                    android:text="Thứ Hai, Thứ Tư, Thứ Sáu"
                     android:textColor="@color/black"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv4" />
 
                 <!-- Thời gian uống thuốc -->
                 <LinearLayout
+                    android:id="@+id/ll2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_frequency">
 
                     <TextView
                         android:layout_width="0dp"
@@ -223,75 +254,27 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
+                <!-- Time and Dosage Row -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rcv_time_period"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:orientation="horizontal"
+                    android:nestedScrollingEnabled="true"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:itemCount="4"
-                    tools:listitem="@layout/item_selection_chip" />
-
-                <!-- Time and Dosage Row -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_time"
-                        app:tint="@color/red_600" />
-
-                    <TextView
-                        android:id="@+id/tv_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="50dp"
-                        android:layout_marginStart="8dp"
-                        android:background="@drawable/bg_dialog_base"
-                        android:drawableEnd="@drawable/ic_arrow_down"
-                        android:drawablePadding="8dp"
-                        android:gravity="center_vertical"
-                        android:paddingHorizontal="16dp"
-                        android:text="07:00"
-                        android:textColor="@color/black"
-                        android:textSize="14sp" />
-
-                    <Space
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <EditText
-                        android:id="@+id/edt_dosage"
-                        android:layout_width="60dp"
-                        android:layout_height="50dp"
-                        android:background="@drawable/bg_dialog_base"
-                        android:gravity="center"
-                        android:inputType="number"
-                        android:text="1"
-                        android:textColor="@color/black"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="Viên"
-                        android:textColor="@color/black"
-                        android:textSize="14sp" />
-                </LinearLayout>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ll2"
+                    tools:itemCount="1"
+                    tools:listitem="@layout/item_time_reminder" />
 
                 <!-- Sử dụng khi ăn? -->
                 <LinearLayout
+                    android:id="@+id/ll3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@+id/rcv_time_period">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -330,18 +313,23 @@
 
                 <!-- Ghi chú thêm -->
                 <TextView
+                    android:id="@+id/tv5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="Ghi chú thêm"
                     android:textColor="@color/black"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ll3" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp">
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/tv5">
 
                     <EditText
                         android:id="@+id/edt_note"
@@ -353,9 +341,12 @@
                         android:inputType="textMultiLine"
                         android:maxLength="500"
                         android:padding="16dp"
+                        android:paddingBottom="80dp"
                         android:textColor="@color/black"
                         android:textColorHint="#B5B5B5"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/tv_note_counter"
@@ -366,6 +357,7 @@
                         android:layout_marginTop="4dp"
                         android:drawableStart="@drawable/ic_book_medicine"
                         android:gravity="center_vertical"
+                        android:maxLength="500"
                         android:text="0/500"
                         android:textColor="#8E8E8E"
                         android:textSize="12sp"
@@ -376,11 +368,13 @@
 
                 <!-- Đặt tư động thông báo? -->
                 <LinearLayout
+                    android:id="@+id/ll4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@+id/cl1">
 
                     <TextView
                         android:layout_width="0dp"
@@ -406,7 +400,7 @@
                     android:layout_height="56dp"
                     android:layout_marginTop="24dp"
                     android:layout_marginBottom="16dp"
-                    android:backgroundTint="@color/blue"
+                    android:background="@drawable/bg_btn_filter"
                     android:text="Thêm thuốc"
                     android:textColor="@color/white"
                     android:textSize="16sp"
@@ -414,8 +408,9 @@
                     app:cornerRadius="12dp"
                     app:icon="@drawable/ic_add"
                     app:iconGravity="textEnd"
-                    app:iconTint="@color/white" />
-            </LinearLayout>
+                    app:iconTint="@color/white"
+                    app:layout_constraintTop_toBottomOf="@+id/ll4" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

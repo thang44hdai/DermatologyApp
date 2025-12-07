@@ -282,8 +282,6 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
                 // 🔹 Hiển thị marker cho vị trí hiện tại
                 showCurrentLocationMarker(lat, lon)
 
-                Log.i("hihihi", "${location}")
-
                 // 🔹 Gọi API tìm nhà thuốc gần đó
                 viewModel.searchPharmacyNear(
                     latitude = lat.toString(),

@@ -22,7 +22,6 @@ class QuizCategoryViewModel @Inject constructor(
                     Log.i("hihihi", "${body}")
                 }
             } else {
-                Log.e("hihihi", "Error code: ${response.code()}")
             }
         }
     }

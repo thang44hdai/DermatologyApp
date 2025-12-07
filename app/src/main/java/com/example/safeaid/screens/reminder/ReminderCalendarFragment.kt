@@ -68,7 +68,6 @@ class ReminderCalendarFragment : BaseFragment<FragmentReminderCalendarBinding>()
         viewModel.isEmpty
             .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
             .onEach { isEmpty ->
-                Log.i("hihihi", "$isEmpty")
                 viewBinding.emptyState.isVisible = isEmpty
                 viewBinding.rcvReminders.isVisible = !isEmpty
             }

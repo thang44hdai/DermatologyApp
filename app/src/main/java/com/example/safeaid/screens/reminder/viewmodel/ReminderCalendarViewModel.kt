@@ -1,9 +1,11 @@
 package com.example.safeaid.screens.reminder.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.safeaid.core.base.BaseViewModel
 import com.example.safeaid.core.service.ApiService
 import com.example.safeaid.core.utils.ApiCaller
+import com.example.safeaid.core.utils.Utils
 import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.doIfSuccess
 import com.example.safeaid.screens.reminder.CalendarDay
@@ -121,9 +123,12 @@ class ReminderCalendarViewModel @Inject constructor(
                 },
                 callback = { result ->
                     result.doIfSuccess { response ->
+                        Log.i("hihihi", "$response")
                         if (response.schedules.isNotEmpty()) {
                             // Group schedules by time
-                            val groupedByTime = response.schedules.groupBy { it.time ?: "" }
+                            val groupedByTime = response.schedules.groupBy {
+                                Utils.getPeriodFromTime(it.time ?: "")
+                            }
 
                             val reminderTimes = groupedByTime.map { (time, schedules) ->
                                 val medicines = schedules.map { schedule ->
@@ -139,11 +144,11 @@ class ReminderCalendarViewModel @Inject constructor(
                                 }
 
                                 ReminderTime(
-                                    time = time,
+                                    time = Utils.getPeriodFromTimeVn(time),
                                     totalCount = medicines.size,
                                     medicines = medicines
                                 )
-                            }.sortedBy { it.time }
+                            }
 
                             _reminderTimes.value = reminderTimes
                             _isEmpty.value = false

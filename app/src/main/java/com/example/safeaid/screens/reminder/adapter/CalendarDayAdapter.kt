@@ -1,7 +1,9 @@
 package com.example.safeaid.screens.reminder.adapter
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
@@ -11,6 +13,10 @@ import com.example.dermatology.R
 import com.example.dermatology.databinding.ItemCalendarDayBinding
 import com.example.safeaid.core.utils.setOnDebounceClick
 import com.example.safeaid.screens.reminder.CalendarDay
+import java.time.LocalDate
+
+import java.time.format.DateTimeFormatter
+
 
 class CalendarDayAdapter(
     private val onDayClick: (CalendarDay) -> Unit
@@ -33,9 +39,10 @@ class CalendarDayAdapter(
         private val binding: ItemCalendarDayBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
+        @RequiresApi(Build.VERSION_CODES.O)
         fun bind(day: CalendarDay) {
             binding.tvDayName.text = day.dayName
-            binding.tvDayNumber.text = day.dayNumber
+            binding.tvDayNumber.text = convertDate(day.date)
             binding.indicator.isVisible = day.hasReminders
 
             if (day.isSelected) {
@@ -76,5 +83,13 @@ class CalendarDayAdapter(
         override fun areContentsTheSame(oldItem: CalendarDay, newItem: CalendarDay): Boolean {
             return oldItem == newItem
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun convertDate(dateString: String): String {
+        val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val outputFormatter = DateTimeFormatter.ofPattern("dd/MM")
+        val date = LocalDate.parse(dateString, inputFormatter)
+        return date.format(outputFormatter)
     }
 }
