@@ -24,6 +24,7 @@ import com.example.safeaid.core.response.RegisterResponse
 import com.example.safeaid.core.response.UserResponse
 import com.example.safeaid.core.response.ReminderCalendarResponse
 import com.example.safeaid.core.response.ReminderDayDetailResponse
+import com.example.safeaid.core.response.ReminderTabResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -135,4 +136,7 @@ interface ApiService {
 
     @GET("categories/")
     suspend fun getCategories(): Response<List<CategoryResponse>>
+
+    @GET("reminders/")
+    suspend fun getReminderTabs(): Response<ReminderTabResponse>
 }

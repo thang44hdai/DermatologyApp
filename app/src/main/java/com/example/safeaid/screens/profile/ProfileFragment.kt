@@ -45,7 +45,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         }
 
         viewBinding.btnReminder.setOnDebounceClick {
-            findNavController().navigate(R.id.action_mainScreen_to_reminderCalendarFragment)
+            findNavController().navigate(R.id.action_mainScreen_to_reminderMainFragment)
         }
     }
 

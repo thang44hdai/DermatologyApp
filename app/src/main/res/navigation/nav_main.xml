@@ -64,6 +64,13 @@
             app:exitAnim="@anim/slide_out_right"
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_left" />
+        <action
+            android:id="@+id/action_mainScreen_to_reminderMainFragment"
+            app:destination="@id/reminderMainFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
     </fragment>
     <fragment
         android:id="@+id/cameraFragment"
@@ -157,4 +164,16 @@
         android:id="@+id/createMedicineReminderFragment"
         android:name="com.example.safeaid.screens.reminder.CreateMedicineReminderFragment"
         android:label="CreateMedicineReminderFragment" />
+    <fragment
+        android:id="@+id/reminderMainFragment"
+        android:name="com.example.safeaid.screens.reminder.ReminderMainFragment"
+        android:label="ReminderMainFragment">
+        <action
+            android:id="@+id/action_reminderMainFragment_to_createMedicineReminderFragment"
+            app:destination="@id/createMedicineReminderFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
+    </fragment>
 </navigation>
