@@ -1,7 +1,6 @@
 package com.example.safeaid.screens.reminder
 
 import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -358,6 +357,7 @@ class CreateMedicineReminderFragment : BaseFragment<FragmentCreateMedicineRemind
     private fun showDatePicker(currentDate: Calendar, onDateSelected: (Calendar) -> Unit) {
         val datePickerDialog = DatePickerDialog(
             requireContext(),
+            R.style.CustomDatePickerDialog,
             { _, year, month, dayOfMonth ->
                 val calendar = Calendar.getInstance()
                 calendar.set(year, month, dayOfMonth)
@@ -367,6 +367,17 @@ class CreateMedicineReminderFragment : BaseFragment<FragmentCreateMedicineRemind
             currentDate.get(Calendar.MONTH),
             currentDate.get(Calendar.DAY_OF_MONTH)
         )
+        
+        // Set button colors
+        datePickerDialog.setOnShowListener {
+            datePickerDialog.getButton(android.app.DatePickerDialog.BUTTON_POSITIVE)?.setTextColor(
+                androidx.core.content.ContextCompat.getColor(requireContext(), R.color.primary)
+            )
+            datePickerDialog.getButton(android.app.DatePickerDialog.BUTTON_NEGATIVE)?.setTextColor(
+                androidx.core.content.ContextCompat.getColor(requireContext(), R.color.gray_neutral_4)
+            )
+        }
+        
         datePickerDialog.show()
     }
 

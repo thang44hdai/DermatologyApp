@@ -37,4 +37,34 @@
         <item name="android:colorForeground">@color/gray_600</item>
     </style>
 
+    <!-- Custom DatePicker Dialog Theme -->
+    <style name="CustomDatePickerDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/primary</item>
+        <item name="android:colorAccent">@color/primary</item>
+        <item name="colorControlActivated">@color/primary</item>
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorSecondary">@color/gray_neutral_4</item>
+        <item name="android:datePickerStyle">@style/CustomDatePicker</item>
+    </style>
+
+    <style name="CustomDatePicker" parent="android:Widget.Material.Light.DatePicker">
+        <item name="android:headerBackground">@color/primary</item>
+        <item name="android:calendarTextColor">@color/black</item>
+    </style>
+
+    <!-- Custom TimePicker Dialog Theme -->
+    <style name="CustomTimePickerDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/primary</item>
+        <item name="android:colorAccent">@color/primary</item>
+        <item name="colorControlActivated">@color/primary</item>
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorSecondary">@color/gray_neutral_4</item>
+        <item name="android:timePickerStyle">@style/CustomTimePicker</item>
+    </style>
+
+    <style name="CustomTimePicker" parent="android:Widget.Material.Light.TimePicker">
+        <item name="android:headerBackground">@color/primary</item>
+        <item name="android:numbersTextColor">@color/black</item>
+    </style>
+
 </resources>

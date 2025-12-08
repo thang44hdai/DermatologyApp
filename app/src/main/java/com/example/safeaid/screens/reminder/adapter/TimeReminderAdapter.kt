@@ -1,6 +1,5 @@
 package com.example.safeaid.screens.reminder.adapter
 
-import android.app.TimePickerDialog
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -94,8 +93,9 @@ class TimeReminderAdapter :
                 }
             }
 
-            val timePickerDialog = TimePickerDialog(
+            val timePickerDialog = android.app.TimePickerDialog(
                 binding.root.context,
+                com.example.dermatology.R.style.CustomTimePickerDialog,
                 { _, hourOfDay, minute ->
                     calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
                     calendar.set(Calendar.MINUTE, minute)
@@ -106,6 +106,17 @@ class TimeReminderAdapter :
                 calendar.get(Calendar.MINUTE),
                 true // 24-hour format
             )
+            
+            // Set button colors
+            timePickerDialog.setOnShowListener {
+                timePickerDialog.getButton(android.app.TimePickerDialog.BUTTON_POSITIVE)?.setTextColor(
+                    androidx.core.content.ContextCompat.getColor(binding.root.context, com.example.dermatology.R.color.primary)
+                )
+                timePickerDialog.getButton(android.app.TimePickerDialog.BUTTON_NEGATIVE)?.setTextColor(
+                    androidx.core.content.ContextCompat.getColor(binding.root.context, com.example.dermatology.R.color.gray_neutral_4)
+                )
+            }
+            
             timePickerDialog.show()
         }
     }
