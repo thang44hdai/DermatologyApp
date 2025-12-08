@@ -1,5 +1,6 @@
 package com.example.safeaid.screens.reminder.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.safeaid.core.base.BaseViewModel
 import com.example.safeaid.core.response.Reminder
@@ -29,6 +30,7 @@ class ReminderListViewModel @Inject constructor(
                 apiCall = { apiService.getReminderTabs() },
                 callback = { result ->
                     result.doIfSuccess { data ->
+                        Log.i("hihihi", "$data")
                         _allReminders.value = data.reminders ?: listOf()
                         filterReminders("active")
                     }

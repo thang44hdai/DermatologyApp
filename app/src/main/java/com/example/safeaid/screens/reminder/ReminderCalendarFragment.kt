@@ -34,6 +34,7 @@ class ReminderCalendarFragment : BaseFragment<FragmentReminderCalendarBinding>()
     override fun onInit() {
         setupCalendarRecyclerView()
         setupReminderRecyclerView()
+        viewModel.loadWeekCalendar()
     }
 
     override fun onInitObserver() {

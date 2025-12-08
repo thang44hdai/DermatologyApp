@@ -1,45 +1,45 @@
 package com.example.safeaid.core.response
 
 
-import kotlinx.serialization.SerialName
+import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class Reminder(
-    @SerialName("created_at")
+    @SerializedName("created_at")
     var createdAt: String?,
-    @SerialName("days_of_week")
+    @SerializedName("days_of_week")
     var daysOfWeek: List<Int>?,
-    @SerialName("dosage")
+    @SerializedName("dosage")
     var dosage: String?,
-    @SerialName("end_date")
+    @SerializedName("end_date")
     var endDate: String?,
-    @SerialName("frequency")
+    @SerializedName("frequency")
     var frequency: String?,
-    @SerialName("id")
+    @SerializedName("id")
     var id: String?,
-    @SerialName("is_active")
+    @SerializedName("is_active")
     var isActive: Boolean?,
-    @SerialName("is_custom_medicine")
+    @SerializedName("is_custom_medicine")
     var isCustomMedicine: Boolean?,
-    @SerialName("is_notification_enabled")
+    @SerializedName("is_notification_enabled")
     var isNotificationEnabled: Boolean?,
-    @SerialName("meal_timing")
+    @SerializedName("meal_timing")
     var mealTiming: String?,
-    @SerialName("medicine_id")
+    @SerializedName("medicine_id")
     var medicineId: String?,
-    @SerialName("medicine_name")
+    @SerializedName("medicine_name")
     var medicineName: String?,
-    @SerialName("notes")
+    @SerializedName("notes")
     var notes: String?,
-    @SerialName("start_date")
+    @SerializedName("start_date")
     var startDate: String?,
-    @SerialName("times")
+    @SerializedName("times")
     var times: List<Time>?,
-    @SerialName("unit")
+    @SerializedName("unit")
     var unit: String?,
-    @SerialName("updated_at")
+    @SerializedName("updated_at")
     var updatedAt: String?,
-    @SerialName("user_id")
+    @SerializedName("user_id")
     var userId: String?
 )

@@ -39,11 +39,7 @@ class ReminderCalendarViewModel @Inject constructor(
 
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
-    init {
-        loadWeekCalendar()
-    }
-
-    private fun loadWeekCalendar() {
+    fun loadWeekCalendar() {
         val calendar = Calendar.getInstance()
         val today = calendar.time
         val dayNameFormat = SimpleDateFormat("EEE", Locale("vi", "VN"))
@@ -98,6 +94,7 @@ class ReminderCalendarViewModel @Inject constructor(
                 },
                 callback = { result ->
                     result.doIfSuccess { response ->
+                        Log.i("hihihi", "$response")
                         // Update calendar days with reminder indicators
                         val daysWithReminders = response.days.associate {
                             it.date to it.reminderCount
@@ -123,7 +120,6 @@ class ReminderCalendarViewModel @Inject constructor(
                 },
                 callback = { result ->
                     result.doIfSuccess { response ->
-                        Log.i("hihihi", "$response")
                         if (response.schedules.isNotEmpty()) {
                             // Group schedules by time
                             val groupedByTime = response.schedules.groupBy {
@@ -133,7 +129,7 @@ class ReminderCalendarViewModel @Inject constructor(
                             val reminderTimes = groupedByTime.map { (time, schedules) ->
                                 val medicines = schedules.map { schedule ->
                                     MedicineReminder(
-                                        reminderId = schedule.reminderId ?: 0,
+                                        reminderId = schedule.reminderId,
                                         name = schedule.medicineName ?: "Unknown",
                                         dosage = schedule.dosage ?: "",
                                         status = schedule.status ?: "",
@@ -168,6 +164,8 @@ class ReminderCalendarViewModel @Inject constructor(
 
     fun onMedicineCheckChanged(medicine: MedicineReminder, isChecked: Boolean) {
         // Update medicine check state locally
+//        Log.i("hihihi", "$medicine")
+//        Log.i("hihihi", "${_reminderTimes.value}")
         _reminderTimes.value = _reminderTimes.value.map { reminderTime ->
             reminderTime.copy(
                 medicines = reminderTime.medicines.map { med ->
@@ -179,9 +177,9 @@ class ReminderCalendarViewModel @Inject constructor(
                 }
             )
         }
-
-        // TODO: Call API to update is_taken status on server
-        // apiService.updateReminderStatus(medicine.reminderId, isChecked)
+        viewModelScope.launch(Dispatchers.IO) {
+            apiService.updateReminderStatus(medicine.reminderId ?: "")
+        }
     }
 
     override fun onTriggerEvent(event: ReminderEvent) {}

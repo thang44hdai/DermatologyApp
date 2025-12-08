@@ -14,7 +14,7 @@ data class ReminderDayDetailResponse(
 
 data class ReminderSchedule(
     @SerializedName("reminder_id")
-    val reminderId: Int? = null,
+    val reminderId: String? = null,
     @SerializedName("medicine_name")
     val medicineName: String? = null,
     @SerializedName("time")

@@ -15,7 +15,7 @@ data class ReminderTime(
 )
 
 data class MedicineReminder(
-    val reminderId: Int,
+    val reminderId: String?,
     val name: String,
     val dosage: String,
     val status: String,

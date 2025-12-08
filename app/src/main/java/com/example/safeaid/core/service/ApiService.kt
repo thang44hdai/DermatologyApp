@@ -139,4 +139,9 @@ interface ApiService {
 
     @GET("reminders/")
     suspend fun getReminderTabs(): Response<ReminderTabResponse>
+
+    @POST("reminders/{reminder_id}/toggle-taken")
+    suspend fun updateReminderStatus(
+        @Path("reminder_id") reminderId: String
+    ): Response<Any>
 }
