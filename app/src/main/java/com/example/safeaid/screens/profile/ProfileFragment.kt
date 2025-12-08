@@ -5,6 +5,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.example.dermatology.R
 import com.example.dermatology.databinding.FragmentProfileBinding
 import com.example.safeaid.core.ui.BaseFragment
@@ -30,7 +31,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 viewBinding.tvName.text = data.fullname
                 viewBinding.tvEmail.text = data.email
                 data.avatarUrl?.let { url ->
-                    com.bumptech.glide.Glide.with(requireContext())
+                    Glide.with(requireContext())
                         .load(url)
                         .circleCrop()
                         .into(viewBinding.imvAvatar)
@@ -40,13 +41,61 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     }
 
     override fun onInitListener() {
+        // Profile edit button
+        viewBinding.btnEditProfile.setOnDebounceClick {
+            android.widget.Toast.makeText(requireContext(), "Chức năng đang phát triển", android.widget.Toast.LENGTH_SHORT).show()
+        }
+
+        // History button
         viewBinding.btnHistory.setOnDebounceClick {
             findNavController().navigate(R.id.action_mainScreen_to_historyFragment)
         }
 
+        // Reminder button
         viewBinding.btnReminder.setOnDebounceClick {
             findNavController().navigate(R.id.action_mainScreen_to_reminderMainFragment)
         }
+
+        // Skin care button
+        viewBinding.btnSkinCare.setOnDebounceClick {
+            android.widget.Toast.makeText(requireContext(), "Thiền dưỡng tâm - Chức năng đang phát triển", android.widget.Toast.LENGTH_SHORT).show()
+        }
+
+        // Challenge button
+        viewBinding.btnChallenge.setOnDebounceClick {
+            android.widget.Toast.makeText(requireContext(), "Thử thách chạy bộ - Chức năng đang phát triển", android.widget.Toast.LENGTH_SHORT).show()
+        }
+
+        // Sleep button
+        viewBinding.btnSleep.setOnDebounceClick {
+            android.widget.Toast.makeText(requireContext(), "Thử thách ngủ sớm - Chức năng đang phát triển", android.widget.Toast.LENGTH_SHORT).show()
+        }
+
+        // Settings button
+        viewBinding.btnSettings.setOnDebounceClick {
+            android.widget.Toast.makeText(requireContext(), "Cài đặt - Chức năng đang phát triển", android.widget.Toast.LENGTH_SHORT).show()
+        }
+
+        // Notifications button
+        viewBinding.btnNotifications.setOnDebounceClick {
+            android.widget.Toast.makeText(requireContext(), "Thử thách tập thể dục - Chức năng đang phát triển", android.widget.Toast.LENGTH_SHORT).show()
+        }
+
+        // Logout button (hidden but keep logic)
+        viewBinding.btnLogout.setOnDebounceClick {
+            showLogoutDialog()
+        }
+    }
+
+    private fun showLogoutDialog() {
+        androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("Đăng xuất")
+            .setMessage("Bạn có chắc chắn muốn đăng xuất?")
+            .setPositiveButton("Đăng xuất") { _, _ ->
+                android.widget.Toast.makeText(requireContext(), "Đã đăng xuất", android.widget.Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Hủy", null)
+            .show()
     }
 
 }
