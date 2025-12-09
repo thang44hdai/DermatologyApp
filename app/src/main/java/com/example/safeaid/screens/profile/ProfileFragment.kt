@@ -61,9 +61,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             android.widget.Toast.makeText(requireContext(), "Thiền dưỡng tâm - Chức năng đang phát triển", android.widget.Toast.LENGTH_SHORT).show()
         }
 
-        // Challenge button
+        // Challenge button (Running Challenge)
         viewBinding.btnChallenge.setOnDebounceClick {
-            android.widget.Toast.makeText(requireContext(), "Thử thách chạy bộ - Chức năng đang phát triển", android.widget.Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_mainScreen_to_runningChallengeFragment)
         }
 
         // Sleep button
@@ -76,9 +76,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             android.widget.Toast.makeText(requireContext(), "Cài đặt - Chức năng đang phát triển", android.widget.Toast.LENGTH_SHORT).show()
         }
 
-        // Notifications button
+        // Notifications button (Morning Exercise Challenge)
         viewBinding.btnNotifications.setOnDebounceClick {
-            android.widget.Toast.makeText(requireContext(), "Thử thách tập thể dục - Chức năng đang phát triển", android.widget.Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_mainScreen_to_morningExerciseFragment)
         }
 
         // Logout button (hidden but keep logic)

@@ -25,6 +25,10 @@ import com.example.safeaid.core.response.UserResponse
 import com.example.safeaid.core.response.ReminderCalendarResponse
 import com.example.safeaid.core.response.ReminderDayDetailResponse
 import com.example.safeaid.core.response.ReminderTabResponse
+import com.example.safeaid.core.response.MorningExerciseChallengeResponse
+import com.example.safeaid.core.response.CheckInResponse
+import com.example.safeaid.core.response.RunningChallengeResponse
+import com.example.safeaid.core.response.SaveRunningSessionResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -144,4 +148,21 @@ interface ApiService {
     suspend fun updateReminderStatus(
         @Path("reminder_id") reminderId: String
     ): Response<Any>
+
+    @GET("challenges/morning-exercise")
+    suspend fun getMorningExerciseChallenge(): Response<MorningExerciseChallengeResponse>
+
+    @POST("challenges/morning-exercise/check-in")
+    suspend fun checkInMorningExercise(): Response<CheckInResponse>
+
+    @GET("challenges/running")
+    suspend fun getRunningChallenge(): Response<RunningChallengeResponse>
+
+    @POST("challenges/running/session")
+    suspend fun saveRunningSession(
+        @Query("steps") steps: Int,
+        @Query("distance") distance: Double,
+        @Query("duration_minutes") durationMinutes: Long,
+        @Query("calories") calories: Int
+    ): Response<SaveRunningSessionResponse>
 }

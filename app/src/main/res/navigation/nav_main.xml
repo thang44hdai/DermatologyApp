@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_main"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/mainScreen">
 
     <fragment
         android:id="@+id/mainScreen"
@@ -67,6 +67,20 @@
         <action
             android:id="@+id/action_mainScreen_to_reminderMainFragment"
             app:destination="@id/reminderMainFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
+        <action
+            android:id="@+id/action_mainScreen_to_morningExerciseFragment"
+            app:destination="@id/morningExerciseFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
+        <action
+            android:id="@+id/action_mainScreen_to_runningChallengeFragment"
+            app:destination="@id/runningChallengeFragment"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_right"
             app:popEnterAnim="@anim/slide_in_right"
@@ -176,4 +190,12 @@
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_left" />
     </fragment>
+    <fragment
+        android:id="@+id/morningExerciseFragment"
+        android:name="com.example.safeaid.screens.challenge.MorningExerciseFragment"
+        android:label="MorningExerciseFragment" />
+    <fragment
+        android:id="@+id/runningChallengeFragment"
+        android:name="com.example.safeaid.screens.challenge.RunningChallengeFragment"
+        android:label="RunningChallengeFragment" />
 </navigation>
