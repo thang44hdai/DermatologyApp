@@ -2,8 +2,10 @@ package com.example.safeaid.screens.map
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import androidx.core.content.ContextCompat
@@ -51,25 +53,17 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
     }
 
     override fun onInit() {
+        // Setup map
         viewBinding.mapView.setTileSource(TileSourceFactory.MAPNIK)
         viewBinding.mapView.setMultiTouchControls(true)
+        showCurrentLocationMarker(viewModel.currentLocation.latitude, viewModel.currentLocation.longitude)
         viewBinding.mapView.controller.setZoom(viewModel.zoomMap)
-        val initMarker = Marker(viewBinding.mapView).apply {
-            position = GeoPoint(20.980983103228652, 105.788156785282)
-            setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-            title = "Địa chỉ hiện tại"
-            icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_current_location)
-        }
-        viewBinding.mapView.controller.setCenter(GeoPoint(20.980983103228652, 105.788156785282))
-        viewBinding.mapView.overlays.add(initMarker)
-        viewBinding.mapView.invalidate()
 
+        // Initialize location client
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+
+        // Request location permission and get current location
         requestLocationPermission()
-        viewModel.searchPharmacyNear("20.980983103228652", "105.788156785282")
-        if (viewModel.targetLocation != GeoPoint(0, 0)) {
-            viewBinding.mapView.controller.animateTo(viewModel.targetLocation)
-        }
     }
 
     override fun onInitObserver() {
@@ -117,6 +111,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
             override fun onZoom(event: ZoomEvent?): Boolean {
                 event?.let {
                     val currentZoom = it.zoomLevel
+                    Log.i("MapLocation", "$currentZoom")
                     viewModel.zoomMap = currentZoom
                 }
                 return true
@@ -135,17 +130,13 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
     }
 
     private fun showPharmacyBottomSheet(pharmacy: PharmacyResponse) {
-        // Animate to pharmacy location
-        val point = GeoPoint(pharmacy.latitude, pharmacy.longitude)
-        viewBinding.mapView.controller.animateTo(point)
-        viewModel.targetLocation = point
-
         val bottomSheet = PharmacyBottomSheet.newInstance(pharmacy)
         bottomSheet.setOnClick(object : PharmacyBottomSheet.OnClickPharmacyBottomSheet {
             override fun onClickViewDetail(data: PharmacyResponse) {
-                val bundle = Bundle()
-                bundle.putSerializable(PharmacyDetailFragment.ARG, data)
-                bundle.putBoolean(PharmacyDetailFragment.IS_DIRECTION, false)
+                val bundle = Bundle().apply {
+                    putSerializable(PharmacyDetailFragment.ARG, data)
+                    putBoolean(PharmacyDetailFragment.IS_DIRECTION, false)
+                }
                 findNavController().navigate(
                     R.id.action_mainScreen_to_pharmacyDetailFragment,
                     bundle
@@ -153,9 +144,11 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
             }
 
             override fun onClickDirection(data: PharmacyResponse) {
-                val current = viewModel.currentLocation
-                val dest = GeoPoint(data.latitude, data.longitude)
-                viewModel.getRoute(current, dest)
+                if (data.latitude != null && data.longitude != null) {
+                    val current = viewModel.currentLocation
+                    val dest = GeoPoint(data.latitude, data.longitude)
+                    viewModel.getRoute(current, dest)
+                }
             }
         })
         bottomSheet.show(parentFragmentManager, "PharmacyBottomSheet")
@@ -167,15 +160,24 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
                 is MapState.PharmaciesNearBy -> {
                     addMarkers(data.data)
                 }
-
-                else -> {}
             }
         }
-        state?.doIfFailure { }
+        state?.doIfFailure { error ->
+            android.widget.Toast.makeText(
+                requireContext(),
+                "Lỗi: ${error.message}",
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun addMarkers(pharmacies: List<PharmacyResponse>) {
-        pharmacies.forEachIndexed { idx, pharmacy ->
+        // Remove old pharmacy markers (keep current location marker)
+        viewBinding.mapView.overlays.removeAll { overlay ->
+            overlay is Marker && overlay.title != "Vị trí của bạn"
+        }
+
+        pharmacies.forEach { pharmacy ->
             if (pharmacy.latitude != null && pharmacy.longitude != null) {
                 val point = GeoPoint(pharmacy.latitude, pharmacy.longitude)
                 val marker = Marker(viewBinding.mapView).apply {
@@ -183,54 +185,17 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
                     setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                     title = pharmacy.name
                     subDescription = "${pharmacy.address}\nGiờ mở cửa: ${pharmacy.openTime}"
-                    icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_location_map)
+                    icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_hospital)
 
-                    setOnMarkerClickListener { clickedMarker, mapView ->
-                        mapView.controller.animateTo(clickedMarker.position)
-                        viewModel.targetLocation = clickedMarker.position
-
-                        val bottomSheet = PharmacyBottomSheet.newInstance(pharmacy)
-                        bottomSheet.setOnClick(object :
-                            PharmacyBottomSheet.OnClickPharmacyBottomSheet {
-                            override fun onClickViewDetail(data: PharmacyResponse) {
-                                val bundle = Bundle()
-                                bundle.putSerializable(PharmacyDetailFragment.ARG, data)
-                                bundle.putBoolean(PharmacyDetailFragment.IS_DIRECTION, false)
-                                findNavController().navigate(
-                                    R.id.action_mainScreen_to_pharmacyDetailFragment,
-                                    bundle
-                                )
-                            }
-
-                            override fun onClickDirection(data: PharmacyResponse) {
-                                val current = viewModel.currentLocation
-                                val dest = GeoPoint(data.latitude, data.longitude)
-                                viewModel.getRoute(current, dest)
-                            }
-                        })
-                        bottomSheet.show(parentFragmentManager, "PharmacyBottomSheet")
+                    setOnMarkerClickListener { _, mapView ->
+                        mapView.controller.animateTo(position)
+                        viewModel.targetLocation = position
+                        showPharmacyBottomSheet(pharmacy)
                         true
                     }
                 }
 
                 viewBinding.mapView.overlays.add(marker)
-
-                if (idx == 0 && viewModel.isPredicted) {
-                    val line = Polyline().apply {
-                        setPoints(listOf(viewModel.currentLocation, point))
-                        title = "Đường đi tới ${pharmacy.name}"
-                        outlinePaint.color = Color.RED
-                        outlinePaint.strokeWidth = 8f
-                    }
-                    viewBinding.mapView.overlays.add(line)
-                    viewModel.isPredicted = false
-                }
-                if (viewModel.directionToLocation != null) {
-                    val target = viewModel.directionToLocation
-                    val current = viewModel.currentLocation
-                    val dest = GeoPoint(target?.latitude ?: 0.0, target?.longitude ?: 0.0)
-                    viewModel.getRoute(current, dest)
-                }
             }
         }
 
@@ -238,15 +203,24 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
     }
 
     private fun requestLocationPermission() {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
+        val hasFineLocation = ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+        val hasCoarseLocation = ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (hasFineLocation || hasCoarseLocation) {
             getCurrentLocation()
         } else {
             requestPermissions(
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ),
                 REQUEST_LOCATION_PERMISSION
             )
         }
@@ -258,206 +232,192 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_LOCATION_PERMISSION &&
-            grantResults.isNotEmpty() &&
-            grantResults[0] == PackageManager.PERMISSION_GRANTED
-        ) {
-            getCurrentLocation()
-        } else {
+        if (requestCode == REQUEST_LOCATION_PERMISSION) {
+            if (grantResults.isNotEmpty() &&
+                (grantResults[0] == PackageManager.PERMISSION_GRANTED ||
+                        grantResults.getOrNull(1) == PackageManager.PERMISSION_GRANTED)
+            ) {
+                getCurrentLocation()
+            } else {
+                android.widget.Toast.makeText(
+                    requireContext(),
+                    "Cần cấp quyền truy cập vị trí để sử dụng chức năng này",
+                    android.widget.Toast.LENGTH_LONG
+                ).show()
+            }
         }
     }
 
     @SuppressLint("MissingPermission")
     private fun getCurrentLocation() {
+        Log.d("MapLocation", "🔍 [1/4] START - Trying lastLocation...")
+        val startTime = System.currentTimeMillis()
+        
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            location?.let {
-                val lat = it.latitude
-                val lon = it.longitude
-                val geoPoint = GeoPoint(lat, lon)
-
-                val mapController = viewBinding.mapView.controller
-                mapController.setCenter(geoPoint)
-                mapController.setZoom(16.0)
-
-                // 🔹 Hiển thị marker cho vị trí hiện tại
-                showCurrentLocationMarker(lat, lon)
-
-                // 🔹 Gọi API tìm nhà thuốc gần đó
-                viewModel.searchPharmacyNear(
-                    latitude = lat.toString(),
-                    longitude = lon.toString(),
-                )
+            val elapsed = System.currentTimeMillis() - startTime
+            if (location != null) {
+                Log.d("MapLocation", "✅ [1/4] SUCCESS - Got lastLocation in ${elapsed}ms: (${location.latitude}, ${location.longitude})")
+                handleLocationResult(location.latitude, location.longitude)
+            } else {
+                Log.d("MapLocation", "⚠️ [1/4] NULL - lastLocation is null after ${elapsed}ms")
+                requestCurrentLocation()
             }
+        }.addOnFailureListener { e ->
+            val elapsed = System.currentTimeMillis() - startTime
+            Log.e("MapLocation", "❌ [1/4] FAIL - lastLocation failed after ${elapsed}ms: ${e.message}")
+            requestCurrentLocation()
         }
     }
 
+    @SuppressLint("MissingPermission")
+    private fun requestCurrentLocation() {
+        Log.d("MapLocation", "🔍 [2/4] START - Trying BALANCED_POWER_ACCURACY (WiFi/Network)...")
+        val startTime = System.currentTimeMillis()
+        val cancellationTokenSource = com.google.android.gms.tasks.CancellationTokenSource()
+
+        fusedLocationClient.getCurrentLocation(
+            com.google.android.gms.location.LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY,
+            cancellationTokenSource.token
+        ).addOnSuccessListener { location ->
+            val elapsed = System.currentTimeMillis() - startTime
+            if (location != null) {
+                Log.d("MapLocation", "✅ [2/4] SUCCESS - Got BALANCED location in ${elapsed}ms: (${location.latitude}, ${location.longitude})")
+                handleLocationResult(location.latitude, location.longitude)
+            } else {
+                Log.d("MapLocation", "⚠️ [2/4] NULL - BALANCED location is null after ${elapsed}ms")
+                tryHighAccuracyLocation()
+            }
+        }.addOnFailureListener { e ->
+            val elapsed = System.currentTimeMillis() - startTime
+            Log.e("MapLocation", "❌ [2/4] FAIL - BALANCED location failed after ${elapsed}ms: ${e.message}")
+            tryHighAccuracyLocation()
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun tryHighAccuracyLocation() {
+        Log.d("MapLocation", "🔍 [3/4] START - Trying HIGH_ACCURACY (GPS)...")
+        val startTime = System.currentTimeMillis()
+        val cancellationTokenSource = com.google.android.gms.tasks.CancellationTokenSource()
+
+        fusedLocationClient.getCurrentLocation(
+            com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY,
+            cancellationTokenSource.token
+        ).addOnSuccessListener { location ->
+            val elapsed = System.currentTimeMillis() - startTime
+            if (location != null) {
+                Log.d("MapLocation", "✅ [3/4] SUCCESS - Got HIGH_ACCURACY in ${elapsed}ms: (${location.latitude}, ${location.longitude})")
+                handleLocationResult(location.latitude, location.longitude)
+            } else {
+                Log.d("MapLocation", "⚠️ [3/4] NULL - HIGH_ACCURACY is null after ${elapsed}ms")
+                // Last resort: try LocationManager
+                tryLocationManager()
+            }
+        }.addOnFailureListener { e ->
+            val elapsed = System.currentTimeMillis() - startTime
+            Log.e("MapLocation", "❌ [3/4] FAIL - HIGH_ACCURACY failed after ${elapsed}ms: ${e.message}")
+            tryLocationManager()
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun tryLocationManager() {
+        Log.d("MapLocation", "🔍 [4/4] START - Trying LocationManager (fallback)...")
+        val startTime = System.currentTimeMillis()
+        
+        try {
+            val locationManager =
+                requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+            // Check if location is enabled
+            val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+            val isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+            
+            Log.d("MapLocation", "📍 GPS enabled: $isGpsEnabled, Network enabled: $isNetworkEnabled")
+
+            if (!isGpsEnabled && !isNetworkEnabled) {
+                Log.e("MapLocation", "❌ [4/4] FAIL - No location providers enabled")
+                showLocationError("Vui lòng bật định vị trong cài đặt thiết bị")
+                return
+            }
+
+            // Try network provider first (faster)
+            var location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+            val elapsed1 = System.currentTimeMillis() - startTime
+            
+            if (location != null) {
+                Log.d("MapLocation", "✅ [4/4] SUCCESS - Got NETWORK location in ${elapsed1}ms: (${location.latitude}, ${location.longitude})")
+            } else {
+                Log.d("MapLocation", "⚠️ NETWORK location is null after ${elapsed1}ms, trying GPS...")
+                // If network provider fails, try GPS
+                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                val elapsed2 = System.currentTimeMillis() - startTime
+                
+                if (location != null) {
+                    Log.d("MapLocation", "✅ [4/4] SUCCESS - Got GPS location in ${elapsed2}ms: (${location.latitude}, ${location.longitude})")
+                } else {
+                    Log.e("MapLocation", "❌ [4/4] FAIL - Both NETWORK and GPS returned null after ${elapsed2}ms")
+                }
+            }
+
+            if (location != null) {
+                handleLocationResult(location.latitude, location.longitude)
+            } else {
+                showLocationError("Không thể lấy vị trí. Vui lòng:\n• Bật định vị\n• Đợi vài giây để GPS khởi động\n• Thử lại")
+            }
+        } catch (e: Exception) {
+            val elapsed = System.currentTimeMillis() - startTime
+            Log.e("MapLocation", "❌ [4/4] EXCEPTION after ${elapsed}ms: ${e.message}")
+            showLocationError("Lỗi: ${e.message ?: "Không thể truy cập dịch vụ định vị"}")
+        }
+    }
+
+    private fun showLocationError(message: String) {
+        android.widget.Toast.makeText(
+            requireContext(),
+            message,
+            android.widget.Toast.LENGTH_LONG
+        ).show()
+    }
+
+    private fun handleLocationResult(lat: Double, lon: Double) {
+        val geoPoint = GeoPoint(lat, lon)
+
+        // Update ViewModel with current location
+        viewModel.currentLocation = geoPoint
+
+        // Center map on current location
+        viewBinding.mapView.controller.setCenter(geoPoint)
+        viewBinding.mapView.controller.setZoom(viewModel.zoomMap)
+
+        // Show current location marker
+        showCurrentLocationMarker(lat, lon)
+
+        // Search nearby pharmacies
+        viewModel.searchPharmacyNear(
+            latitude = lat.toString(),
+            longitude = lon.toString()
+        )
+    }
+
     private fun showCurrentLocationMarker(lat: Double, lon: Double) {
+        // Remove old current location marker if exists
+        viewBinding.mapView.overlays.removeAll { overlay ->
+            overlay is Marker && overlay.title == "Vị trí của bạn"
+        }
+
         val currentMarker = Marker(viewBinding.mapView).apply {
             position = GeoPoint(lat, lon)
             setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
             title = "Vị trí của bạn"
-
             icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_my_location)
         }
 
-        viewBinding.mapView.overlays.add(currentMarker)
+        viewBinding.mapView.overlays.add(0, currentMarker) // Add at index 0 to show on top
         viewBinding.mapView.invalidate()
     }
 
     private fun navigateToFilterScreen() {
         findNavController().navigate(R.id.action_mainScreen_to_pharmacySearchFragment)
-    }
-
-    private fun mockDataMap() {
-        val mockPharmacies = listOf(
-            PharmacyResponse(
-                id = "1",
-                name = "Nhà Thuốc Minh Tâm",
-                address = "123 Nguyễn Trãi, Quận 1, TP.HCM",
-                distanceKm = "0.5",
-                latitude = 10.762622,
-                longitude = 106.660172,
-                openTime = "08:00",
-                closeTime = "22:00",
-                phone = "0901 234 567",
-                ratings = "4.5",
-                images = listOf(
-                    "https://example.com/pharmacy1/img1.jpg",
-                    "https://example.com/pharmacy1/img2.jpg"
-                ),
-                logoUrl = "https://example.com/pharmacy1/logo.png"
-            ),
-            PharmacyResponse(
-                id = "2",
-                name = "Nhà Thuốc Long Châu",
-                address = "45 Lê Duẩn, Quận 1, TP.HCM",
-                distanceKm = "1.2",
-                latitude = 10.781111,
-                longitude = 106.699722,
-                openTime = "07:30",
-                closeTime = "23:00",
-                phone = "028 3911 2233",
-                ratings = "4.7",
-                images = listOf(
-                    "https://example.com/pharmacy2/img1.jpg"
-                ),
-                logoUrl = "https://example.com/pharmacy2/logo.png"
-            ),
-            PharmacyResponse(
-                id = "3",
-                name = "Pharmacity Pasteur",
-                address = "85 Pasteur, Quận 3, TP.HCM",
-                distanceKm = "0.9",
-                latitude = 10.779783,
-                longitude = 106.696564,
-                openTime = "07:00",
-                closeTime = "23:00",
-                phone = "1800 6821",
-                ratings = "4.4",
-                images = listOf(),
-                logoUrl = "https://example.com/pharmacy3/logo.png"
-            ),
-            PharmacyResponse(
-                id = "4",
-                name = "Nhà Thuốc Eco Pharma",
-                address = "12 Nguyễn Văn Cừ, Quận 5, TP.HCM",
-                distanceKm = "2.3",
-                latitude = 10.753468,
-                longitude = 106.666992,
-                openTime = "08:00",
-                closeTime = "21:00",
-                phone = "0902 888 111",
-                ratings = "4.2",
-                images = listOf(
-                    "https://example.com/pharmacy4/img1.jpg"
-                ),
-                logoUrl = "https://example.com/pharmacy4/logo.png"
-            ),
-            PharmacyResponse(
-                id = "5",
-                name = "Nhà Thuốc Hồng Phát",
-                address = "200 Điện Biên Phủ, Quận Bình Thạnh, TP.HCM",
-                distanceKm = "3.1",
-                latitude = 10.802165,
-                longitude = 106.711105,
-                openTime = "08:30",
-                closeTime = "21:30",
-                phone = "0933 456 789",
-                ratings = "4.0",
-                images = listOf(),
-                logoUrl = null
-            ),
-            PharmacyResponse(
-                id = "6",
-                name = "Pharmacity Đinh Tiên Hoàng",
-                address = "250 Đinh Tiên Hoàng, Quận 1, TP.HCM",
-                distanceKm = "1.8",
-                latitude = 10.799000,
-                longitude = 106.700900,
-                openTime = "07:00",
-                closeTime = "23:00",
-                phone = "1800 6821",
-                ratings = "4.6",
-                images = listOf(),
-                logoUrl = "https://example.com/pharmacy6/logo.png"
-            ),
-            PharmacyResponse(
-                id = "7",
-                name = "Nhà Thuốc Việt",
-                address = "55 Hai Bà Trưng, Quận 1, TP.HCM",
-                distanceKm = "0.7",
-                latitude = 10.779210,
-                longitude = 106.699559,
-                openTime = "08:00",
-                closeTime = "22:00",
-                phone = "0909 123 456",
-                ratings = "4.3",
-                images = listOf(),
-                logoUrl = null
-            ),
-            PharmacyResponse(
-                id = "8",
-                name = "Nhà Thuốc An Khang",
-                address = "23 Nguyễn Thị Minh Khai, Quận 1, TP.HCM",
-                distanceKm = "1.5",
-                latitude = 10.782620,
-                longitude = 106.695700,
-                openTime = "07:30",
-                closeTime = "22:00",
-                phone = "028 7777 8888",
-                ratings = "4.5",
-                images = listOf(),
-                logoUrl = "https://example.com/pharmacy8/logo.png"
-            ),
-            PharmacyResponse(
-                id = "9",
-                name = "Nhà Thuốc Trung Sơn",
-                address = "10 Cống Quỳnh, Quận 1, TP.HCM",
-                distanceKm = "1.1",
-                latitude = 10.768720,
-                longitude = 106.689900,
-                openTime = "08:00",
-                closeTime = "23:00",
-                phone = "028 3456 7890",
-                ratings = "4.1",
-                images = listOf(),
-                logoUrl = "https://example.com/pharmacy9/logo.png"
-            ),
-            PharmacyResponse(
-                id = "10",
-                name = "Pharmacity Nguyễn Thị Thập",
-                address = "450 Nguyễn Thị Thập, Quận 7, TP.HCM",
-                distanceKm = "5.0",
-                latitude = 10.737590,
-                longitude = 106.721940,
-                openTime = "07:00",
-                closeTime = "23:00",
-                phone = "1800 6821",
-                ratings = "4.6",
-                images = listOf(),
-                logoUrl = null
-            )
-        )
-        viewModel.updateState(DataResult.Success(MapState.PharmaciesNearBy(mockPharmacies)))
     }
 }
