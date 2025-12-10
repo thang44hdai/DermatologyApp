@@ -26,28 +26,31 @@ class LoginViewModel @Inject constructor(
 ) : BaseViewModel<LoginState, LoginEvent>() {
     fun verifyToken() {
         viewModelScope.launch(Dispatchers.IO) {
-            ApiCaller.safeApiCall(
-                apiCall = { apiService.verifyToken() },
-                callback = { result ->
-                    result.doIfSuccess {
-                        updateState(DataResult.Success(LoginState.LoginRes(isSuccess = true)))
+            val token = appPreference.getToken().first()
+            if (!token.isEmpty()) {
+                updateState(DataResult.Loading)
+                ApiCaller.safeApiCall(
+                    apiCall = { apiService.verifyToken() },
+                    callback = { result ->
+                        result.doIfSuccess {
+                            updateState(DataResult.Success(LoginState.LoginRes(isSuccess = true)))
+                        }
+                        result.doIfFailure {
+                            refreshToken()
+                        }
                     }
-                    result.doIfFailure {
-                        refreshToken()
-                    }
-                }
-            )
+                )
+            }
         }
     }
 
     fun login(userName: String, pw: String) {
         viewModelScope.launch(Dispatchers.IO) {
+            updateState(DataResult.Loading)
             val request = LoginRequest(username = userName, password = pw)
             ApiCaller.safeApiCall(
                 apiCall = { apiService.login(request) },
                 callback = { result ->
-                    result.onLoading {
-                    }
                     result.doIfSuccess {
                         val token = it.accessToken
                         val refresherToken = it.refreshToken
@@ -61,8 +64,8 @@ class LoginViewModel @Inject constructor(
                         }
                         updateState(DataResult.Success(LoginState.LoginRes(isSuccess = true)))
                     }
-                    result.doIfFailure {
-                        updateState(DataResult.Success(LoginState.LoginRes(isSuccess = false)))
+                    result.doIfFailure { error ->
+                        updateState(DataResult.Error(error))
                     }
                 }
             )
@@ -71,6 +74,7 @@ class LoginViewModel @Inject constructor(
 
     fun googleLogin(idToken: String) {
         viewModelScope.launch(Dispatchers.IO) {
+            updateState(DataResult.Loading)
             val request = GoogleLoginRequest(idToken = idToken)
             ApiCaller.safeApiCall(
                 apiCall = { apiService.googleLogin(request) },
@@ -90,8 +94,8 @@ class LoginViewModel @Inject constructor(
                         }
                         updateState(DataResult.Success(LoginState.LoginRes(isSuccess = true)))
                     }
-                    result.doIfFailure {
-                        updateState(DataResult.Success(LoginState.LoginRes(isSuccess = false)))
+                    result.doIfFailure { error ->
+                        updateState(DataResult.Error(error))
                     }
                 }
             )
@@ -120,8 +124,8 @@ class LoginViewModel @Inject constructor(
                         }
                         updateState(DataResult.Success(LoginState.LoginRes(isSuccess = true)))
                     }
-                    result.doIfFailure {
-                        updateState(DataResult.Success(LoginState.LoginRes(isSuccess = false)))
+                    result.doIfFailure { error ->
+                        updateState(DataResult.Error(error))
                     }
                 }
             )
@@ -131,7 +135,7 @@ class LoginViewModel @Inject constructor(
     fun registerAccount(email: String, userName: String, name: String, pw: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val request =
-                RegisterRequest(email = email, username = userName, fullname = name, password = pw, )
+                RegisterRequest(email = email, username = userName, fullname = name, password = pw)
             ApiCaller.safeApiCall(
                 apiCall = { apiService.register(request) },
                 callback = { result ->
@@ -143,6 +147,13 @@ class LoginViewModel @Inject constructor(
                     }
                 }
             )
+        }
+    }
+
+    fun clearToken() {
+        viewModelScope.launch(Dispatchers.IO) {
+            appPreference.saveToken("")
+            appPreference.saveRefreshToken("")
         }
     }
 

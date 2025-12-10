@@ -9,13 +9,16 @@ import com.bumptech.glide.Glide
 import com.example.dermatology.R
 import com.example.dermatology.databinding.FragmentProfileBinding
 import com.example.safeaid.core.ui.BaseFragment
+import com.example.safeaid.core.ui.showConfirmDialog
 import com.example.safeaid.core.utils.setOnDebounceClick
+import com.example.safeaid.screens.authenication.viewmodel.LoginViewModel
 import com.example.safeaid.screens.home.HomeViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     private val homeViewModel: HomeViewModel by activityViewModels()
+    private val loginViewModel: LoginViewModel by activityViewModels()
 
     override fun isHostFragment(): Boolean {
         return true
@@ -43,7 +46,11 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     override fun onInitListener() {
         // Profile edit button
         viewBinding.btnEditProfile.setOnDebounceClick {
-            android.widget.Toast.makeText(requireContext(), "Chức năng đang phát triển", android.widget.Toast.LENGTH_SHORT).show()
+            android.widget.Toast.makeText(
+                requireContext(),
+                "Chức năng đang phát triển",
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
         }
 
         // History button
@@ -58,7 +65,11 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
         // Skin care button
         viewBinding.btnSkinCare.setOnDebounceClick {
-            android.widget.Toast.makeText(requireContext(), "Thiền dưỡng tâm - Chức năng đang phát triển", android.widget.Toast.LENGTH_SHORT).show()
+            android.widget.Toast.makeText(
+                requireContext(),
+                "Thiền dưỡng tâm - Chức năng đang phát triển",
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
         }
 
         // Challenge button (Running Challenge)
@@ -68,12 +79,20 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
         // Sleep button
         viewBinding.btnSleep.setOnDebounceClick {
-            android.widget.Toast.makeText(requireContext(), "Thử thách ngủ sớm - Chức năng đang phát triển", android.widget.Toast.LENGTH_SHORT).show()
+            android.widget.Toast.makeText(
+                requireContext(),
+                "Thử thách ngủ sớm - Chức năng đang phát triển",
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
         }
 
         // Settings button
         viewBinding.btnSettings.setOnDebounceClick {
-            android.widget.Toast.makeText(requireContext(), "Cài đặt - Chức năng đang phát triển", android.widget.Toast.LENGTH_SHORT).show()
+            android.widget.Toast.makeText(
+                requireContext(),
+                "Cài đặt - Chức năng đang phát triển",
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
         }
 
         // Notifications button (Morning Exercise Challenge)
@@ -88,14 +107,22 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     }
 
     private fun showLogoutDialog() {
-        androidx.appcompat.app.AlertDialog.Builder(requireContext())
-            .setTitle("Đăng xuất")
-            .setMessage("Bạn có chắc chắn muốn đăng xuất?")
-            .setPositiveButton("Đăng xuất") { _, _ ->
-                android.widget.Toast.makeText(requireContext(), "Đã đăng xuất", android.widget.Toast.LENGTH_SHORT).show()
-            }
-            .setNegativeButton("Hủy", null)
-            .show()
+        requireContext().showConfirmDialog(
+            title = "Đăng xuất",
+            message = "Bạn có chắc chắn muốn đăng xuất?",
+            onConfirm = {
+                loginViewModel.clearToken()
+                findNavController().navigate(R.id.loginFragment)
+                android.widget.Toast.makeText(
+                    requireContext(),
+                    "Đã đăng xuất",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+            },
+            onCancel = {},
+            confirmText = "Đăng xuất",
+            cancelText = "Hủy"
+        )
     }
 
 }

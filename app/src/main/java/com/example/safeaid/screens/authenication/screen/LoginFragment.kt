@@ -1,6 +1,7 @@
 package com.example.safeaid.screens.authenication.screen
 
 import android.util.Log
+import android.view.View
 import androidx.credentials.Credential
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
@@ -15,6 +16,7 @@ import com.example.dermatology.R
 import com.example.dermatology.databinding.FragmentLoginBinding
 import com.example.safeaid.core.ui.BaseDialog
 import com.example.safeaid.core.ui.BaseFragment
+import com.example.safeaid.core.ui.showErrorDialog
 import com.example.safeaid.core.utils.DataResult
 import com.example.safeaid.core.utils.ViewUtils
 import com.example.safeaid.core.utils.doIfFailure
@@ -28,6 +30,8 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingExcept
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import androidx.credentials.CredentialManager
+import com.example.safeaid.core.ui.showInfoDialog
+import com.example.safeaid.core.utils.onLoading
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import kotlinx.coroutines.launch
 
@@ -69,9 +73,15 @@ class LoginFragment() : BaseFragment<FragmentLoginBinding>() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.updateState(null)
+    }
+
     private fun signInWithGoogle() {
-        val googleIdOption = GetSignInWithGoogleOption.Builder(getString(R.string.default_web_client_id))
-            .build()
+        val googleIdOption =
+            GetSignInWithGoogleOption.Builder(getString(R.string.default_web_client_id))
+                .build()
 
         val request = GetCredentialRequest.Builder()
             .addCredentialOption(googleIdOption)
@@ -85,7 +95,6 @@ class LoginFragment() : BaseFragment<FragmentLoginBinding>() {
                 )
                 handleSignInResult(result.credential)
             } catch (e: GetCredentialException) {
-                Log.e("LoginFragment", "Google Sign-In failed", e)
                 showErrorDialog("Đã xảy ra lỗi không mong muốn. Vui lòng thử lại.")
             } catch (e: Exception) {
                 Log.e("LoginFragment", "Unexpected error during Google Sign-In", e)
@@ -113,6 +122,7 @@ class LoginFragment() : BaseFragment<FragmentLoginBinding>() {
                     showErrorDialog("Lỗi xử lý thông tin đăng nhập. Vui lòng thử lại.")
                 }
             }
+
             else -> {
                 Log.w("LoginFragment", "Unexpected credential type")
                 showErrorDialog("Loại xác thực không được hỗ trợ.")
@@ -120,59 +130,34 @@ class LoginFragment() : BaseFragment<FragmentLoginBinding>() {
         }
     }
 
-//    private fun handleSignInError(e: GetCredentialException) {
-//        when {
-//            e is com.google.android.libraries.identity.googleid.GetGoogleIdOptionException -> {
-//                when (e.errorCode) {
-//                    com.google.android.libraries.identity.googleid.GetGoogleIdOptionException.ERROR_NO_CREDENTIAL_AVAILABLE -> {
-//                        // User cancelled or no account available
-//                        // Do nothing, user can try again
-//                    }
-//                    else -> {
-//                        showErrorDialog("Đăng nhập Google thất bại: ${e.message}")
-//                    }
-//                }
-//            }
-//            else -> {
-//                showErrorDialog("Đăng nhập Google thất bại: ${e.message ?: "Lỗi không xác định"}")
-//            }
-//        }
-//    }
-
     private fun showErrorDialog(message: String) {
-        val dialog = BaseDialog(requireContext())
-        dialog.setView(
-            title = "Thông báo",
-            message = message,
-            onClickPositive = {},
-            onClickNegative = null
+        requireContext().showErrorDialog(
+            title = "Lỗi đăng nhập",
+            message = message
         )
-        dialog.show()
     }
 
     private fun updateUi(state: DataResult<LoginState>?) {
         state?.doIfSuccess { data ->
+            viewBinding.progressBar.visibility = View.GONE
             when (data) {
                 is LoginState.LoginRes -> {
                     if (data.isSuccess) {
                         findNavController().navigate(R.id.mainScreen)
-                    } else {
-                        val dialog = BaseDialog(requireContext())
-                        dialog.setView(
-                            title = "Thông báo",
-                            message = "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.",
-                            onClickPositive = {},
-                            onClickNegative = null
-                        )
-                        dialog.show()
                     }
                 }
 
                 else -> {}
             }
         }
-        state?.doIfFailure { 
-            showErrorDialog("Có lỗi xảy ra. Vui lòng thử lại.")
+        state?.doIfFailure { error ->
+            viewBinding.progressBar.visibility = View.GONE
+            requireContext().showErrorDialog(
+                message = "${error.errorCode}: ${error.message}",
+            )
+        }
+        state?.onLoading {
+            viewBinding.progressBar.visibility = View.VISIBLE
         }
     }
 }
