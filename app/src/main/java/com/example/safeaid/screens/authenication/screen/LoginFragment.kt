@@ -2,6 +2,9 @@ package com.example.safeaid.screens.authenication.screen
 
 import android.util.Log
 import android.view.View
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.credentials.Credential
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
@@ -35,7 +38,7 @@ import com.example.safeaid.core.utils.onLoading
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import kotlinx.coroutines.launch
 
-class LoginFragment() : BaseFragment<FragmentLoginBinding>() {
+class LoginFragment : BaseFragment<FragmentLoginBinding>() {
     private val viewModel: LoginViewModel by activityViewModels()
     private lateinit var credentialManager: CredentialManager
 
@@ -56,20 +59,34 @@ class LoginFragment() : BaseFragment<FragmentLoginBinding>() {
     }
 
     override fun onInitListener() {
-        viewBinding.root.setOnDebounceClick {
-            ViewUtils.hideKeyboardFrom(requireContext(), viewBinding.root)
-        }
         viewBinding.btnLogin.setOnDebounceClick {
-            val userName = viewBinding.tvEmail.text.toString()
-            val pw = viewBinding.tvPw.text.toString()
-            viewModel.login(userName, pw)
+            if (validateInput()) {
+                showLoading()
+                val userName = viewBinding.tvEmail.text.toString().trim()
+                val pw = viewBinding.tvPw.text.toString().trim()
+                viewModel.login(userName, pw)
+            }
         }
+        
         viewBinding.tvSignUp.setOnDebounceClick {
             findNavController().navigate(R.id.signUpFragment)
         }
 
         viewBinding.btnGoogleLogin.setOnDebounceClick {
+            showLoading()
             signInWithGoogle()
+        }
+
+        viewBinding.tvForgetPw.setOnDebounceClick {
+            requireContext().showInfoDialog(
+                title = "Quên mật khẩu",
+                message = "Tính năng đặt lại mật khẩu sẽ được cập nhật trong phiên bản tiếp theo."
+            )
+        }
+
+        // Password toggle functionality
+        viewBinding.ivPasswordToggle.setOnDebounceClick {
+            togglePasswordVisibility(viewBinding.tvPw, viewBinding.ivPasswordToggle)
         }
     }
 
@@ -79,6 +96,10 @@ class LoginFragment() : BaseFragment<FragmentLoginBinding>() {
     }
 
     private fun signInWithGoogle() {
+        // Update loading message for Google login
+        viewBinding.tvLoadingMessage.text = "Đăng nhập Google..."
+        viewBinding.tvLoadingSubtitle.text = "Đang xác thực tài khoản"
+        
         val googleIdOption =
             GetSignInWithGoogleOption.Builder(getString(R.string.default_web_client_id))
                 .build()
@@ -95,8 +116,10 @@ class LoginFragment() : BaseFragment<FragmentLoginBinding>() {
                 )
                 handleSignInResult(result.credential)
             } catch (e: GetCredentialException) {
+                hideLoading()
                 showErrorDialog("Đã xảy ra lỗi không mong muốn. Vui lòng thử lại.")
             } catch (e: Exception) {
+                hideLoading()
                 Log.e("LoginFragment", "Unexpected error during Google Sign-In", e)
                 showErrorDialog("Đã xảy ra lỗi không mong muốn. Vui lòng thử lại.")
             }
@@ -137,13 +160,81 @@ class LoginFragment() : BaseFragment<FragmentLoginBinding>() {
         )
     }
 
+    private fun validateInput(): Boolean {
+        val email = viewBinding.tvEmail.text.toString().trim()
+        val password = viewBinding.tvPw.text.toString().trim()
+        var isValid = true
+
+        // Clear previous errors
+        clearAllErrors()
+
+        // Email/Username validation
+        if (email.isEmpty()) {
+            showFieldError(viewBinding.tvEmailError, "Vui lòng nhập email hoặc tên đăng nhập")
+            isValid = false
+        }
+
+        // Password validation
+        if (password.isEmpty()) {
+            showFieldError(viewBinding.tvPasswordError, "Vui lòng nhập mật khẩu")
+            isValid = false
+        }
+
+        return isValid
+    }
+
+    private fun showFieldError(errorTextView: TextView, message: String) {
+        errorTextView.text = message
+        errorTextView.visibility = View.VISIBLE
+    }
+
+    private fun clearAllErrors() {
+        viewBinding.tvEmailError.visibility = View.GONE
+        viewBinding.tvPasswordError.visibility = View.GONE
+    }
+
+    private fun togglePasswordVisibility(editText: EditText, toggleIcon: ImageView) {
+        if (editText.inputType == (android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
+            // Show password
+            editText.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            toggleIcon.setImageResource(R.drawable.ic_eye_on)
+        } else {
+            // Hide password
+            editText.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
+            toggleIcon.setImageResource(R.drawable.ic_eye_off)
+        }
+        // Move cursor to end
+        editText.setSelection(editText.text.length)
+    }
+
+    private fun showLoading() {
+        viewBinding.loadingOverlay.visibility = View.VISIBLE
+        viewBinding.scrollView.alpha = 0.5f
+        viewBinding.btnLogin.isEnabled = false
+        viewBinding.btnGoogleLogin.isEnabled = false
+    }
+
+    private fun hideLoading() {
+        viewBinding.loadingOverlay.visibility = View.GONE
+        viewBinding.scrollView.alpha = 1.0f
+        viewBinding.btnLogin.isEnabled = true
+        viewBinding.btnGoogleLogin.isEnabled = true
+    }
+
     private fun updateUi(state: DataResult<LoginState>?) {
         state?.doIfSuccess { data ->
-            viewBinding.progressBar.visibility = View.GONE
+            hideLoading()
             when (data) {
                 is LoginState.LoginRes -> {
                     if (data.isSuccess) {
-                        findNavController().navigate(R.id.mainScreen)
+                        // Show success message briefly before navigation
+                        viewBinding.tvLoadingMessage.text = "Đăng nhập thành công!"
+                        viewBinding.tvLoadingSubtitle.text = "Chuyển hướng..."
+                        
+                        // Delay navigation for better UX
+                        viewBinding.root.postDelayed({
+                            findNavController().navigate(R.id.mainScreen)
+                        }, 1000)
                     }
                 }
 
@@ -151,13 +242,14 @@ class LoginFragment() : BaseFragment<FragmentLoginBinding>() {
             }
         }
         state?.doIfFailure { error ->
-            viewBinding.progressBar.visibility = View.GONE
+            hideLoading()
             requireContext().showErrorDialog(
-                message = "${error.errorCode}: ${error.message}",
+                title = "Đăng nhập thất bại",
+                message = error.message ?: "Có lỗi xảy ra. Vui lòng thử lại."
             )
         }
         state?.onLoading {
-            viewBinding.progressBar.visibility = View.VISIBLE
+            showLoading()
         }
     }
 }
