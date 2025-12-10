@@ -1,5 +1,6 @@
 package com.example.safeaid.screens.profile
 
+import android.content.Intent
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -8,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.dermatology.R
 import com.example.dermatology.databinding.FragmentProfileBinding
+import com.example.safeaid.MainActivity
 import com.example.safeaid.core.ui.BaseFragment
 import com.example.safeaid.core.ui.showConfirmDialog
 import com.example.safeaid.core.utils.setOnDebounceClick
@@ -112,7 +114,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             message = "Bạn có chắc chắn muốn đăng xuất?",
             onConfirm = {
                 loginViewModel.clearToken()
-                findNavController().navigate(R.id.loginFragment)
+                val intent = Intent(requireActivity(), MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
                 android.widget.Toast.makeText(
                     requireContext(),
                     "Đã đăng xuất",

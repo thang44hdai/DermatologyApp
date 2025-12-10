@@ -4,6 +4,7 @@ plugins {
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     id("io.realm.kotlin")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -111,4 +112,7 @@ dependencies {
     implementation("androidx.credentials:credentials-play-services-auth:1.2.2")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 
+    //noti
+    implementation("com.google.firebase:firebase-bom:33.13.0")
+    implementation(libs.firebase.messaging.ktx)
 }

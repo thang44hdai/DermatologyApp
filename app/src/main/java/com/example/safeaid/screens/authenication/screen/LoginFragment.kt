@@ -223,7 +223,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
 
     private fun updateUi(state: DataResult<LoginState>?) {
         state?.doIfSuccess { data ->
-            hideLoading()
             when (data) {
                 is LoginState.LoginRes -> {
                     if (data.isSuccess) {
@@ -234,6 +233,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                         // Delay navigation for better UX
                         viewBinding.root.postDelayed({
                             findNavController().navigate(R.id.mainScreen)
+                            hideLoading()
                         }, 1000)
                     }
                 }

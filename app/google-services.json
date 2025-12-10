@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "426378925787",
+    "project_id": "learningapp-5ef0e",
+    "storage_bucket": "learningapp-5ef0e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:426378925787:android:776ec78ad4f4a406b09efe",
+        "android_client_info": {
+          "package_name": "com.example.dermatology"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkjS3AtOnqpna6uhhHmNDQftGlRdEd3ng"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:426378925787:android:732d610e88aab1e5b09efe",
+        "android_client_info": {
+          "package_name": "com.example.learning_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkjS3AtOnqpna6uhhHmNDQftGlRdEd3ng"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
