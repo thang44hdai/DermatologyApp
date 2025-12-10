@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.example.safeaid.pref.KEYS.FCM_TOKEN
 import com.example.safeaid.pref.KEYS.KEY_USER_NAME
 import com.example.safeaid.pref.KEYS.REFRESH_TOKEN
 import com.example.safeaid.pref.KEYS.TOKEN
@@ -63,10 +64,25 @@ class AppPreferenceImpl @Inject constructor(
             preference[REFRESH_TOKEN] = name
         }
     }
+
+    override fun getFCMToken(): Flow<String> {
+        return dataStore.data
+            .catch { emit(emptyPreferences()) }
+            .map { it[FCM_TOKEN] ?: "" }
+    }
+
+    override suspend fun saveFCMToken(token: String) {
+        dataStore.edit { it[FCM_TOKEN] = token }
+    }
+
+    override suspend fun clearFCMToken() {
+        dataStore.edit { it.remove(FCM_TOKEN) }
+    }
 }
 
 object KEYS {
     val KEY_USER_NAME = stringPreferencesKey("user_name")
     val TOKEN = stringPreferencesKey("token")
     val REFRESH_TOKEN = stringPreferencesKey("refresh_token")
+    val FCM_TOKEN = stringPreferencesKey("fcm_token")
 }

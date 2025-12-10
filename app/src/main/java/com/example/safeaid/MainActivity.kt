@@ -4,12 +4,15 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -19,8 +22,11 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.dermatology.R
 import com.example.dermatology.databinding.ActivityMainBinding
+import com.example.safeaid.core.service.FCMManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -28,6 +34,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private lateinit var navHostFragment: NavHostFragment
+
+    @Inject
+    lateinit var fcmManager: FCMManager
 
     private val multiplePermissionId = 14
     private val multiplePermissionNameList = if (Build.VERSION.SDK_INT >= 33) {
@@ -60,6 +69,8 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
 
         setUpNav()
+        initializeFCM()
+        requestNotificationPermission()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -126,5 +137,44 @@ class MainActivity : AppCompatActivity() {
             return false
         }
         return true
+    }
+
+    private fun initializeFCM() {
+        lifecycleScope.launch {
+            try {
+                val result = fcmManager.initializeFCMToken()
+                result.onSuccess { token ->
+                    Log.d("MainActivity", "✅ FCM đã sẵn sàng")
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Đã đăng ký nhận thông báo",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    fcmManager.sendTestNotification()
+                }.onFailure { error ->
+                    Log.e("MainActivity", "❌ Lỗi FCM", error)
+                    Toast.makeText(this@MainActivity, "Lỗi đăng ký thông báo", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            } catch (e: Exception) {
+                Log.e("MainActivity", "Exception FCM", e)
+            }
+        }
+    }
+
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                    100
+                )
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@ package com.example.safeaid.core.service
 import QuizCategoryResponse
 import com.example.safeaid.core.request.ChatRequest
 import com.example.safeaid.core.request.CreateReminderRequest
+import com.example.safeaid.core.request.FCMTokenRequest
 import com.example.safeaid.core.response.ListMedicineResponse
 import com.example.safeaid.core.response.ListPharmacyResponse
 import com.example.safeaid.core.request.GoogleLoginRequest
@@ -27,11 +28,13 @@ import com.example.safeaid.core.response.ReminderDayDetailResponse
 import com.example.safeaid.core.response.ReminderTabResponse
 import com.example.safeaid.core.response.MorningExerciseChallengeResponse
 import com.example.safeaid.core.response.CheckInResponse
+import com.example.safeaid.core.response.FCMTokenResponse
 import com.example.safeaid.core.response.RunningChallengeResponse
 import com.example.safeaid.core.response.SaveRunningSessionResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.Path
 import retrofit2.http.GET
 import retrofit2.http.Multipart
@@ -165,4 +168,14 @@ interface ApiService {
         @Query("duration_minutes") durationMinutes: Long,
         @Query("calories") calories: Int
     ): Response<SaveRunningSessionResponse>
+    @POST("users/fcm-token")
+    suspend fun registerFCMToken(
+        @Body request: FCMTokenRequest
+    ): Response<FCMTokenResponse>
+
+    @DELETE("users/fcm-token")
+    suspend fun deleteFCMToken(): Response<FCMTokenResponse>
+
+    @POST("users/test-notification")
+    suspend fun sendTestNotification(): Response<FCMTokenResponse>
 }

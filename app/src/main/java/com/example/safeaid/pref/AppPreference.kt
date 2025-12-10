@@ -14,5 +14,7 @@ interface AppPreference {
     suspend fun saveUserName(name: String)
     suspend fun saveToken(name: String)
     suspend fun saveRefreshToken(name: String)
-
+    fun getFCMToken(): Flow<String>
+    suspend fun saveFCMToken(token: String)
+    suspend fun clearFCMToken()
 }

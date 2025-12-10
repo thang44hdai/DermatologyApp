@@ -154,6 +154,8 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             appPreference.saveToken("")
             appPreference.saveRefreshToken("")
+            appPreference.clearFCMToken()
+            apiService.deleteFCMToken()
         }
     }
 
