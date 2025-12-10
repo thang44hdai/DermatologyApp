@@ -3,6 +3,7 @@ package com.example.safeaid.screens.reminder.viewmodel
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.safeaid.core.base.BaseViewModel
+import com.example.safeaid.core.request.UpdateReminderStatusRequest
 import com.example.safeaid.core.service.ApiService
 import com.example.safeaid.core.utils.ApiCaller
 import com.example.safeaid.core.utils.Utils
@@ -178,7 +179,12 @@ class ReminderCalendarViewModel @Inject constructor(
             )
         }
         viewModelScope.launch(Dispatchers.IO) {
-            apiService.updateReminderStatus(medicine.reminderId ?: "")
+            val request = UpdateReminderStatusRequest(
+                reminderId = medicine.reminderId ?: "",
+                scheduledTime = medicine.time,
+                targetDate = _selectedDate.value
+            )
+            apiService.updateReminderStatus(medicine.reminderId ?: "", request)
         }
     }
 

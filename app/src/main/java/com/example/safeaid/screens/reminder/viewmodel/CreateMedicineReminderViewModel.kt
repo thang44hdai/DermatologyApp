@@ -39,6 +39,7 @@ class CreateMedicineReminderViewModel @Inject constructor(
 
     fun createReminder(request: CreateReminderRequest) {
         viewModelScope.launch(Dispatchers.IO) {
+            Log.i("hihihi", "$request")
             ApiCaller.safeApiCall(
                 apiCall = {
                     apiService.createReminder(request)

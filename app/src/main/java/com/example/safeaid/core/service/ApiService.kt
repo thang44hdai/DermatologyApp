@@ -4,6 +4,7 @@ import QuizCategoryResponse
 import com.example.safeaid.core.request.ChatRequest
 import com.example.safeaid.core.request.CreateReminderRequest
 import com.example.safeaid.core.request.FCMTokenRequest
+import com.example.safeaid.core.request.UpdateReminderStatusRequest
 import com.example.safeaid.core.response.ListMedicineResponse
 import com.example.safeaid.core.response.ListPharmacyResponse
 import com.example.safeaid.core.request.GoogleLoginRequest
@@ -149,7 +150,8 @@ interface ApiService {
 
     @POST("reminders/{reminder_id}/toggle-taken")
     suspend fun updateReminderStatus(
-        @Path("reminder_id") reminderId: String
+        @Path("reminder_id") reminderId: String,
+        @Body request: UpdateReminderStatusRequest
     ): Response<Any>
 
     @GET("challenges/morning-exercise")
