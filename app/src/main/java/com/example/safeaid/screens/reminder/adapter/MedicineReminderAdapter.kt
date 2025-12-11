@@ -1,5 +1,6 @@
 package com.example.safeaid.screens.reminder.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -30,9 +31,13 @@ class MedicineReminderAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(medicine: MedicineReminder) {
+            Log.i("hihihi1", "$medicine")
             binding.tvMedicineName.text = medicine.name
             binding.tvMedicineInfo.text = "${medicine.status} • ${medicine.dosage}"
             binding.tvTime.text = medicine.time
+            
+            // Remove listener before setting state to avoid triggering callback
+            binding.switchTaken.setOnCheckedChangeListener(null)
             binding.switchTaken.isChecked = medicine.isTaken
 
             // Show/hide note
@@ -45,8 +50,12 @@ class MedicineReminderAdapter(
                 binding.divider.visibility = android.view.View.GONE
             }
 
+            // Set listener after state is set
             binding.switchTaken.setOnCheckedChangeListener { _, isChecked ->
-                onCheckChanged(medicine, isChecked)
+                // Only trigger if state actually changed
+                if (isChecked != medicine.isTaken) {
+                    onCheckChanged(medicine, isChecked)
+                }
             }
         }
     }
@@ -63,7 +72,7 @@ class MedicineReminderAdapter(
             oldItem: MedicineReminder,
             newItem: MedicineReminder
         ): Boolean {
-            return oldItem == newItem
+            return false
         }
     }
 }

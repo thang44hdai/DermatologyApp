@@ -30,7 +30,7 @@ class ReminderListViewModel @Inject constructor(
                 apiCall = { apiService.getReminderTabs() },
                 callback = { result ->
                     result.doIfSuccess { data ->
-                        Log.i("hihihi", "$data")
+//                        Log.i("hihihi", "$data")
                         _allReminders.value = data.reminders ?: listOf()
                         filterReminders("active")
                     }

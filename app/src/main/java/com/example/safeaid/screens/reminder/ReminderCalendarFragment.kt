@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dermatology.R
 import com.example.dermatology.databinding.FragmentReminderCalendarBinding
 import com.example.safeaid.core.ui.BaseFragment
+import com.example.safeaid.core.ui.showErrorDialog
+import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.setOnDebounceClick
 import com.example.safeaid.screens.reminder.adapter.CalendarDayAdapter
 import com.example.safeaid.screens.reminder.adapter.ReminderTimeAdapter
@@ -38,6 +40,16 @@ class ReminderCalendarFragment : BaseFragment<FragmentReminderCalendarBinding>()
     }
 
     override fun onInitObserver() {
+        viewModel.viewState.flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+            .onEach {
+                it?.doIfFailure {
+                    requireContext().showErrorDialog(
+                        title = "Lỗi",
+                        message = "Không thể update lịch của ngày trong tương lai"
+                    )
+                }
+            }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
         viewModel.calendarDays
             .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
             .onEach { days ->

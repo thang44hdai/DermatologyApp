@@ -6,6 +6,7 @@ import com.example.safeaid.core.base.BaseViewModel
 import com.example.safeaid.core.request.UpdateReminderStatusRequest
 import com.example.safeaid.core.service.ApiService
 import com.example.safeaid.core.utils.ApiCaller
+import com.example.safeaid.core.utils.DataResult
 import com.example.safeaid.core.utils.Utils
 import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.doIfSuccess
@@ -95,7 +96,7 @@ class ReminderCalendarViewModel @Inject constructor(
                 },
                 callback = { result ->
                     result.doIfSuccess { response ->
-                        Log.i("hihihi", "$response")
+//                        Log.i("hihihi", "$response")
                         // Update calendar days with reminder indicators
                         val daysWithReminders = response.days.associate {
                             it.date to it.reminderCount
@@ -165,26 +166,37 @@ class ReminderCalendarViewModel @Inject constructor(
 
     fun onMedicineCheckChanged(medicine: MedicineReminder, isChecked: Boolean) {
         // Update medicine check state locally
-//        Log.i("hihihi", "$medicine")
+//        Log.i("hihihi", "$isChecked\n$medicine")
 //        Log.i("hihihi", "${_reminderTimes.value}")
-        _reminderTimes.value = _reminderTimes.value.map { reminderTime ->
-            reminderTime.copy(
-                medicines = reminderTime.medicines.map { med ->
-                    if (med.reminderId == medicine.reminderId && med.time == medicine.time) {
-                        med.copy(isTaken = isChecked)
-                    } else {
-                        med.copy()
+        viewModelScope.launch(Dispatchers.IO) {
+            ApiCaller.safeApiCall(
+                apiCall = {
+                    apiService.updateReminderStatus(
+                        reminderId = medicine.reminderId ?: "",
+                        scheduledTime = medicine.time,
+                        targetDate = _selectedDate.value
+                    )
+                },
+                callback = { result ->
+                    result.doIfSuccess {
+                        _reminderTimes.value = _reminderTimes.value.map { reminderTime ->
+                            reminderTime.copy(
+                                medicines = reminderTime.medicines.map { med ->
+                                    if (med.reminderId == medicine.reminderId && med.time == medicine.time) {
+                                        val x = med.copy(isTaken = isChecked)
+                                        med.copy(isTaken = isChecked)
+                                    } else {
+                                        med
+                                    }
+                                }
+                            )
+                        }
+                    }
+                    result.doIfFailure {
+                        updateState(DataResult.Error(it.copy(errorCode = Random().nextInt())))
                     }
                 }
             )
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            val request = UpdateReminderStatusRequest(
-                reminderId = medicine.reminderId ?: "",
-                scheduledTime = medicine.time,
-                targetDate = _selectedDate.value
-            )
-            apiService.updateReminderStatus(medicine.reminderId ?: "", request)
         }
     }
 

@@ -150,7 +150,7 @@ class MainActivity : AppCompatActivity() {
                         "Đã đăng ký nhận thông báo",
                         Toast.LENGTH_SHORT
                     ).show()
-                    fcmManager.sendTestNotification()
+//                    fcmManager.sendTestNotification()
                 }.onFailure { error ->
                     Log.e("MainActivity", "❌ Lỗi FCM", error)
                     Toast.makeText(this@MainActivity, "Lỗi đăng ký thông báo", Toast.LENGTH_SHORT)

@@ -151,7 +151,8 @@ interface ApiService {
     @POST("reminders/{reminder_id}/toggle-taken")
     suspend fun updateReminderStatus(
         @Path("reminder_id") reminderId: String,
-        @Body request: UpdateReminderStatusRequest
+        @Query("scheduled_time") scheduledTime: String,
+        @Query("target_date") targetDate: String
     ): Response<Any>
 
     @GET("challenges/morning-exercise")
@@ -170,6 +171,7 @@ interface ApiService {
         @Query("duration_minutes") durationMinutes: Long,
         @Query("calories") calories: Int
     ): Response<SaveRunningSessionResponse>
+
     @POST("users/fcm-token")
     suspend fun registerFCMToken(
         @Body request: FCMTokenRequest
