@@ -170,10 +170,10 @@ class ReminderCalendarViewModel @Inject constructor(
         _reminderTimes.value = _reminderTimes.value.map { reminderTime ->
             reminderTime.copy(
                 medicines = reminderTime.medicines.map { med ->
-                    if (med.reminderId == medicine.reminderId) {
+                    if (med.reminderId == medicine.reminderId && med.time == medicine.time) {
                         med.copy(isTaken = isChecked)
                     } else {
-                        med
+                        med.copy()
                     }
                 }
             )
