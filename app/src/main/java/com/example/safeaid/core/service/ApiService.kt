@@ -128,8 +128,7 @@ interface ApiService {
 
     @GET("reminders/calendar")
     suspend fun getReminderCalendar(
-        @Query("start_date") startDate: String? = null,
-        @Query("end_date") endDate: String? = null
+        @Query("week_offset") weekOffset: Int = 0
     ): Response<ReminderCalendarResponse>
 
     @GET("reminders/calendar/{target_date}")

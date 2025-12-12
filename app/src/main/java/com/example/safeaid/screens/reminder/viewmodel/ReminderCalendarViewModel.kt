@@ -39,44 +39,69 @@ class ReminderCalendarViewModel @Inject constructor(
     private val _isEmpty = MutableStateFlow(false)
     val isEmpty: StateFlow<Boolean> = _isEmpty
 
+    private val _currentWeekOffset = MutableStateFlow(0)
+    val currentWeekOffset: StateFlow<Int> = _currentWeekOffset
+
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
-    fun loadWeekCalendar() {
-        val calendar = Calendar.getInstance()
-        val today = calendar.time
-        val dayNameFormat = SimpleDateFormat("EEE", Locale("vi", "VN"))
-        val dayNumberFormat = SimpleDateFormat("dd", Locale.getDefault())
+    fun loadWeekCalendar(weekOffset: Int = 0, autoSelectPosition: AutoSelectPosition = AutoSelectPosition.TODAY) {
+        _currentWeekOffset.value = weekOffset
 
-        val days = mutableListOf<CalendarDay>()
-        for (i in -15..15) {
-            val date = Calendar.getInstance().apply {
-                time = today
-                add(Calendar.DAY_OF_YEAR, i)
-            }.time
+        viewModelScope.launch(Dispatchers.IO) {
+            ApiCaller.safeApiCall(
+                apiCall = {
+                    apiService.getReminderCalendar(weekOffset)
+                },
+                callback = { result ->
+                    result.doIfSuccess { response ->
+                        val dayNameFormat = SimpleDateFormat("EEE", Locale("vi", "VN"))
+                        val dayNumberFormat = SimpleDateFormat("dd", Locale.getDefault())
 
-            val dateStr = dateFormat.format(date)
-            val dayName = dayNameFormat.format(date).replaceFirstChar { it.uppercase() }
-            val dayNumber = dayNumberFormat.format(date)
+                        val days = response.days.map { day ->
+                            val date = dateFormat.parse(day.date)
+                            val dayName = if (date != null) {
+                                dayNameFormat.format(date).replaceFirstChar { it.uppercase() }
+                            } else ""
+                            val dayNumber = if (date != null) {
+                                dayNumberFormat.format(date)
+                            } else ""
 
-            days.add(
-                CalendarDay(
-                    date = dateStr,
-                    dayName = dayName,
-                    dayNumber = dayNumber,
-                    hasReminders = false,
-                    isSelected = i == 0
-                )
+                            CalendarDay(
+                                date = day.date ?: "",
+                                dayName = dayName,
+                                dayNumber = dayNumber,
+                                hasReminders = day.reminderCount > 0,
+                                isSelected = false
+                            )
+                        }
+
+                        // Determine which day to select based on autoSelectPosition
+                        val selectedDay = when (autoSelectPosition) {
+                            AutoSelectPosition.TODAY -> {
+                                val todayDate = Utils.getCurrentDate()
+                                days.find { it.date == todayDate } ?: days.firstOrNull()
+                            }
+                            AutoSelectPosition.FIRST -> days.firstOrNull()
+                            AutoSelectPosition.LAST -> days.lastOrNull()
+                        }
+
+                        val updatedDays = days.map { day ->
+                            day.copy(isSelected = day.date == selectedDay?.date)
+                        }
+
+                        _calendarDays.value = updatedDays
+
+                        selectedDay?.let {
+                            _selectedDate.value = it.date
+                            loadRemindersForDay(it.date)
+                        }
+                    }
+                    result.doIfFailure {
+                        _calendarDays.value = emptyList()
+                    }
+                }
             )
         }
-
-        _calendarDays.value = days
-        _selectedDate.value = days[0].date
-
-        // Load reminders for the week
-        loadRemindersForMonth()
-
-        // Load detail for today
-        loadRemindersForDay(days[15].date)
     }
 
     fun selectDay(day: CalendarDay) {
@@ -88,26 +113,53 @@ class ReminderCalendarViewModel @Inject constructor(
         loadRemindersForDay(day.date)
     }
 
-    private fun loadRemindersForMonth() {
+    fun loadPreviousWeek() {
+        loadWeekCalendar(_currentWeekOffset.value - 1, AutoSelectPosition.LAST)
+    }
+
+    fun loadNextWeek() {
+        loadWeekCalendar(_currentWeekOffset.value + 1, AutoSelectPosition.FIRST)
+    }
+
+    fun reloadCurrentWeek() {
+        // Reload current week and keep the selected date
+        val currentSelectedDate = _selectedDate.value
+        val currentOffset = _currentWeekOffset.value
+        
         viewModelScope.launch(Dispatchers.IO) {
             ApiCaller.safeApiCall(
                 apiCall = {
-                    apiService.getReminderCalendar()
+                    apiService.getReminderCalendar(currentOffset)
                 },
                 callback = { result ->
                     result.doIfSuccess { response ->
-//                        Log.i("hihihi", "$response")
-                        // Update calendar days with reminder indicators
-                        val daysWithReminders = response.days.associate {
-                            it.date to it.reminderCount
+                        val dayNameFormat = SimpleDateFormat("EEE", Locale("vi", "VN"))
+                        val dayNumberFormat = SimpleDateFormat("dd", Locale.getDefault())
+
+                        val days = response.days.map { day ->
+                            val date = dateFormat.parse(day.date)
+                            val dayName = if (date != null) {
+                                dayNameFormat.format(date).replaceFirstChar { it.uppercase() }
+                            } else ""
+                            val dayNumber = if (date != null) {
+                                dayNumberFormat.format(date)
+                            } else ""
+
+                            CalendarDay(
+                                date = day.date ?: "",
+                                dayName = dayName,
+                                dayNumber = dayNumber,
+                                hasReminders = day.reminderCount > 0,
+                                isSelected = day.date == currentSelectedDate
+                            )
                         }
 
-                        _calendarDays.value = _calendarDays.value.map { day ->
-                            day.copy(hasReminders = daysWithReminders[day.date] ?: 0 > 0)
+                        _calendarDays.value = days
+                        
+                        // Reload reminders for the selected date
+                        if (currentSelectedDate.isNotEmpty()) {
+                            loadRemindersForDay(currentSelectedDate)
                         }
-                    }
-                    result.doIfFailure {
-                        // Keep calendar without indicators
                     }
                 }
             )
@@ -201,6 +253,12 @@ class ReminderCalendarViewModel @Inject constructor(
     }
 
     override fun onTriggerEvent(event: ReminderEvent) {}
+}
+
+enum class AutoSelectPosition {
+    TODAY,
+    FIRST,
+    LAST
 }
 
 sealed class ReminderState {}

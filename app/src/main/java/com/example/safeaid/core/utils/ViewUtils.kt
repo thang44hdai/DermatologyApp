@@ -224,6 +224,11 @@ object Utils {
             else -> return "Buổi tối"
         }
     }
+    
+    fun getCurrentDate(): String {
+        val dateFormat = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
+        return dateFormat.format(java.util.Date())
+    }
 }
 
 fun String.removeVietnameseAccents(): String {

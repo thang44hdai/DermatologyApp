@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -37,7 +38,7 @@ import java.util.*
 @AndroidEntryPoint
 class CreateMedicineReminderFragment : BaseFragment<FragmentCreateMedicineReminderBinding>() {
 
-    private val viewModel: CreateMedicineReminderViewModel by viewModels()
+    private val viewModel: CreateMedicineReminderViewModel by activityViewModels()
     private lateinit var unitAdapter: SelectionChipAdapter
     private lateinit var timeReminderAdapter: TimeReminderAdapter
 
@@ -49,7 +50,7 @@ class CreateMedicineReminderFragment : BaseFragment<FragmentCreateMedicineRemind
     private var startDate = Calendar.getInstance()
     private var endDate = Calendar.getInstance()
 
-    private val timePeriodItems = mutableListOf<TimePeriodItem>()
+    private val timePeriodItems = mutableListOf<TimePeriodItem>(TimePeriodItem())
 
     private val dateFormat = SimpleDateFormat("d 'Tháng' M", Locale("vi"))
     private val timeFormat = SimpleDateFormat("HH:mm", Locale("vi"))
@@ -89,7 +90,7 @@ class CreateMedicineReminderFragment : BaseFragment<FragmentCreateMedicineRemind
             timePeriodItems.removeIf { item -> it.id == item.id }
             timeReminderAdapter.submitList(timePeriodItems.toList())
         }
-
+        timeReminderAdapter.submitList(timePeriodItems)
         viewBinding.rcvTimePeriod.adapter = timeReminderAdapter
     }
 

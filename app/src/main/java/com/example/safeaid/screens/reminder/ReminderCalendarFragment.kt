@@ -14,8 +14,9 @@ import com.example.safeaid.core.ui.BaseFragment
 import com.example.safeaid.core.ui.showErrorDialog
 import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.setOnDebounceClick
-import com.example.safeaid.screens.reminder.adapter.CalendarDayAdapter
 import com.example.safeaid.screens.reminder.adapter.ReminderTimeAdapter
+import com.example.safeaid.screens.reminder.adapter.WeekCalendarAdapter
+import com.example.safeaid.screens.reminder.adapter.WeekCalendarItem
 import com.example.safeaid.screens.reminder.viewmodel.ReminderCalendarViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
@@ -25,7 +26,7 @@ import kotlinx.coroutines.flow.onEach
 class ReminderCalendarFragment : BaseFragment<FragmentReminderCalendarBinding>() {
 
     private val viewModel: ReminderCalendarViewModel by viewModels()
-    private lateinit var calendarAdapter: CalendarDayAdapter
+    private lateinit var calendarAdapter: WeekCalendarAdapter
     private lateinit var reminderAdapter: ReminderTimeAdapter
     private var isFirstLoad = true
 
@@ -37,6 +38,14 @@ class ReminderCalendarFragment : BaseFragment<FragmentReminderCalendarBinding>()
         setupCalendarRecyclerView()
         setupReminderRecyclerView()
         viewModel.loadWeekCalendar()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Reload data when returning from other screens
+        if (!isFirstLoad) {
+            viewModel.reloadCurrentWeek()
+        }
     }
 
     override fun onInitObserver() {
@@ -53,18 +62,24 @@ class ReminderCalendarFragment : BaseFragment<FragmentReminderCalendarBinding>()
         viewModel.calendarDays
             .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
             .onEach { days ->
-                calendarAdapter.submitList(days) {
-                    // Scroll to selected day (today) after list is updated
+                // Convert to WeekCalendarItem list with navigation buttons
+                val items = mutableListOf<WeekCalendarItem>()
+                items.add(WeekCalendarItem.NavigationButton(isPrevious = true))
+                items.addAll(days.map { WeekCalendarItem.DayItem(it) })
+                items.add(WeekCalendarItem.NavigationButton(isPrevious = false))
+                
+                calendarAdapter.submitList(items) {
+                    // Scroll to selected day after list is updated
                     val selectedIndex = days.indexOfFirst { it.isSelected }
                     if (selectedIndex != -1) {
                         if (isFirstLoad) {
                             // For first load, add extra delay to ensure layout is complete
                             viewBinding.rcvWeekCalendar.postDelayed({
-                                scrollToCenter(selectedIndex)
+                                scrollToCenter(selectedIndex + 1) // +1 because of previous button
                                 isFirstLoad = false
                             }, 100)
                         } else {
-                            scrollToCenter(selectedIndex)
+                            scrollToCenter(selectedIndex + 1) // +1 because of previous button
                         }
                     }
                 }
@@ -94,14 +109,17 @@ class ReminderCalendarFragment : BaseFragment<FragmentReminderCalendarBinding>()
     }
 
     private fun setupCalendarRecyclerView() {
-        calendarAdapter = CalendarDayAdapter { day ->
-            viewModel.selectDay(day)
-            // Scroll to selected day when clicked
-            val selectedIndex = calendarAdapter.currentList.indexOfFirst { it.date == day.date }
-            if (selectedIndex != -1) {
-                scrollToCenter(selectedIndex)
+        calendarAdapter = WeekCalendarAdapter(
+            onDayClick = { day ->
+                viewModel.selectDay(day)
+            },
+            onPreviousWeekClick = {
+                viewModel.loadPreviousWeek()
+            },
+            onNextWeekClick = {
+                viewModel.loadNextWeek()
             }
-        }
+        )
 
         viewBinding.rcvWeekCalendar.apply {
             layoutManager =
@@ -122,23 +140,14 @@ class ReminderCalendarFragment : BaseFragment<FragmentReminderCalendarBinding>()
     }
 
     private fun scrollToCenter(position: Int) {
-        val layoutManager = viewBinding.rcvWeekCalendar.layoutManager as? LinearLayoutManager
-        layoutManager?.let {
-            // Post to ensure RecyclerView is laid out
-            viewBinding.rcvWeekCalendar.post {
-                val itemView = it.findViewByPosition(position)
-                if (itemView != null) {
-                    // Calculate offset to center the item
-                    val recyclerViewWidth = viewBinding.rcvWeekCalendar.width
-                    val itemWidth = itemView.width
-                    val offset = (recyclerViewWidth / 2) - (itemWidth / 2)
-
-                    it.scrollToPositionWithOffset(position, offset)
-                } else {
-                    // If view not found, use smooth scroll
-                    viewBinding.rcvWeekCalendar.smoothScrollToPosition(position)
-                }
-            }
-        }
+        viewBinding.rcvWeekCalendar.postDelayed({
+            val layoutManager = viewBinding.rcvWeekCalendar.layoutManager as? LinearLayoutManager ?: return@postDelayed
+            
+            // Trick: Assuming screen shows 5 items at once
+            // To center an item, we need to show 2 items before it
+            // So we scroll to (position - 2) with offset 0
+            val targetPosition = maxOf(0, position - 2)
+            layoutManager.scrollToPositionWithOffset(targetPosition, 0)
+        }, 150)
     }
 }
