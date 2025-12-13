@@ -55,6 +55,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     private var allBrands = listOf<PharmacyResponse>()
     private var currentSearchQuery = ""
     private var searchMode = SearchMode.ALL
+    private var isProductsExpanded = false
+    private val INITIAL_PRODUCT_COUNT = 6
 
     enum class SearchMode {
         ALL, BRANDS, PRODUCTS
@@ -65,7 +67,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     }
 
     override fun onInit() {
-        viewBinding.rvProducts.layoutManager = GridLayoutManager(requireContext(), 3)
+        viewBinding.rvProducts.layoutManager = GridLayoutManager(requireContext(), 2)
         viewBinding.rvProducts.adapter = medicinesAdapter
         viewBinding.rvBrands.adapter = brandAdapter
         viewBinding.rvCategories.adapter = categoryAdapter
@@ -231,6 +233,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 )
             }
         })
+
+        // Show more/less button
+        viewBinding.btnShowMore.setOnClickListener {
+            isProductsExpanded = !isProductsExpanded
+            applyFiltersAndSort()
+            updateShowMoreButton()
+        }
     }
 
     private fun applyFiltersAndSort() {
@@ -249,10 +258,41 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         when (searchMode) {
             SearchMode.ALL, SearchMode.PRODUCTS -> {
                 var filteredProducts = MedicineUtils.filterMedicines(allMedicines, currentSearchQuery)
+                
+                // Show button only if there are more than INITIAL_PRODUCT_COUNT items
+                if (filteredProducts.size > INITIAL_PRODUCT_COUNT) {
+                    viewBinding.btnShowMore.isVisible = true
+                    
+                    // Limit to INITIAL_PRODUCT_COUNT if not expanded
+                    if (!isProductsExpanded) {
+                        filteredProducts = filteredProducts.take(INITIAL_PRODUCT_COUNT)
+                    }
+                } else {
+                    viewBinding.btnShowMore.isVisible = false
+                }
+                
                 medicinesAdapter.bindData(filteredProducts)
+                updateShowMoreButton()
             }
             SearchMode.BRANDS -> {
                 // Hide products section
+                viewBinding.btnShowMore.isVisible = false
+            }
+        }
+    }
+
+    private fun updateShowMoreButton() {
+        if (viewBinding.btnShowMore.isVisible) {
+            if (isProductsExpanded) {
+                viewBinding.btnShowMore.text = "Thu nhỏ lại"
+                viewBinding.btnShowMore.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    0, 0, R.drawable.ic_expand_less, 0
+                )
+            } else {
+                viewBinding.btnShowMore.text = "Hiển thị thêm"
+                viewBinding.btnShowMore.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    0, 0, R.drawable.ic_expand_more, 0
+                )
             }
         }
     }

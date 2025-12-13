@@ -20,12 +20,21 @@ import android.view.ViewTreeObserver
 import android.view.animation.AccelerateInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.core.animation.doOnEnd
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.ref.WeakReference
 import java.lang.reflect.Method
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.TimeZone
 import kotlin.math.max
+
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 class ViewUtils {
     companion object {
@@ -224,7 +233,7 @@ object Utils {
             else -> return "Buổi tối"
         }
     }
-    
+
     fun getCurrentDate(): String {
         val dateFormat = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
         return dateFormat.format(java.util.Date())
@@ -235,3 +244,29 @@ fun String.removeVietnameseAccents(): String {
     val temp = java.text.Normalizer.normalize(this, java.text.Normalizer.Form.NFD)
     return temp.replace("\\p{InCombiningDiacriticalMarks}+".toRegex(), "")
 }
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun String.toCustomDateFormat(): String {
+    return runCatching {
+        // Parse chuỗi UTC (không có Z)
+        val utcDateTime = LocalDateTime.parse(
+            this,
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+        )
+
+        // Gán UTC timezone
+        val utcZoned = utcDateTime.atZone(ZoneOffset.UTC)
+
+        // Convert sang timezone của máy
+        val localZoned = utcZoned.withZoneSameInstant(ZoneId.systemDefault())
+
+        // Format để hiển thị
+        localZoned.format(
+            DateTimeFormatter.ofPattern("HH:mm - dd/MM/yyyy")
+        )
+    }.getOrElse {
+        this // fallback không crash
+    }
+}
+
+

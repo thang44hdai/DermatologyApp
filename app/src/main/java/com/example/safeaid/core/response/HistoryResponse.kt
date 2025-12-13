@@ -36,15 +36,4 @@ data class Scan(
         @SerializedName("note")
         var note: String? = null
     ) : Serializable
-
-    data class Disease(
-        @SerializedName("description")
-        var description: String? = null,
-        @SerializedName("disease_name")
-        var diseaseName: String? = null,
-        @SerializedName("id")
-        var id: Int? = null,
-        @SerializedName("treatment")
-        var treatment: String? = null
-    ) : Serializable
 }

@@ -90,7 +90,8 @@ class ChatBotFragment : BaseFragment<FragmentChatBotBinding>() {
 
     override fun onInitListener() {
         viewBinding.icBack.setOnDebounceClick {
-            findNavController().popBackStack()
+            // Always navigate back to home (MainScreen)
+            findNavController().navigate(com.example.dermatology.R.id.mainScreen)
         }
 
         viewBinding.icMenu.setOnDebounceClick {

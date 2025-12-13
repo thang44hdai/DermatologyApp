@@ -81,15 +81,11 @@ class PharmacyBottomSheet : BottomSheetDialogFragment() {
             binding.tvAddress.text = item.address ?: "Không có địa chỉ"
             binding.tvSdt.text = item.phone ?: "Không có số điện thoại"
             binding.tvTime.text = "Giờ mở cửa: ${item.openTime ?: "Chưa cập nhật"}"
+            binding.tvNumberImage.text = "Hình ảnh (${(item.images ?: listOf()).size})"
 
-            // ví dụ hiển thị ảnh nếu có adapter ảnh riêng
             binding.rcv.apply {
                 adapter = ImageAdapter(
-                    listOf(
-                        R.drawable.bg_take,
-                        R.drawable.bg_take,
-                        R.drawable.bg_take
-                    )
+                    item.images ?: listOf()
                 )
             }
         }

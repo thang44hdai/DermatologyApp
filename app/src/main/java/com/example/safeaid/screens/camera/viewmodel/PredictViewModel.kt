@@ -92,60 +92,6 @@ class PredictViewModel @Inject constructor(
         }
     }
 
-    fun detectBoundary(context: Context) {
-        val imageUri = selectedImageUri
-        val imageFile = selectedImageFile
-
-        if (imageUri == null && imageFile == null) {
-            // Không có ảnh → không call API
-            return
-        }
-
-        viewModelScope.launch {
-            try {
-                val filePart = when {
-                    imageFile != null -> {
-                        val requestFile = imageFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
-                        MultipartBody.Part.createFormData("file", imageFile.name, requestFile)
-                    }
-
-                    imageUri != null -> {
-                        val inputStream = context.contentResolver.openInputStream(imageUri)
-                        val tempFile = File.createTempFile("boundary_", ".jpg", context.cacheDir)
-                        tempFile.outputStream().use { output ->
-                            inputStream?.copyTo(output)
-                        }
-                        val requestFile = tempFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
-                        MultipartBody.Part.createFormData("file", tempFile.name, requestFile)
-                    }
-
-                    else -> null
-                }
-
-                filePart?.let { part ->
-                    ApiCaller.safeApiCall(
-                        apiCall = { apiService.detectBoundary(part) },
-                        callback = { result ->
-                            result.doIfSuccess {
-                                updateState(
-                                    DataResult.Success(
-                                        PredictState.DetectBoundaryRes(
-                                            isLoading = false,
-                                            data = it
-                                        )
-                                    )
-                                )
-                            }
-                            result.doIfFailure {}
-                        }
-                    )
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-
     override fun onTriggerEvent(event: PredictEvent) {
     }
 }

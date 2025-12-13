@@ -24,4 +24,8 @@
     <string name="gender">Giới tính</string>
     <string name="default_web_client_id">YOUR_GOOGLE_WEB_CLIENT_ID_HERE</string>
     <string name="navigate_week">Navigate week</string>
+    <string name="close">Close</string>
+    <string name="back">Back</string>
+    <string name="scanned_image">Scanned image</string>
+    <string name="analysis_image">Analysis image</string>
 </resources>

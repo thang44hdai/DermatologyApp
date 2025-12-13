@@ -2,17 +2,27 @@ package com.example.safeaid.screens.map.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.example.dermatology.R
 import com.example.dermatology.databinding.ItemImageBinding
 
 class ImageAdapter(
-    private val imageList: List<Int>
+    private val imageList: List<String>
 ) : RecyclerView.Adapter<ImageAdapter.ImageVH>() {
 
     inner class ImageVH(private val binding: ItemImageBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(resId: Int) {
-            binding.imv.setImageResource(resId)
+        fun bind(url: String) {
+            Glide.with(binding.root.context)
+                .load(url)
+                .placeholder(R.drawable.ic_loading_placeholder)
+                .error(R.drawable.ic_image_error)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(binding.imv)
         }
     }
 

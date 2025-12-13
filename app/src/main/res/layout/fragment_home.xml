@@ -303,7 +303,6 @@
                     android:nestedScrollingEnabled="false"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
-                    android:paddingBottom="24dp"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -311,6 +310,27 @@
                     app:spanCount="2"
                     tools:itemCount="2"
                     tools:listitem="@layout/item_product" />
+
+                <!-- Show More/Less Button -->
+                <TextView
+                    android:id="@+id/btn_show_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:drawablePadding="4dp"
+                    android:padding="8dp"
+                    android:text="Hiển thị thêm"
+                    android:textColor="@color/primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    app:drawableEndCompat="@drawable/ic_expand_more"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rv_products"
+                    tools:visibility="visible" />
 
                 <!-- Categories Section -->
                 <LinearLayout
@@ -323,7 +343,7 @@
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/rv_products">
+                    app:layout_constraintTop_toBottomOf="@id/btn_show_more">
 
                     <ImageView
                         android:layout_width="28dp"

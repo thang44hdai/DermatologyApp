@@ -174,6 +174,7 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>() {
             when (data) {
                 is PredictState.PredictRes -> {
                     val bundle = Bundle()
+                    Log.i("hihihi", "${data.data}")
                     bundle.putSerializable(
                         ScanResultFragment.argKey, data.data
                     )
