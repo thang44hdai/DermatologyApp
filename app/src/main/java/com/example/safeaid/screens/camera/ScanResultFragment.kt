@@ -56,7 +56,7 @@ class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
                 ""
             }
             viewBinding.tvTitle.text =
-                "${predict.data?.labelVi} (${predict.data?.labelEn}): ${confidencePercent}"
+                "${predict.data?.labelVi} (${predict.data?.labelEn})"
             viewBinding.tvDescription.text = predict.data?.disease?.description
             viewBinding.tvSymptomsDescription.text = predict.data?.disease?.symptoms
             viewBinding.tvTreatmentDescription.text = predict.data?.disease?.treatment
@@ -64,17 +64,14 @@ class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
             Glide.with(requireContext())
                 .load(predict.data?.disease?.imageUrl)
                 .into(viewBinding.imv1)
+
+            Glide.with(requireContext())
+                .load(predict.data?.disease?.imageUrl)
+                .into(viewBinding.imv2)
         }
-
-        viewModel.detectBoundary(requireContext())
     }
 
-    override fun onInitObserver() {
-        viewModel.viewState
-            .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
-            .onEach { updateUi(it) }
-            .launchIn(viewLifecycleOwner.lifecycleScope)
-    }
+    override fun onInitObserver() {}
 
     override fun onInitListener() {
         viewBinding.btnBack.setOnDebounceClick {
@@ -86,30 +83,5 @@ class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
             mapViewModel.isPredicted = true
             findNavController().navigate(R.id.mainScreen)
         }
-    }
-
-    private fun updateUi(state: DataResult<PredictState>?) {
-        state?.doIfSuccess { data ->
-            when (data) {
-                is PredictState.PredictRes -> {
-                }
-
-                is PredictState.DetectBoundaryRes -> {
-                    if (!data.isLoading) {
-                        viewBinding.progressBar.isVisible = false
-                        viewBinding.imv2.isVisible = true
-                        Glide.with(requireContext())
-                            .load(data.data.imageUrl)
-                            .into(viewBinding.imv2)
-                    } else {
-                        viewBinding.progressBar.isVisible = true
-                        viewBinding.imv2.isVisible = false
-                    }
-                }
-
-                else -> {}
-            }
-        }
-        state?.doIfFailure { }
     }
 }

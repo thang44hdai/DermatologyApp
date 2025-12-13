@@ -16,6 +16,8 @@ data class PredictResponse(
         var diagnosisHistoryId: Int? = null,
         @SerializedName("disease")
         var disease: Disease? = null,
+        @SerializedName("image_url")
+        var imageUrl: String? = null,
         @SerializedName("label_en")
         var labelEn: String? = null,
         @SerializedName("label_vi")
