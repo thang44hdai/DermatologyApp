@@ -45,7 +45,7 @@ class ReminderTimeAdapter(
 
     private class DiffCallback : DiffUtil.ItemCallback<ReminderTime>() {
         override fun areItemsTheSame(oldItem: ReminderTime, newItem: ReminderTime): Boolean {
-            return oldItem.time == newItem.time
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: ReminderTime, newItem: ReminderTime): Boolean {

@@ -9,6 +9,7 @@ data class CalendarDay(
 )
 
 data class ReminderTime(
+    val id: String = java.util.UUID.randomUUID().toString(),
     val time: String,
     val totalCount: Int,
     val medicines: List<MedicineReminder>
