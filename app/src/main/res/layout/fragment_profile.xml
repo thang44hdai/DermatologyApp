@@ -207,6 +207,7 @@
 
                     <!-- Skin Care -->
                     <LinearLayout
+                        android:visibility="gone"
                         android:id="@+id/btn_skin_care"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -268,102 +269,6 @@
                     </LinearLayout>
 
                     <!-- Row 2 -->
-                    <!-- Sleep -->
-                    <LinearLayout
-                        android:id="@+id/btn_sleep"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        android:layout_marginTop="16dp"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="12dp">
-
-                        <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:background="@drawable/bg_menu_icon"
-                            android:padding="12dp"
-                            android:src="@drawable/ic_clock"
-                            app:tint="@color/gray_neutral_4" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:gravity="center"
-                            android:text="Thử thách ngủ sớm"
-                            android:textColor="@color/black"
-                            android:textSize="11sp" />
-                    </LinearLayout>
-
-                    <!-- Settings -->
-                    <LinearLayout
-                        android:id="@+id/btn_settings"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        android:layout_marginTop="16dp"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="12dp">
-
-                        <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:background="@drawable/bg_menu_icon"
-                            android:padding="12dp"
-                            android:src="@drawable/ic_filter"
-                            app:tint="@color/gray_neutral_4" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:gravity="center"
-                            android:text="Cài đặt"
-                            android:textColor="@color/black"
-                            android:textSize="11sp" />
-                    </LinearLayout>
-
-                    <!-- Notifications -->
-                    <LinearLayout
-                        android:id="@+id/btn_notifications"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        android:layout_marginTop="16dp"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="12dp">
-
-                        <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:background="@drawable/bg_menu_icon"
-                            android:padding="12dp"
-                            android:src="@drawable/ic_noti_unread"
-                            app:tint="@color/gray_neutral_4" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:gravity="center"
-                            android:text="Thử thách tập thể dục buổi sáng"
-                            android:textColor="@color/black"
-                            android:textSize="11sp" />
-                    </LinearLayout>
-
                     <!-- Logout (empty for now) -->
                     <LinearLayout
                         android:id="@+id/btn_logout"
@@ -396,6 +301,104 @@
                             android:textSize="11sp" />
                     </LinearLayout>
 
+                    <!-- Sleep -->
+                    <LinearLayout
+                        android:visibility="gone"
+                        android:id="@+id/btn_sleep"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_marginTop="16dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_menu_icon"
+                            android:padding="12dp"
+                            android:src="@drawable/ic_clock"
+                            app:tint="@color/gray_neutral_4" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center"
+                            android:text="Thử thách ngủ sớm"
+                            android:textColor="@color/black"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <!-- Settings -->
+                    <LinearLayout
+                        android:visibility="gone"
+                        android:id="@+id/btn_settings"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_marginTop="16dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_menu_icon"
+                            android:padding="12dp"
+                            android:src="@drawable/ic_filter"
+                            app:tint="@color/gray_neutral_4" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center"
+                            android:text="Cài đặt"
+                            android:textColor="@color/black"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <!-- Notifications -->
+                    <LinearLayout
+                        android:visibility="gone"
+                        android:id="@+id/btn_notifications"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_marginTop="16dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_menu_icon"
+                            android:padding="12dp"
+                            android:src="@drawable/ic_noti_unread"
+                            app:tint="@color/gray_neutral_4" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center"
+                            android:text="Thử thách tập thể dục buổi sáng"
+                            android:textColor="@color/black"
+                            android:textSize="11sp" />
+                    </LinearLayout>
                 </GridLayout>
 
             </LinearLayout>
