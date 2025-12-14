@@ -20,6 +20,7 @@ import com.example.safeaid.core.ui.showErrorDialog
 import com.example.safeaid.core.ui.showInfoDialog
 import com.example.safeaid.core.ui.showSuccessDialog
 import com.example.safeaid.core.utils.DataResult
+import com.example.safeaid.core.utils.KeyboardUtils
 import com.example.safeaid.core.utils.ViewUtils
 import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.doIfSuccess
@@ -43,6 +44,12 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>() {
     override fun onInit() {
         setupGenderDropdown()
         setupDatePicker()
+        
+        // Setup hide keyboard on touch outside
+        KeyboardUtils.setupHideKeyboardOnTouchOutside(
+            this,
+            viewBinding.root
+        )
     }
 
     override fun onInitObserver() {

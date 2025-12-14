@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dermatology.databinding.DrawerChatConversationsBinding
 import com.example.dermatology.databinding.FragmentChatBotBinding
 import com.example.safeaid.core.ui.BaseFragment
+import com.example.safeaid.core.utils.KeyboardUtils
 import com.example.safeaid.core.utils.setOnDebounceClick
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
@@ -33,6 +34,12 @@ class ChatBotFragment : BaseFragment<FragmentChatBotBinding>() {
         setupConversationList()
         setupChatList()
         loadConversations()
+        
+        // Setup hide keyboard on touch outside
+        KeyboardUtils.setupHideKeyboardOnTouchOutside(
+            this,
+            viewBinding.root
+        )
     }
 
     override fun onInitObserver() {

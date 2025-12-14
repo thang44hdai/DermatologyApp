@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import androidx.credentials.CredentialManager
 import com.example.safeaid.core.ui.showInfoDialog
+import com.example.safeaid.core.utils.KeyboardUtils
 import com.example.safeaid.core.utils.onLoading
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import kotlinx.coroutines.launch
@@ -49,6 +50,12 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
     override fun onInit() {
         credentialManager = CredentialManager.create(requireContext())
         viewModel.verifyToken()
+        
+        // Setup hide keyboard on touch outside
+        KeyboardUtils.setupHideKeyboardOnTouchOutside(
+            this,
+            viewBinding.root
+        )
     }
 
     override fun onInitObserver() {
