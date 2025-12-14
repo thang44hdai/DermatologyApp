@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.dermatology.R
 import com.example.dermatology.databinding.FragmentHomeBinding
+import com.example.safeaid.core.response.CategoryResponse
 import com.example.safeaid.core.response.MedicineResponse
 import com.example.safeaid.core.response.PharmacyResponse
 import com.example.safeaid.core.ui.BaseFragment
@@ -53,10 +54,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     private var allMedicines = listOf<MedicineResponse>()
     private var allBrands = listOf<PharmacyResponse>()
+    private var allCategories = listOf<CategoryResponse>()
     private var currentSearchQuery = ""
     private var searchMode = SearchMode.ALL
     private var isProductsExpanded = false
+    private var isCategoriesExpanded = false
     private val INITIAL_PRODUCT_COUNT = 6
+    private val INITIAL_CATEGORY_COUNT = 6
 
     enum class SearchMode {
         ALL, BRANDS, PRODUCTS
@@ -194,7 +198,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         viewModel._categories
             .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
             .onEach { data ->
-                categoryAdapter.updateData(data)
+                allCategories = data
+                updateCategoriesDisplay()
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)
     }
@@ -234,11 +239,53 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             }
         })
 
-        // Show more/less button
+        // Show more/less button for products
         viewBinding.btnShowMore.setOnClickListener {
             isProductsExpanded = !isProductsExpanded
             applyFiltersAndSort()
             updateShowMoreButton()
+        }
+
+        // Show more/less button for categories
+        viewBinding.btnShowMoreCategories.setOnClickListener {
+            isCategoriesExpanded = !isCategoriesExpanded
+            updateCategoriesDisplay()
+            updateShowMoreCategoriesButton()
+        }
+    }
+
+    private fun updateCategoriesDisplay() {
+        var displayCategories = allCategories
+        
+        // Show button only if there are more than INITIAL_CATEGORY_COUNT items
+        if (displayCategories.size > INITIAL_CATEGORY_COUNT) {
+            viewBinding.btnShowMoreCategories.isVisible = true
+            
+            // Limit to INITIAL_CATEGORY_COUNT if not expanded
+            if (!isCategoriesExpanded) {
+                displayCategories = displayCategories.take(INITIAL_CATEGORY_COUNT)
+            }
+        } else {
+            viewBinding.btnShowMoreCategories.isVisible = false
+        }
+        
+        categoryAdapter.updateData(displayCategories)
+        updateShowMoreCategoriesButton()
+    }
+
+    private fun updateShowMoreCategoriesButton() {
+        if (viewBinding.btnShowMoreCategories.isVisible) {
+            if (isCategoriesExpanded) {
+                viewBinding.btnShowMoreCategories.text = "Thu nhỏ lại"
+                viewBinding.btnShowMoreCategories.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    0, 0, R.drawable.ic_expand_less, 0
+                )
+            } else {
+                viewBinding.btnShowMoreCategories.text = "Hiển thị thêm"
+                viewBinding.btnShowMoreCategories.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    0, 0, R.drawable.ic_expand_more, 0
+                )
+            }
         }
     }
 
