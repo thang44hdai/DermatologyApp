@@ -167,7 +167,7 @@ class RunningChallengeFragment : BaseFragment<FragmentRunningChallengeBinding>()
         }
 
         viewBinding.btnHistory.setOnDebounceClick {
-            Toast.makeText(requireContext(), "Lịch sử - Đang phát triển", Toast.LENGTH_SHORT).show()
+            showHistory()
         }
 
         viewBinding.btnAchievements.setOnDebounceClick {
@@ -334,20 +334,43 @@ class RunningChallengeFragment : BaseFragment<FragmentRunningChallengeBinding>()
     }
 
     private fun showAchievements() {
-        val achievements = listOf(
-            "Bước đầu tiên - Hoàn thành lần chạy đầu tiên",
-            "Người kiên trì - Chạy 7 ngày liên tiếp",
-            "Vận động viên - Chạy 10km trong tuần",
-            "Siêu sao - Chạy 50km trong tháng",
-            "Huyền thoại - Chạy 100 lần"
-        )
-
-        val message = achievements.joinToString("\n\n")
+        val achievements = viewModel.getAchievements()
+        
+        val message = buildString {
+            achievements.forEach { achievement ->
+                val status = if (achievement.unlocked) "✅" else "🔒"
+                append("$status ${achievement.title}\n")
+                append("   ${achievement.description}\n\n")
+            }
+        }
 
         androidx.appcompat.app.AlertDialog.Builder(requireContext())
-            .setTitle("Thành tích")
-            .setMessage(message)
-            .setPositiveButton("OK", null)
+            .setTitle("🏆 Thành tích")
+            .setMessage(message.trim())
+            .setPositiveButton("Đóng", null)
+            .show()
+    }
+    
+    private fun showHistory() {
+        val history = viewModel.getHistory().take(10) // Show last 10 sessions
+        
+        if (history.isEmpty()) {
+            Toast.makeText(requireContext(), "Chưa có lịch sử chạy bộ", Toast.LENGTH_SHORT).show()
+            return
+        }
+        
+        val message = buildString {
+            history.forEachIndexed { index, session ->
+                append("${index + 1}. ${session.date}\n")
+                append("   ${session.steps} bước • ${String.format("%.2f", session.distance)} km\n")
+                append("   ${session.durationMinutes} phút • ${session.calories} kcal\n\n")
+            }
+        }
+
+        androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("📊 Lịch sử chạy bộ")
+            .setMessage(message.trim())
+            .setPositiveButton("Đóng", null)
             .show()
     }
 

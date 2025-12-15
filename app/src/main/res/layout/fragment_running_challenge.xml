@@ -6,16 +6,18 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F5F5F5">
+        android:background="#F8F9FA">
 
-        <!-- Header -->
+        <!-- Header with Gradient -->
         <LinearLayout
             android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_running_header"
+            android:background="@color/primary"
             android:orientation="vertical"
-            android:padding="16dp"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="32dp"
             app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
@@ -26,19 +28,21 @@
 
                 <ImageView
                     android:id="@+id/btn_back"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/bg_back_button_white"
+                    android:padding="8dp"
                     android:src="@drawable/ic_back"
-                    app:tint="@color/white" />
+                    app:tint="@color/primary" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_weight="1"
-                    android:text="Thử thách chạy bộ"
+                    android:text="Chạy bộ"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -47,14 +51,15 @@
                 android:id="@+id/tv_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
+                android:alpha="0.9"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 tools:text="Thứ Hai, 09/12/2025" />
 
         </LinearLayout>
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:fillViewport="true"
@@ -65,39 +70,42 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:paddingHorizontal="16dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="32dp">
 
                 <!-- Running Session Card (visible when running) -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/card_running"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="24dp"
                     android:visibility="gone"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="4dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="8dp"
                     tools:visibility="visible">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_running_active"
+                        android:background="@drawable/bg_running_header"
                         android:orientation="vertical"
-                        android:padding="24dp">
+                        android:padding="28dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="Đang chạy"
+                            android:text="⏱️  Đang chạy"
                             android:textColor="@color/white"
-                            android:textSize="18sp"
+                            android:textSize="20sp"
                             android:textStyle="bold" />
 
+                        <!-- Main Stats Row -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="24dp"
+                            android:layout_marginTop="28dp"
                             android:orientation="horizontal">
 
                             <LinearLayout
@@ -112,17 +120,18 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textColor="@color/white"
-                                    android:textSize="28sp"
+                                    android:textSize="32sp"
                                     android:textStyle="bold"
                                     tools:text="1234" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
+                                    android:layout_marginTop="6dp"
+                                    android:alpha="0.8"
                                     android:text="Bước"
                                     android:textColor="@color/white"
-                                    android:textSize="12sp" />
+                                    android:textSize="13sp" />
 
                             </LinearLayout>
 
@@ -138,26 +147,28 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textColor="@color/white"
-                                    android:textSize="28sp"
+                                    android:textSize="32sp"
                                     android:textStyle="bold"
                                     tools:text="1.23" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
+                                    android:layout_marginTop="6dp"
+                                    android:alpha="0.8"
                                     android:text="km"
                                     android:textColor="@color/white"
-                                    android:textSize="12sp" />
+                                    android:textSize="13sp" />
 
                             </LinearLayout>
 
                         </LinearLayout>
 
+                        <!-- Secondary Stats Row -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
+                            android:layout_marginTop="20dp"
                             android:orientation="horizontal">
 
                             <LinearLayout
@@ -172,17 +183,18 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textColor="@color/white"
-                                    android:textSize="24sp"
+                                    android:textSize="28sp"
                                     android:textStyle="bold"
                                     tools:text="12:34" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
+                                    android:layout_marginTop="6dp"
+                                    android:alpha="0.8"
                                     android:text="Thời gian"
                                     android:textColor="@color/white"
-                                    android:textSize="12sp" />
+                                    android:textSize="13sp" />
 
                             </LinearLayout>
 
@@ -198,17 +210,18 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textColor="@color/white"
-                                    android:textSize="24sp"
+                                    android:textSize="28sp"
                                     android:textStyle="bold"
                                     tools:text="89" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
+                                    android:layout_marginTop="6dp"
+                                    android:alpha="0.8"
                                     android:text="kcal"
                                     android:textColor="@color/white"
-                                    android:textSize="12sp" />
+                                    android:textSize="13sp" />
 
                             </LinearLayout>
 
@@ -222,15 +235,16 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginHorizontal="1dp"
+                    android:layout_marginBottom="20dp"
                     app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp">
+                    app:cardElevation="3dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="16dp">
+                        android:padding="20dp">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -243,19 +257,21 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
+                            android:layout_marginTop="18dp"
                             android:orientation="horizontal">
 
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:background="@drawable/bg_stat_item"
                                 android:gravity="center"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                android:padding="12dp">
 
                                 <ImageView
-                                    android:layout_width="40dp"
-                                    android:layout_height="40dp"
+                                    android:layout_width="36dp"
+                                    android:layout_height="36dp"
                                     android:src="@drawable/ic_walk"
                                     app:tint="@color/primary" />
 
@@ -265,22 +281,33 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="8dp"
                                     android:textColor="@color/black"
-                                    android:textSize="18sp"
+                                    android:textSize="16sp"
                                     android:textStyle="bold"
-                                    tools:text="5,234 bước" />
+                                    tools:text="5,234" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:text="bước"
+                                    android:textColor="@color/gray_neutral_4"
+                                    android:textSize="12sp" />
 
                             </LinearLayout>
 
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="8dp"
                                 android:layout_weight="1"
+                                android:background="@drawable/bg_stat_item"
                                 android:gravity="center"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                android:padding="12dp">
 
                                 <ImageView
-                                    android:layout_width="40dp"
-                                    android:layout_height="40dp"
+                                    android:layout_width="36dp"
+                                    android:layout_height="36dp"
                                     android:src="@drawable/ic_navigate"
                                     app:tint="@color/primary" />
 
@@ -290,9 +317,17 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="8dp"
                                     android:textColor="@color/black"
-                                    android:textSize="18sp"
+                                    android:textSize="16sp"
                                     android:textStyle="bold"
-                                    tools:text="4.19 km" />
+                                    tools:text="4.19" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:text="km"
+                                    android:textColor="@color/gray_neutral_4"
+                                    android:textSize="12sp" />
 
                             </LinearLayout>
 
@@ -300,12 +335,14 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:background="@drawable/bg_stat_item"
                                 android:gravity="center"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                android:padding="12dp">
 
                                 <ImageView
-                                    android:layout_width="40dp"
-                                    android:layout_height="40dp"
+                                    android:layout_width="36dp"
+                                    android:layout_height="36dp"
                                     android:src="@drawable/ic_fire"
                                     app:tint="@color/orange" />
 
@@ -315,9 +352,17 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="8dp"
                                     android:textColor="@color/black"
-                                    android:textSize="18sp"
+                                    android:textSize="16sp"
                                     android:textStyle="bold"
-                                    tools:text="209 kcal" />
+                                    tools:text="209" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:text="kcal"
+                                    android:textColor="@color/gray_neutral_4"
+                                    android:textSize="12sp" />
 
                             </LinearLayout>
 
@@ -331,15 +376,16 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginHorizontal="1dp"
+                    android:layout_marginBottom="24dp"
                     app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp">
+                    app:cardElevation="3dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="16dp">
+                        android:padding="20dp">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -352,7 +398,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
+                            android:layout_marginTop="18dp"
                             android:orientation="horizontal">
 
                             <LinearLayout
@@ -367,14 +413,14 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textColor="@color/primary"
-                                    android:textSize="24sp"
+                                    android:textSize="22sp"
                                     android:textStyle="bold"
                                     tools:text="45.67 km" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
+                                    android:layout_marginTop="6dp"
                                     android:text="Tổng quãng đường"
                                     android:textColor="@color/gray_neutral_4"
                                     android:textSize="12sp" />
@@ -393,14 +439,14 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textColor="@color/primary"
-                                    android:textSize="24sp"
+                                    android:textSize="22sp"
                                     android:textStyle="bold"
-                                    tools:text="12 lần" />
+                                    tools:text="12" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
+                                    android:layout_marginTop="6dp"
                                     android:text="Số lần chạy"
                                     android:textColor="@color/gray_neutral_4"
                                     android:textSize="12sp" />
@@ -409,15 +455,19 @@
 
                         </LinearLayout>
 
+                        <!-- Weekly Goal Section -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
-                            android:orientation="vertical">
+                            android:layout_marginTop="20dp"
+                            android:background="@drawable/bg_stat_item"
+                            android:orientation="vertical"
+                            android:padding="14dp">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
                                 android:orientation="horizontal">
 
                                 <TextView
@@ -425,14 +475,15 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:text="Mục tiêu tuần này"
-                                    android:textColor="@color/gray_neutral_4"
-                                    android:textSize="14sp" />
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
 
                                 <TextView
                                     android:id="@+id/tv_weekly_goal"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textColor="@color/black"
+                                    android:textColor="@color/primary"
                                     android:textSize="14sp"
                                     android:textStyle="bold"
                                     tools:text="7.5/10 km" />
@@ -443,8 +494,8 @@
                                 android:id="@+id/progress_weekly"
                                 style="?android:attr/progressBarStyleHorizontal"
                                 android:layout_width="match_parent"
-                                android:layout_height="8dp"
-                                android:layout_marginTop="8dp"
+                                android:layout_height="6dp"
+                                android:layout_marginTop="10dp"
                                 android:max="100"
                                 android:progressDrawable="@drawable/progress_bar_custom"
                                 tools:progress="75" />
@@ -455,44 +506,35 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <!-- Action Buttons -->
-                <LinearLayout
+                <!-- Primary Action Button -->
+                <Button
+                    android:id="@+id/btn_start_stop"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="60dp"
                     android:layout_marginBottom="16dp"
-                    android:orientation="horizontal">
+                    android:background="@drawable/bg_btn_login_state"
+                    android:text="Bắt đầu chạy"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
-                    <Button
-                        android:id="@+id/btn_start_stop"
-                        android:layout_width="0dp"
-                        android:layout_height="64dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/primary"
-                        android:drawableLeft="@drawable/ic_navigate"
-                        android:drawablePadding="8dp"
-                        android:text="Bắt đầu chạy"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
+                <!-- Pause/Resume Button -->
                 <Button
                     android:id="@+id/btn_pause_resume"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:layout_marginBottom="8dp"
-                    android:backgroundTint="@color/white"
-                    android:drawableLeft="@drawable/ic_time"
-                    android:drawablePadding="8dp"
-                    android:text="Tạm dừng"
-                    android:textColor="@color/primary"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/bg_btn_login_state"
+                    android:text="⏸Tạm dừng"
+                    android:textColor="@color/white"
                     android:textSize="14sp"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
 
+                <!-- Secondary Action Buttons -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <Button
@@ -501,10 +543,11 @@
                         android:layout_height="56dp"
                         android:layout_marginEnd="8dp"
                         android:layout_weight="1"
-                        android:backgroundTint="@color/white"
+                        android:background="@drawable/bg_btn_login_state"
                         android:text="Lịch sử"
-                        android:textColor="@color/primary"
-                        android:textSize="14sp" />
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/btn_achievements"
@@ -512,16 +555,17 @@
                         android:layout_height="56dp"
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
-                        android:backgroundTint="@color/white"
+                        android:background="@drawable/bg_btn_login_state"
                         android:text="Thành tích"
-                        android:textColor="@color/primary"
-                        android:textSize="14sp" />
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

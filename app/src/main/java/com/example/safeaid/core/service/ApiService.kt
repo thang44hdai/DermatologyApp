@@ -77,7 +77,6 @@ interface ApiService {
         @Part file: MultipartBody.Part
     ): Response<PredictResponse>
 
-
     @GET("pharmacies/nearby/search")
     suspend fun getPharmaciesNearBy(
         @Query("latitude") latitude: String,

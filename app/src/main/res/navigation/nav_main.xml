@@ -72,13 +72,6 @@
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_left" />
         <action
-            android:id="@+id/action_mainScreen_to_morningExerciseFragment"
-            app:destination="@id/morningExerciseFragment"
-            app:enterAnim="@anim/slide_in_left"
-            app:exitAnim="@anim/slide_out_right"
-            app:popEnterAnim="@anim/slide_in_right"
-            app:popExitAnim="@anim/slide_out_left" />
-        <action
             android:id="@+id/action_mainScreen_to_runningChallengeFragment"
             app:destination="@id/runningChallengeFragment"
             app:enterAnim="@anim/slide_in_left"
@@ -190,10 +183,6 @@
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_left" />
     </fragment>
-    <fragment
-        android:id="@+id/morningExerciseFragment"
-        android:name="com.example.safeaid.screens.challenge.MorningExerciseFragment"
-        android:label="MorningExerciseFragment" />
     <fragment
         android:id="@+id/runningChallengeFragment"
         android:name="com.example.safeaid.screens.challenge.RunningChallengeFragment"

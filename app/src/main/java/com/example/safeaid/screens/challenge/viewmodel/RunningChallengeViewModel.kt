@@ -1,79 +1,81 @@
 package com.example.safeaid.screens.challenge.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.example.safeaid.core.base.BaseViewModel
-import com.example.safeaid.core.service.ApiService
-import com.example.safeaid.core.utils.ApiCaller
+import com.example.safeaid.core.data.RunningDataManager
 import com.example.safeaid.core.utils.DataResult
-import com.example.safeaid.core.utils.doIfFailure
-import com.example.safeaid.core.utils.doIfSuccess
+import com.example.safeaid.core.utils.ErrorResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RunningChallengeViewModel @Inject constructor(
-    private val apiService: ApiService
+    @ApplicationContext private val context: Context
 ) : BaseViewModel<RunningChallengeState, RunningChallengeEvent>() {
+
+    private val dataManager = RunningDataManager(context)
 
     fun loadChallengeData() {
         viewModelScope.launch(Dispatchers.IO) {
-            ApiCaller.safeApiCall(
-                apiCall = { apiService.getRunningChallenge() },
-                callback = { result ->
-                    result.doIfSuccess { data ->
-                        updateState(DataResult.Success(
-                            RunningChallengeState.ChallengeData(
-                                totalDistance = data.totalDistance ?: 0.0,
-                                totalRuns = data.totalRuns ?: 0,
-                                weeklyDistance = data.weeklyDistance ?: 0.0,
-                                weeklyGoalDistance = data.weeklyGoalDistance ?: 10.0,
-                                todaySteps = data.todaySteps ?: 0,
-                                todayDistance = data.todayDistance ?: 0.0,
-                                todayCalories = data.todayCalories ?: 0
-                            )
-                        ))
-                    }
-                    result.doIfFailure { error ->
-                        // Use mock data if API fails
-                        updateState(DataResult.Success(
-                            RunningChallengeState.ChallengeData(
-                                totalDistance = 0.0,
-                                totalRuns = 0,
-                                weeklyDistance = 0.0,
-                                weeklyGoalDistance = 10.0,
-                                todaySteps = 0,
-                                todayDistance = 0.0,
-                                todayCalories = 0
-                            )
-                        ))
-                    }
-                }
-            )
+            try {
+                val todayStats = dataManager.getTodayStats()
+                val (weeklyDistance, weeklyGoal) = dataManager.getWeeklyStats()
+                val (totalDistance, totalRuns, totalCalories) = dataManager.getTotalStats()
+
+                updateState(
+                    DataResult.Success(
+                        RunningChallengeState.ChallengeData(
+                            totalDistance = totalDistance,
+                            totalRuns = totalRuns,
+                            weeklyDistance = weeklyDistance,
+                            weeklyGoalDistance = weeklyGoal,
+                            todaySteps = todayStats.totalSteps,
+                            todayDistance = todayStats.totalDistance,
+                            todayCalories = todayStats.totalCalories
+                        )
+                    )
+                )
+            } catch (e: Exception) {
+                updateState(
+                    DataResult.Error(
+                        ErrorResponse(
+                            errorType = "ERROR",
+                            message = "Không thể lấy dữ liệu"
+                        )
+                    )
+                )
+            }
         }
     }
 
     fun saveRunningSession(steps: Int, distance: Double, durationMinutes: Long, calories: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            ApiCaller.safeApiCall(
-                apiCall = { 
-                    apiService.saveRunningSession(
-                        steps = steps,
-                        distance = distance,
-                        durationMinutes = durationMinutes,
-                        calories = calories
+            try {
+                dataManager.saveSession(steps, distance, durationMinutes, calories)
+                updateState(DataResult.Success(RunningChallengeState.SaveSuccess))
+            } catch (e: Exception) {
+                updateState(
+                    DataResult.Error(
+                        ErrorResponse(
+                            errorType = "ERROR",
+                            message = "Không thể lưu hoạt động"
+                        )
                     )
-                },
-                callback = { result ->
-                    result.doIfSuccess {
-                        updateState(DataResult.Success(RunningChallengeState.SaveSuccess))
-                    }
-                    result.doIfFailure { error ->
-                    }
-                }
-            )
+                )
+            }
         }
+    }
+
+    fun getAchievements(): List<RunningDataManager.Achievement> {
+        return dataManager.getAchievements()
+    }
+
+    fun getHistory(): List<RunningDataManager.RunningSession> {
+        return dataManager.getAllSessions().sortedByDescending { it.timestamp }
     }
 
     override fun onTriggerEvent(event: RunningChallengeEvent) {
@@ -90,7 +92,7 @@ sealed class RunningChallengeState {
         val todayDistance: Double,
         val todayCalories: Int
     ) : RunningChallengeState()
-    
+
     object SaveSuccess : RunningChallengeState()
 }
 
