@@ -74,11 +74,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             ).show()
         }
 
-        // Challenge button (Running Challenge)
-        viewBinding.btnChallenge.setOnDebounceClick {
-            findNavController().navigate(R.id.action_mainScreen_to_runningChallengeFragment)
-        }
-
         // Logout button (hidden but keep logic)
         viewBinding.btnLogout.setOnDebounceClick {
             showLogoutDialog()
