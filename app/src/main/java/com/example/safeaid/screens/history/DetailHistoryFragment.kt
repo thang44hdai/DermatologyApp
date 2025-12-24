@@ -37,7 +37,7 @@ class DetailHistoryFragment : BaseFragment<ScanResultFragmentBinding>() {
         viewBinding.layoutImv.isVisible = false
         data = arguments?.getSerializable(ARG) as Scan
         loadImageWithAnimation(data?.imageUrl, viewBinding.imv1)
-        loadImageWithAnimation(data?.disease?.imageUrl, viewBinding.imv2)
+        loadImageWithAnimation(data?.highlightedImageUrl, viewBinding.imv2)
         viewBinding.tvTitle.text = "${data?.disease?.diseaseName}"
         viewBinding.tvDescription.text = "${data?.disease?.description}"
         viewBinding.tvSymptomsDescription.text = "${data?.disease?.symptoms}"

@@ -47,14 +47,24 @@
         app:layout_constraintStart_toStartOf="@+id/tvName"
         app:layout_constraintTop_toBottomOf="@+id/tvName" />
 
+    <ImageView
+        android:id="@+id/ivStatusIcon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/ic_check_success"
+        app:layout_constraintStart_toStartOf="@+id/tvName"
+        app:layout_constraintTop_toBottomOf="@+id/tvDes" />
+
     <TextView
         android:id="@+id/tvStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginStart="6dp"
         android:text="TextView"
-        app:layout_constraintStart_toStartOf="@+id/tvName"
-        app:layout_constraintTop_toBottomOf="@+id/tvDes" />
+        app:layout_constraintBottom_toBottomOf="@+id/ivStatusIcon"
+        app:layout_constraintStart_toEndOf="@+id/ivStatusIcon"
+        app:layout_constraintTop_toTopOf="@+id/ivStatusIcon" />
 
     <TextView
         android:id="@+id/tvDate"
@@ -63,7 +73,7 @@
         android:layout_marginTop="5dp"
         android:text="TextView"
         app:layout_constraintStart_toStartOf="@+id/tvName"
-        app:layout_constraintTop_toBottomOf="@+id/tvStatus" />
+        app:layout_constraintTop_toBottomOf="@+id/ivStatusIcon" />
 
     <ImageView
         android:id="@+id/icNext"

@@ -1,14 +1,17 @@
 package com.example.safeaid.screens.history
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.dermatology.R
 import com.example.safeaid.core.response.Scan
+import com.example.safeaid.core.utils.toCustomDateFormat
 
 class HistoryAdapter(
     private var scans: List<Scan> = emptyList(),
@@ -19,9 +22,11 @@ class HistoryAdapter(
         private val imv: ImageView = itemView.findViewById(R.id.imv)
         private val tvName: TextView = itemView.findViewById(R.id.tvName)
         private val tvDes: TextView = itemView.findViewById(R.id.tvDes)
+        private val ivStatusIcon: ImageView = itemView.findViewById(R.id.ivStatusIcon)
         private val tvStatus: TextView = itemView.findViewById(R.id.tvStatus)
         private val tvDate: TextView = itemView.findViewById(R.id.tvDate)
 
+        @RequiresApi(Build.VERSION_CODES.O)
         fun bind(item: Scan) {
             Glide.with(itemView.context)
                 .load(item.imageUrl)
@@ -31,8 +36,22 @@ class HistoryAdapter(
 
             tvName.text = item.disease?.diseaseName ?: "Không xác định"
             tvDes.text = item.disease?.description ?: "Không có mô tả"
-            tvStatus.text = "Trạng thái: ${item.status ?: "Không rõ"}"
-            tvDate.text = "Ngày: ${item.scanDate ?: "Không có"}"
+            
+            // Handle status with icon and color
+            when (item.status?.lowercase()) {
+                "completed" -> {
+                    ivStatusIcon.setImageResource(R.drawable.ic_check_success)
+                    tvStatus.text = "Thành công"
+                    tvStatus.setTextColor(android.graphics.Color.parseColor("#17AF7C"))
+                }
+                else -> {
+                    ivStatusIcon.setImageResource(R.drawable.ic_close_error)
+                    tvStatus.text = "Thất bại"
+                    tvStatus.setTextColor(android.graphics.Color.parseColor("#E40005"))
+                }
+            }
+            
+            tvDate.text = "Ngày: ${item.scanDate?.toCustomDateFormat() ?: "Không có"}"
 
             itemView.setOnClickListener {
                 onItemClick?.invoke(item)

@@ -60,7 +60,7 @@ class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
             
             // Load images with loading animation
             loadImageWithAnimation(predict.data?.imageUrl, viewBinding.imv1)
-            loadImageWithAnimation(predict.data?.disease?.imageUrl, viewBinding.imv2)
+            loadImageWithAnimation(predict.data?.highlightedImageUrl, viewBinding.imv2)
         }
     }
 
@@ -111,11 +111,11 @@ class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
 
         // Click to zoom images
         viewBinding.imv1.setOnDebounceClick {
-            showImageZoom(predict.data?.disease?.imageUrl)
+            showImageZoom(predict.data?.imageUrl)
         }
 
         viewBinding.imv2.setOnDebounceClick {
-            showImageZoom(predict.data?.disease?.imageUrl)
+            showImageZoom(predict.data?.highlightedImageUrl)
         }
     }
 }

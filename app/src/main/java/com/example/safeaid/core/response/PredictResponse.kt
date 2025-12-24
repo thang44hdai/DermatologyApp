@@ -25,7 +25,9 @@ data class PredictResponse(
         @SerializedName("scan_id")
         var scanId: Int? = null,
         @SerializedName("user_id")
-        var userId: Int? = null
+        var userId: Int? = null,
+        @SerializedName("highlighted_image_url")
+        var highlightedImageUrl: String? = null,
     )
 }
 

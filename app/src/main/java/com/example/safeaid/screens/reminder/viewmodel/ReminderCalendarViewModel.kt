@@ -44,7 +44,10 @@ class ReminderCalendarViewModel @Inject constructor(
 
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
-    fun loadWeekCalendar(weekOffset: Int = 0, autoSelectPosition: AutoSelectPosition = AutoSelectPosition.TODAY) {
+    fun loadWeekCalendar(
+        weekOffset: Int = 0,
+        autoSelectPosition: AutoSelectPosition = AutoSelectPosition.TODAY
+    ) {
         _currentWeekOffset.value = weekOffset
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -81,6 +84,7 @@ class ReminderCalendarViewModel @Inject constructor(
                                 val todayDate = Utils.getCurrentDate()
                                 days.find { it.date == todayDate } ?: days.firstOrNull()
                             }
+
                             AutoSelectPosition.FIRST -> days.firstOrNull()
                             AutoSelectPosition.LAST -> days.lastOrNull()
                         }
@@ -125,7 +129,7 @@ class ReminderCalendarViewModel @Inject constructor(
         // Reload current week and keep the selected date
         val currentSelectedDate = _selectedDate.value
         val currentOffset = _currentWeekOffset.value
-        
+
         viewModelScope.launch(Dispatchers.IO) {
             ApiCaller.safeApiCall(
                 apiCall = {
@@ -155,7 +159,7 @@ class ReminderCalendarViewModel @Inject constructor(
                         }
 
                         _calendarDays.value = days
-                        
+
                         // Reload reminders for the selected date
                         if (currentSelectedDate.isNotEmpty()) {
                             loadRemindersForDay(currentSelectedDate)
@@ -182,11 +186,15 @@ class ReminderCalendarViewModel @Inject constructor(
 
                             val reminderTimes = groupedByTime.map { (time, schedules) ->
                                 val medicines = schedules.map { schedule ->
+                                    val firstStatus =
+                                        if (schedule.mealTiming == "before_meal") "Trước khi ăn" else "Sau khi ăn"
+                                    val status =
+                                        "$firstStatus • ${schedule.dosage} ${schedule.unit}"
                                     MedicineReminder(
                                         reminderId = schedule.reminderId,
                                         name = schedule.medicineName ?: "Unknown",
                                         dosage = schedule.dosage ?: "",
-                                        status = schedule.status ?: "",
+                                        status = status,
                                         time = schedule.time ?: "",
                                         note = schedule.note ?: "",
                                         isTaken = schedule.isTaken

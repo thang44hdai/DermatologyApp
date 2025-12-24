@@ -38,7 +38,7 @@ class ProductAdapter(
 
         fun bind(p: MedicineResponse) {
             name.text = p.name
-            price.text = p.price
+            price.text = formatPrice(p.price)
             val url = p.images.firstOrNull()
             if (url.isNullOrEmpty()) {
                 Glide.with(itemView.context).load(android.R.color.darker_gray).into(img)
@@ -48,6 +48,16 @@ class ProductAdapter(
 
             itemView.setOnClickListener {
                 onItemClick?.invoke(p)
+            }
+        }
+
+        private fun formatPrice(priceString: String?): String {
+            return try {
+                val price = priceString?.replace("[^0-9]".toRegex(), "")?.toLongOrNull() ?: 0
+                val formatter = java.text.DecimalFormat("#,###")
+                "${formatter.format(price)} VND"
+            } catch (e: Exception) {
+                "0 VND"
             }
         }
     }

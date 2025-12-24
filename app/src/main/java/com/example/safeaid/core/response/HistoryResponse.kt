@@ -26,7 +26,9 @@ data class Scan(
     @SerializedName("scan_id")
     var scanId: Int? = null,
     @SerializedName("status")
-    var status: String? = null
+    var status: String? = null,
+    @SerializedName("highlighted_image_url")
+    var highlightedImageUrl: String? = null,
 ) : Serializable {
     data class DiagnosisHistory(
         @SerializedName("created_at")

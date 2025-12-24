@@ -21,10 +21,9 @@
             android:layout_height="48dp"
             android:background="@drawable/bg_medicine_icon"
             android:padding="10dp"
-            android:src="@drawable/ic_ai"
+            android:src="@drawable/ic_medicine_remind"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/gray_600" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Time (top right) -->
         <TextView
@@ -111,7 +110,7 @@
             android:id="@+id/switch_taken"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"
+            android:checked="false"
             android:theme="@style/SwitchTheme"
             app:layout_constraintBottom_toBottomOf="@+id/tv_toggle_label"
             app:layout_constraintEnd_toEndOf="parent"

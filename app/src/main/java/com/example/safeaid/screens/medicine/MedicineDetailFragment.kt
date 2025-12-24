@@ -52,9 +52,8 @@ class MedicineDetailFragment : BaseFragment<FragmentMedicineDetailBinding>() {
             val brandName = medicine.brand?.name ?: "Chưa rõ"
             tvBrand.text = "Thương hiệu: $brandName"
 
-            // Set price
-            val priceText = medicine.price ?: "0"
-            tvPrice.text = "$priceText đ/Hộp"
+            // Set price with Vietnamese format
+            tvPrice.text = formatPrice(medicine.price)
 
             // Set rating (mock data - replace with actual if available)
             tvRating.text = "3.6k"
@@ -88,6 +87,16 @@ class MedicineDetailFragment : BaseFragment<FragmentMedicineDetailBinding>() {
                     .error(R.drawable.ic_default_avatar)
                     .into(imgProduct)
             }
+        }
+    }
+
+    private fun formatPrice(priceString: String?): String {
+        return try {
+            val price = priceString?.replace("[^0-9]".toRegex(), "")?.toLongOrNull() ?: 0
+            val formatter = java.text.DecimalFormat("#,###")
+            "${formatter.format(price)} VND/Hộp"
+        } catch (e: Exception) {
+            "0 VND/Hộp"
         }
     }
 }

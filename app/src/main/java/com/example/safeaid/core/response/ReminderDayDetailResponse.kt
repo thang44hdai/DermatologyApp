@@ -21,10 +21,12 @@ data class ReminderSchedule(
     val time: String? = null,
     @SerializedName("dosage")
     val dosage: String? = null,
-    @SerializedName("status")
-    val status: String? = null,
     @SerializedName("note")
     val note: String? = null,
     @SerializedName("is_taken")
-    val isTaken: Boolean = false
+    val isTaken: Boolean = false,
+    @SerializedName("unit")
+    val unit: String = "",
+    @SerializedName("meal_timing")
+    val mealTiming: String = "",
 ) : Serializable

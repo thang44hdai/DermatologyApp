@@ -31,9 +31,16 @@ class MedicineReminderAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(medicine: MedicineReminder) {
-            Log.i("hihihi1", "$medicine")
             binding.tvMedicineName.text = medicine.name
-            binding.tvMedicineInfo.text = "${medicine.status} • ${medicine.dosage}"
+            
+            // Apply strikethrough if not taken
+            if (medicine.isTaken) {
+                binding.tvMedicineName.paintFlags = binding.tvMedicineName.paintFlags and android.graphics.Paint.STRIKE_THRU_TEXT_FLAG.inv()
+            } else {
+                binding.tvMedicineName.paintFlags = binding.tvMedicineName.paintFlags or android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
+            }
+            
+            binding.tvMedicineInfo.text = "${medicine.status}"
             binding.tvTime.text = medicine.time
             
             // Remove listener before setting state to avoid triggering callback

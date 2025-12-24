@@ -34,7 +34,7 @@
     <style name="SwitchTheme" parent="Theme.AppCompat.Light">
         <item name="colorControlActivated">@color/primary</item>
         <item name="colorSwitchThumbNormal">@color/white</item>
-        <item name="android:colorForeground">@color/gray_600</item>
+        <item name="android:colorForeground">#8E8E8E</item>
     </style>
 
     <!-- Custom DatePicker Dialog Theme -->
