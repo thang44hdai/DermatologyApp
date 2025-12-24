@@ -11,6 +11,8 @@ import com.example.safeaid.core.request.GoogleLoginRequest
 import com.example.safeaid.core.request.LoginRequest
 import com.example.safeaid.core.request.RefreshTokenRequest
 import com.example.safeaid.core.request.RegisterRequest
+import com.example.safeaid.core.response.Brand
+import com.example.safeaid.core.response.BrandsResponse
 import com.example.safeaid.core.response.CategoryResponse
 import com.example.safeaid.core.response.ChatResponse
 import com.example.safeaid.core.response.ConversationResponse
@@ -180,4 +182,12 @@ interface ApiService {
 
     @POST("users/test-notification")
     suspend fun sendTestNotification(): Response<FCMTokenResponse>
+
+    @GET("brands")
+    suspend fun getBrand(): Response<BrandsResponse>
+
+    @GET("brands/{brand_id}")
+    suspend fun getDetailsBrand(
+        @Path("brand_id") brandId: String
+    ): Response<Brand>
 }

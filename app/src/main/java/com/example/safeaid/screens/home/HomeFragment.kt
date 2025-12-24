@@ -20,20 +20,32 @@ import com.example.safeaid.core.ui.BaseFragment
 import com.example.safeaid.core.utils.DataResult
 import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.doIfSuccess
+import com.example.safeaid.core.response.Brand
 import com.example.safeaid.screens.home.adapter.BrandAdapter
+import com.example.safeaid.screens.home.adapter.BrandNewAdapter
 import com.example.safeaid.screens.home.adapter.CategoryAdapter
 import com.example.safeaid.screens.home.adapter.ProductAdapter
 import com.example.safeaid.screens.home.utils.BrandUtils
 import com.example.safeaid.screens.home.utils.MedicineUtils
+import com.example.safeaid.screens.home.viewmodel.BrandViewModel
 import com.example.safeaid.screens.medicine.MedicineDetailFragment
 import com.example.safeaid.screens.pharmacy.PharmacyDetailFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import androidx.fragment.app.viewModels
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
-    private val brandAdapter = BrandAdapter(listOf())
+    private val brandNewAdapter = BrandNewAdapter(listOf()) { brand ->
+        // Navigate to brand detail
+        val bundle = Bundle()
+        bundle.putString("brand_id", brand.id.toString())
+        findNavController().navigate(
+            R.id.action_mainScreen_to_brandDetailFragment,
+            bundle
+        )
+    }
     private val medicinesAdapter = ProductAdapter(listOf()) { medicine ->
         val bundle = Bundle()
         bundle.putSerializable(MedicineDetailFragment.ARG_MEDICINE, medicine)
@@ -51,9 +63,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         ).show()
     }
     private val viewModel: HomeViewModel by activityViewModels()
+    private val brandViewModel: BrandViewModel by viewModels()
 
     private var allMedicines = listOf<MedicineResponse>()
-    private var allBrands = listOf<PharmacyResponse>()
+    private var allBrands = listOf<Brand>()
     private var allCategories = listOf<CategoryResponse>()
     private var currentSearchQuery = ""
     private var searchMode = SearchMode.ALL
@@ -73,7 +86,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     override fun onInit() {
         viewBinding.rvProducts.layoutManager = GridLayoutManager(requireContext(), 2)
         viewBinding.rvProducts.adapter = medicinesAdapter
-        viewBinding.rvBrands.adapter = brandAdapter
+        viewBinding.rvBrands.adapter = brandNewAdapter
         viewBinding.rvCategories.adapter = categoryAdapter
 
         // Setup SwipeRefreshLayout
@@ -89,6 +102,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         setupBanner()
 
         viewModel.loadHomeData()
+        brandViewModel.loadBrands()
     }
 
     private fun setupBanner() {
@@ -202,6 +216,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 updateCategoriesDisplay()
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)
+
+        // Observe brands from BrandViewModel
+        brandViewModel.brands
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+            .onEach { data ->
+                allBrands = data.brands
+                applyFiltersAndSort()
+            }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
     override fun onInitListener() {
@@ -223,21 +246,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         // Pull to refresh
         viewBinding.swipeRefresh.setOnRefreshListener {
             viewModel.loadHomeData()
+            brandViewModel.loadBrands()
             viewBinding.swipeRefresh.isRefreshing = false
         }
 
-        // Brand click
-        brandAdapter.setOnClick(object : BrandAdapter.OnClickBrand {
-            override fun onClick(item: PharmacyResponse) {
-                val bundle = Bundle()
-                bundle.putSerializable(PharmacyDetailFragment.ARG, item)
-                bundle.putBoolean(PharmacyDetailFragment.IS_DIRECTION, true)
-                findNavController().navigate(
-                    R.id.action_mainScreen_to_pharmacyDetailFragment,
-                    bundle
-                )
-            }
-        })
+        // Brand click - removed old adapter click listener
 
         // Show more/less button for products
         viewBinding.btnShowMore.setOnClickListener {
@@ -293,8 +306,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         // Filter and update brands
         when (searchMode) {
             SearchMode.ALL, SearchMode.BRANDS -> {
-                val filteredBrands = BrandUtils.filterBrands(allBrands, currentSearchQuery)
-                brandAdapter.bindData(filteredBrands)
+                val filteredBrands = if (currentSearchQuery.isEmpty()) {
+                    allBrands
+                } else {
+                    allBrands.filter { brand ->
+                        brand.name?.contains(currentSearchQuery, ignoreCase = true) == true ||
+                        brand.description?.contains(currentSearchQuery, ignoreCase = true) == true
+                    }
+                }
+                brandNewAdapter.updateData(filteredBrands)
             }
             SearchMode.PRODUCTS -> {
                 // Hide brands section
@@ -348,8 +368,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         state?.doIfSuccess { data ->
             when (data) {
                 is HomeState.PharmaciesList -> {
-                    allBrands = data.data.pharmacies
-                    applyFiltersAndSort()
+                    // No longer using pharmacies as brands
                 }
             }
         }

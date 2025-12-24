@@ -78,6 +78,13 @@
             app:exitAnim="@anim/slide_out_right"
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_left" />
+        <action
+            android:id="@+id/action_mainScreen_to_brandDetailFragment"
+            app:destination="@id/brandDetailFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
     </fragment>
     <fragment
         android:id="@+id/cameraFragment"
@@ -187,4 +194,8 @@
         android:id="@+id/runningChallengeFragment"
         android:name="com.example.safeaid.screens.challenge.RunningChallengeFragment"
         android:label="RunningChallengeFragment" />
+    <fragment
+        android:id="@+id/brandDetailFragment"
+        android:name="com.example.safeaid.screens.brand.BrandDetailFragment"
+        android:label="BrandDetailFragment" />
 </navigation>

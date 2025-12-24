@@ -241,15 +241,15 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
                     android:orientation="horizontal"
-                    android:paddingVertical="5dp"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/brands_header"
-                    tools:listitem="@layout/item_brand" />
+                    tools:listitem="@layout/item_brand_new" />
 
                 <!-- Products Section Header -->
                 <LinearLayout
