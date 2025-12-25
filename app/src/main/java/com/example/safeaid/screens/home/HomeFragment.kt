@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -13,27 +14,22 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.dermatology.R
 import com.example.dermatology.databinding.FragmentHomeBinding
+import com.example.safeaid.core.response.Brand
 import com.example.safeaid.core.response.CategoryResponse
 import com.example.safeaid.core.response.MedicineResponse
-import com.example.safeaid.core.response.PharmacyResponse
 import com.example.safeaid.core.ui.BaseFragment
 import com.example.safeaid.core.utils.DataResult
 import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.doIfSuccess
-import com.example.safeaid.core.response.Brand
-import com.example.safeaid.screens.home.adapter.BrandAdapter
 import com.example.safeaid.screens.home.adapter.BrandNewAdapter
 import com.example.safeaid.screens.home.adapter.CategoryAdapter
 import com.example.safeaid.screens.home.adapter.ProductAdapter
-import com.example.safeaid.screens.home.utils.BrandUtils
 import com.example.safeaid.screens.home.utils.MedicineUtils
 import com.example.safeaid.screens.home.viewmodel.BrandViewModel
 import com.example.safeaid.screens.medicine.MedicineDetailFragment
-import com.example.safeaid.screens.pharmacy.PharmacyDetailFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import androidx.fragment.app.viewModels
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
@@ -55,7 +51,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         )
     }
     private val categoryAdapter = CategoryAdapter(listOf()) { category ->
-        // TODO: Navigate to category detail
         android.widget.Toast.makeText(
             requireContext(),
             "Danh mục: ${category.name}",

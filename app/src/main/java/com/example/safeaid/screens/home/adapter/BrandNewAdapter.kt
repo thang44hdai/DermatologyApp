@@ -37,28 +37,15 @@ class BrandNewAdapter(
     inner class BrandViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val cardView: CardView = itemView.findViewById(R.id.card_brand)
         private val imgLogo: ImageView = itemView.findViewById(R.id.img_brand_logo)
-        private val tvName: TextView = itemView.findViewById(R.id.tv_brand_name)
-        private val tvDescription: TextView = itemView.findViewById(R.id.tv_brand_description)
 
         fun bind(brand: Brand) {
-            // Set brand name
-            tvName.text = brand.name ?: "Thương hiệu"
-
-            // Set brand description
-            if (!brand.description.isNullOrEmpty()) {
-                tvDescription.text = brand.description
-                tvDescription.visibility = View.VISIBLE
-            } else {
-                tvDescription.visibility = View.GONE
-            }
-
             // Load brand logo
             if (!brand.logoPath.isNullOrEmpty()) {
                 Glide.with(itemView.context)
                     .load(brand.logoPath)
                     .placeholder(R.drawable.ic_default_avatar)
                     .error(R.drawable.ic_default_avatar)
-                    .centerCrop()
+                    .fitCenter()
                     .into(imgLogo)
             } else {
                 imgLogo.setImageResource(R.drawable.ic_default_avatar)

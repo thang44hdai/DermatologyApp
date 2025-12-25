@@ -34,7 +34,7 @@ class MedicineReminderAdapter(
             binding.tvMedicineName.text = medicine.name
             
             // Apply strikethrough if not taken
-            if (medicine.isTaken) {
+            if (!medicine.isTaken) {
                 binding.tvMedicineName.paintFlags = binding.tvMedicineName.paintFlags and android.graphics.Paint.STRIKE_THRU_TEXT_FLAG.inv()
             } else {
                 binding.tvMedicineName.paintFlags = binding.tvMedicineName.paintFlags or android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
