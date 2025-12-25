@@ -6,17 +6,21 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.dermatology.R
 import com.example.dermatology.databinding.FragmentBrandDetailBinding
 import com.example.safeaid.core.response.Brand
+import com.example.safeaid.core.response.BrandDetailResponse
 import com.example.safeaid.core.ui.BaseFragment
 import com.example.safeaid.core.utils.DataResult
 import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.doIfSuccess
 import com.example.safeaid.core.utils.setOnDebounceClick
+import com.example.safeaid.screens.brand.adapter.BrandMedicineAdapter
 import com.example.safeaid.screens.home.viewmodel.BrandState
 import com.example.safeaid.screens.home.viewmodel.BrandViewModel
+import com.example.safeaid.screens.medicine.MedicineDetailFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -25,6 +29,7 @@ import kotlinx.coroutines.flow.onEach
 class BrandDetailFragment : BaseFragment<FragmentBrandDetailBinding>() {
     private val viewModel: BrandViewModel by viewModels()
     private var brandId: String? = null
+    private lateinit var medicineAdapter: BrandMedicineAdapter
 
     companion object {
         const val ARG_BRAND_ID = "brand_id"
@@ -36,6 +41,16 @@ class BrandDetailFragment : BaseFragment<FragmentBrandDetailBinding>() {
 
     override fun onInit() {
         brandId = arguments?.getString(ARG_BRAND_ID)
+        
+        // Setup RecyclerView
+        medicineAdapter = BrandMedicineAdapter { medicine ->
+        }
+        
+        viewBinding.rvMedicines.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = medicineAdapter
+        }
+        
         brandId?.let {
             viewModel.loadBrandDetail(it)
         }
@@ -79,7 +94,8 @@ class BrandDetailFragment : BaseFragment<FragmentBrandDetailBinding>() {
         }
     }
 
-    private fun bindBrandData(brand: Brand) {
+    private fun bindBrandData(data: BrandDetailResponse) {
+        val brand = data.brand ?: Brand()
         with(viewBinding) {
             // Set brand name
             tvBrandName.text = brand.name ?: "Thương hiệu"
@@ -93,7 +109,7 @@ class BrandDetailFragment : BaseFragment<FragmentBrandDetailBinding>() {
 
             // Set created date
             if (!brand.createdAt.isNullOrEmpty()) {
-                tvCreatedDate.text = formatDate(brand.createdAt?:"")
+                tvCreatedDate.text = formatDate(brand.createdAt ?: "")
             } else {
                 tvCreatedDate.text = "Ngày tạo: Chưa rõ"
             }
@@ -104,11 +120,14 @@ class BrandDetailFragment : BaseFragment<FragmentBrandDetailBinding>() {
                     .load(brand.logoPath)
                     .placeholder(R.drawable.ic_default_avatar)
                     .error(R.drawable.ic_default_avatar)
-                    .centerCrop()
+                    .fitCenter()
                     .into(imgBrandLogo)
             } else {
                 imgBrandLogo.setImageResource(R.drawable.ic_default_avatar)
             }
+
+            // Update medicines list
+            medicineAdapter.updateData(data.medicines)
         }
     }
 

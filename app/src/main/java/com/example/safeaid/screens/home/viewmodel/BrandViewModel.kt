@@ -2,6 +2,8 @@ package com.example.safeaid.screens.home.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.example.safeaid.core.base.BaseViewModel
+import com.example.safeaid.core.data.MockDataSource
+import com.example.safeaid.core.response.BrandDetailResponse
 import com.example.safeaid.core.response.BrandsResponse
 import com.example.safeaid.core.service.ApiService
 import com.example.safeaid.core.utils.ApiCaller
@@ -25,9 +27,6 @@ class BrandViewModel @Inject constructor(
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
-
-    private val _brandDetail = MutableStateFlow<com.example.safeaid.core.response.Brand?>(null)
-    val brandDetail = _brandDetail.asStateFlow()
 
     fun loadBrands() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -56,7 +55,6 @@ class BrandViewModel @Inject constructor(
                 callback = { result ->
                     _isLoading.value = false
                     result.doIfSuccess { data ->
-                        _brandDetail.value = data
                         updateState(DataResult.Success(BrandState.BrandDetail(data)))
                     }
                     result.doIfFailure { error ->
@@ -74,7 +72,7 @@ class BrandViewModel @Inject constructor(
 
 sealed class BrandState {
     data class BrandsList(val data: BrandsResponse) : BrandState()
-    data class BrandDetail(val data: com.example.safeaid.core.response.Brand) : BrandState()
+    data class BrandDetail(val data: BrandDetailResponse) : BrandState()
 }
 
 sealed class BrandEvent

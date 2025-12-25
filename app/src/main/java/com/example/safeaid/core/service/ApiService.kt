@@ -12,6 +12,7 @@ import com.example.safeaid.core.request.LoginRequest
 import com.example.safeaid.core.request.RefreshTokenRequest
 import com.example.safeaid.core.request.RegisterRequest
 import com.example.safeaid.core.response.Brand
+import com.example.safeaid.core.response.BrandDetailResponse
 import com.example.safeaid.core.response.BrandsResponse
 import com.example.safeaid.core.response.CategoryResponse
 import com.example.safeaid.core.response.ChatResponse
@@ -186,8 +187,8 @@ interface ApiService {
     @GET("brands")
     suspend fun getBrand(): Response<BrandsResponse>
 
-    @GET("brands/{brand_id}")
+    @GET("brands/{brand_id}/medicines")
     suspend fun getDetailsBrand(
         @Path("brand_id") brandId: String
-    ): Response<Brand>
+    ): Response<BrandDetailResponse>
 }
