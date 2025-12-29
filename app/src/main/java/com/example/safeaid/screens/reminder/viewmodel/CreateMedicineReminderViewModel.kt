@@ -9,6 +9,7 @@ import com.example.safeaid.core.response.MedicineResponse
 import com.example.safeaid.core.service.ApiService
 import com.example.safeaid.core.utils.ApiCaller
 import com.example.safeaid.core.utils.DataResult
+import com.example.safeaid.core.utils.ErrorResponse
 import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.doIfSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,7 +40,6 @@ class CreateMedicineReminderViewModel @Inject constructor(
 
     fun createReminder(request: CreateReminderRequest) {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.i("hihihi", "$request")
             ApiCaller.safeApiCall(
                 apiCall = {
                     apiService.createReminder(request)
@@ -49,6 +49,15 @@ class CreateMedicineReminderViewModel @Inject constructor(
                         updateState(DataResult.Success(CreateReminderState.CreateSuccess(response)))
                     }
                     result.doIfFailure { error ->
+                        updateState(
+                            DataResult.Error(
+                                ErrorResponse(
+                                    message = "Lỗi truy cập dữ liệu",
+                                    errorCode = 0,
+                                    errorType = ""
+                                )
+                            )
+                        )
                     }
                 }
             )

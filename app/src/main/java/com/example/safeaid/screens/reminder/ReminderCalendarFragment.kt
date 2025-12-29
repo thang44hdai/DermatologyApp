@@ -54,7 +54,7 @@ class ReminderCalendarFragment : BaseFragment<FragmentReminderCalendarBinding>()
                 it?.doIfFailure {
                     requireContext().showErrorDialog(
                         title = "Lỗi",
-                        message = "Không thể update lịch của ngày trong tương lai"
+                        message = "Lỗi truy cập dữ liệu"
                     )
                 }
             }

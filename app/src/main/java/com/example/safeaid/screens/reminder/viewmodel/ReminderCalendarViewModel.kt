@@ -7,6 +7,7 @@ import com.example.safeaid.core.request.UpdateReminderStatusRequest
 import com.example.safeaid.core.service.ApiService
 import com.example.safeaid.core.utils.ApiCaller
 import com.example.safeaid.core.utils.DataResult
+import com.example.safeaid.core.utils.ErrorResponse
 import com.example.safeaid.core.utils.Utils
 import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.doIfSuccess
@@ -102,6 +103,15 @@ class ReminderCalendarViewModel @Inject constructor(
                     }
                     result.doIfFailure {
                         _calendarDays.value = emptyList()
+                        updateState(
+                            DataResult.Error(
+                                ErrorResponse(
+                                    message = "Lỗi truy cập dữ liệu",
+                                    errorCode = 0,
+                                    errorType = ""
+                                )
+                            )
+                        )
                     }
                 }
             )
@@ -218,6 +228,15 @@ class ReminderCalendarViewModel @Inject constructor(
                     result.doIfFailure {
                         _reminderTimes.value = emptyList()
                         _isEmpty.value = true
+                        updateState(
+                            DataResult.Error(
+                                ErrorResponse(
+                                    message = "Lỗi truy cập dữ liệu",
+                                    errorCode = 0,
+                                    errorType = ""
+                                )
+                            )
+                        )
                     }
                 }
             )

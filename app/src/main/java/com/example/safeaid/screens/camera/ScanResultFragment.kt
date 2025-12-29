@@ -14,7 +14,6 @@ import com.example.dermatology.databinding.ScanResultFragmentBinding
 import com.example.safeaid.core.response.PredictResponse
 import com.example.safeaid.core.ui.BaseFragment
 import com.example.safeaid.core.utils.setOnDebounceClick
-import com.example.safeaid.screens.camera.viewmodel.PredictViewModel
 import com.example.safeaid.screens.home.adapter.ProductAdapter
 import com.example.safeaid.screens.main.MainViewModel
 import com.example.safeaid.screens.map.viewmodel.MapViewModel
@@ -22,9 +21,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
-    private val viewModel: PredictViewModel by activityViewModels()
-    private val mainViewModel: MainViewModel by activityViewModels()
-    private val mapViewModel: MapViewModel by activityViewModels()
     private var predict: PredictResponse = PredictResponse()
     private val adapter = ProductAdapter(listOf(), null)
 

@@ -2,6 +2,7 @@ package com.example.safeaid.screens.chatbot
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -34,7 +35,7 @@ class ChatBotFragment : BaseFragment<FragmentChatBotBinding>() {
         setupConversationList()
         setupChatList()
         loadConversations()
-        
+
         // Setup hide keyboard on touch outside
         KeyboardUtils.setupHideKeyboardOnTouchOutside(
             this,
@@ -128,6 +129,12 @@ class ChatBotFragment : BaseFragment<FragmentChatBotBinding>() {
             if (message.isNotBlank()) {
                 viewModel.sendMessage(message)
                 viewBinding.edtInput.text?.clear()
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Vui lòng nhập nội dung trò chuyện",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }

@@ -252,7 +252,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
             hideLoading()
             requireContext().showErrorDialog(
                 title = "Đăng nhập thất bại",
-                message = error.message ?: "Có lỗi xảy ra. Vui lòng thử lại."
+                message = "Tài khoản hoặc mật khẩu không chính xác"
             )
         }
         state?.onLoading {

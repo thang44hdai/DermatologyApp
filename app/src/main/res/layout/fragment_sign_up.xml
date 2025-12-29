@@ -415,7 +415,7 @@
                                     android:orientation="horizontal"
                                     android:paddingHorizontal="16dp">
 
-                                    <AutoCompleteTextView
+                                    <TextView
                                         android:id="@+id/tv_gender"
                                         android:layout_width="0dp"
                                         android:layout_height="match_parent"
@@ -423,7 +423,6 @@
                                         android:background="@android:color/transparent"
                                         android:gravity="center_vertical"
                                         android:hint="Chọn giới tính"
-                                        android:inputType="none"
                                         android:textColor="@color/black"
                                         android:textColorHint="@color/gray_neutral_4"
                                         android:textSize="16sp" />
@@ -432,6 +431,7 @@
                                         android:layout_width="20dp"
                                         android:layout_height="20dp"
                                         android:src="@drawable/ic_arrow_down"
+                                        android:visibility="gone"
                                         app:tint="@color/gray_neutral_4" />
 
                                 </LinearLayout>

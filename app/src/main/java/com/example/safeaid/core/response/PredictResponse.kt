@@ -28,7 +28,7 @@ data class PredictResponse(
         var userId: Int? = null,
         @SerializedName("highlighted_image_url")
         var highlightedImageUrl: String? = null,
-    )
+    ) : Serializable
 }
 
 data class Disease(

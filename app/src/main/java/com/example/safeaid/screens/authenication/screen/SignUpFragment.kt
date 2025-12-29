@@ -7,6 +7,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -44,7 +45,7 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>() {
     override fun onInit() {
         setupGenderDropdown()
         setupDatePicker()
-        
+
         // Setup hide keyboard on touch outside
         KeyboardUtils.setupHideKeyboardOnTouchOutside(
             this,
@@ -102,9 +103,39 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>() {
     }
 
     private fun setupGenderDropdown() {
+        viewBinding.tvGender.setOnDebounceClick {
+            showGenderDialog()
+        }
+
+        // Make the entire gender container clickable
+        viewBinding.tvGender.parent.parent.let { parent ->
+            if (parent is android.view.ViewGroup) {
+                parent.setOnDebounceClick {
+                    showGenderDialog()
+                }
+            }
+        }
+    }
+
+    private fun showGenderDialog() {
         val genders = arrayOf("Nam", "Nữ", "Khác")
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, genders)
-        viewBinding.tvGender.setAdapter(adapter)
+
+        val builder = AlertDialog.Builder(requireContext())
+        builder
+            .setTitle("Chọn giới tính")
+            .setItems(genders) { dialog, which ->
+                viewBinding.tvGender.text = genders[which]
+                viewBinding.tvGender.setTextColor(resources.getColor(R.color.black, null))
+                dialog.dismiss()
+            }
+            .setNegativeButton("Hủy") { dialog, _ ->
+                dialog.dismiss()
+            }
+        val alertDialog = builder.create()
+        alertDialog.show()
+        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(
+            androidx.core.content.ContextCompat.getColor(requireContext(), R.color.red_600)
+        )
     }
 
     private fun setupDatePicker() {
@@ -132,7 +163,7 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>() {
 
         // Set max date to today (user must be born before today)
         datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
-        
+
         // Set min date to 100 years ago
         val minCalendar = Calendar.getInstance()
         minCalendar.add(Calendar.YEAR, -100)
@@ -228,11 +259,13 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>() {
     private fun togglePasswordVisibility(editText: EditText, toggleIcon: ImageView) {
         if (editText.inputType == (android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
             // Show password
-            editText.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            editText.inputType =
+                android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
             toggleIcon.setImageResource(com.example.dermatology.R.drawable.ic_eye_on)
         } else {
             // Hide password
-            editText.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
+            editText.inputType =
+                android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
             toggleIcon.setImageResource(com.example.dermatology.R.drawable.ic_eye_off)
         }
         // Move cursor to end

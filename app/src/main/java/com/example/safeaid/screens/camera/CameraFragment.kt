@@ -39,7 +39,7 @@ import java.util.Locale
 
 @AndroidEntryPoint
 class CameraFragment : BaseFragment<FragmentCameraBinding>() {
-    private val viewModel: PredictViewModel by activityViewModels()
+    private val viewModel: PredictViewModel by viewModels()
 
     private var imageCapture: ImageCapture? = null
 
@@ -49,7 +49,7 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>() {
         if (granted) startCamera()
         else Toast.makeText(
             requireContext(),
-            "Cần quyền camera để sử dụng tính năng này",
+            "Bạn không thể chụp ảnh chẩn đoán trực tiếp",
             Toast.LENGTH_SHORT
         ).show()
     }
@@ -58,6 +58,7 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>() {
     private val pickImageLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
+                showCapturedImage(it)
                 viewModel.predict(imageUri = it, context = requireContext())
             }
         }
@@ -150,16 +151,17 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>() {
         imageCapture.takePicture(outputOptions, ContextCompat.getMainExecutor(requireContext()),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Chụp ảnh thất bại: ${exc.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    Log.e("CameraFragment", "takePhoto error: ${exc.message}")
+//                    Toast.makeText(
+//                        requireContext(),
+//                        "Chụp ảnh thất bại: ${exc.message}",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                    Log.e("CameraFragment", "takePhoto error: ${exc.message}")
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = Uri.fromFile(photoFile)
+                    showCapturedImage(savedUri)
                     viewModel.predict(
                         imageUri = savedUri,
                         imageFile = photoFile,
@@ -169,12 +171,30 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>() {
             })
     }
 
+    private fun showCapturedImage(uri: Uri) {
+        viewBinding.cameraPreview.visibility = android.view.View.GONE
+        viewBinding.imgCaptured.visibility = android.view.View.VISIBLE
+        viewBinding.imgCaptured.setImageURI(uri)
+        
+        viewBinding.btnTake.visibility = android.view.View.GONE
+        viewBinding.btnUpload.visibility = android.view.View.GONE
+    }
+
+    private fun resetCamera() {
+        // Show camera preview and hide captured image
+        viewBinding.cameraPreview.visibility = android.view.View.VISIBLE
+        viewBinding.imgCaptured.visibility = android.view.View.GONE
+        
+        // Show the take photo button and upload button
+        viewBinding.btnTake.visibility = android.view.View.VISIBLE
+        viewBinding.btnUpload.visibility = android.view.View.VISIBLE
+    }
+
     private fun updateUi(state: DataResult<PredictState>?) {
         state?.doIfSuccess { data ->
             when (data) {
                 is PredictState.PredictRes -> {
                     val bundle = Bundle()
-                    Log.i("hihihi", "${data.data}")
                     bundle.putSerializable(
                         ScanResultFragment.argKey, data.data
                     )
