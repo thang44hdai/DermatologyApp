@@ -9,6 +9,7 @@ import com.example.safeaid.core.response.PredictResponse
 import com.example.safeaid.core.service.ApiService
 import com.example.safeaid.core.utils.ApiCaller
 import com.example.safeaid.core.utils.DataResult
+import com.example.safeaid.core.utils.ErrorResponse
 import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.doIfSuccess
 import com.example.safeaid.screens.history.HistoryState
@@ -83,11 +84,29 @@ class PredictViewModel @Inject constructor(
                                 updateState(DataResult.Success(PredictState.PredictRes(it)))
                             }
                             result.doIfFailure {
+                                updateState(
+                                    DataResult.Error(
+                                        ErrorResponse(
+                                            message = "Lỗi truy cập dữ liệu",
+                                            errorCode = 0,
+                                            errorType = ""
+                                        )
+                                    )
+                                )
                             }
                         }
                     )
                 }
             } catch (e: Exception) {
+                updateState(
+                    DataResult.Error(
+                        ErrorResponse(
+                            message = "Lỗi truy cập dữ liệu",
+                            errorCode = 0,
+                            errorType = ""
+                        )
+                    )
+                )
             }
         }
     }

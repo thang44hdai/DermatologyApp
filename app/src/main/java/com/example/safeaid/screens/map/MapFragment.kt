@@ -165,7 +165,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
         state?.doIfFailure { error ->
             android.widget.Toast.makeText(
                 requireContext(),
-                "Lỗi: ${error.message}",
+                "${error.message}",
                 android.widget.Toast.LENGTH_SHORT
             ).show()
         }

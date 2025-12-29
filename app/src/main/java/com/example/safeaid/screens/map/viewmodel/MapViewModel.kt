@@ -6,6 +6,7 @@ import com.example.safeaid.core.response.PharmacyResponse
 import com.example.safeaid.core.service.ApiService
 import com.example.safeaid.core.utils.ApiCaller
 import com.example.safeaid.core.utils.DataResult
+import com.example.safeaid.core.utils.ErrorResponse
 import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.doIfSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -59,6 +60,15 @@ class MapViewModel @Inject constructor(
                         updateState(DataResult.Success(MapState.PharmaciesNearBy(data = it)))
                     }
                     result.doIfFailure {
+                        updateState(
+                            DataResult.Error(
+                                ErrorResponse(
+                                    message = "Lỗi truy cập dữ liệu",
+                                    errorCode = 0,
+                                    errorType = ""
+                                )
+                            )
+                        )
                     }
                 }
             )

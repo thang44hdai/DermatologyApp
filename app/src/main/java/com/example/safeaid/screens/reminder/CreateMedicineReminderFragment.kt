@@ -38,7 +38,7 @@ import java.util.*
 @AndroidEntryPoint
 class CreateMedicineReminderFragment : BaseFragment<FragmentCreateMedicineReminderBinding>() {
 
-    private val viewModel: CreateMedicineReminderViewModel by activityViewModels()
+    private val viewModel: CreateMedicineReminderViewModel by viewModels()
     private lateinit var unitAdapter: SelectionChipAdapter
     private lateinit var timeReminderAdapter: TimeReminderAdapter
 

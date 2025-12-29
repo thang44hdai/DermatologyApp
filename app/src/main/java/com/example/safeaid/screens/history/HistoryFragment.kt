@@ -63,7 +63,13 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>() {
                 else -> {}
             }
         }
-        state?.doIfFailure { }
+        state?.doIfFailure {
+            Toast.makeText(
+                requireContext(),
+                it.message,
+                android.widget.Toast.LENGTH_LONG
+            ).show()
+        }
     }
 
 }

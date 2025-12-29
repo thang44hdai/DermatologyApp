@@ -8,6 +8,7 @@ import com.example.safeaid.core.response.BrandsResponse
 import com.example.safeaid.core.service.ApiService
 import com.example.safeaid.core.utils.ApiCaller
 import com.example.safeaid.core.utils.DataResult
+import com.example.safeaid.core.utils.ErrorResponse
 import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.doIfSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,7 +41,15 @@ class BrandViewModel @Inject constructor(
                         updateState(DataResult.Success(BrandState.BrandsList(data)))
                     }
                     result.doIfFailure { error ->
-                        updateState(DataResult.Error(error))
+                        updateState(
+                            DataResult.Error(
+                                ErrorResponse(
+                                    message = "Lỗi truy cập dữ liệu",
+                                    errorCode = 0,
+                                    errorType = ""
+                                )
+                            )
+                        )
                     }
                 }
             )
@@ -58,7 +67,15 @@ class BrandViewModel @Inject constructor(
                         updateState(DataResult.Success(BrandState.BrandDetail(data)))
                     }
                     result.doIfFailure { error ->
-                        updateState(DataResult.Error(error))
+                        updateState(
+                            DataResult.Error(
+                                ErrorResponse(
+                                    message = "Lỗi truy cập dữ liệu",
+                                    errorCode = 0,
+                                    errorType = ""
+                                )
+                            )
+                        )
                     }
                 }
             )

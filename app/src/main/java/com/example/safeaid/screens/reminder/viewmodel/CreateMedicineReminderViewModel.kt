@@ -49,15 +49,27 @@ class CreateMedicineReminderViewModel @Inject constructor(
                         updateState(DataResult.Success(CreateReminderState.CreateSuccess(response)))
                     }
                     result.doIfFailure { error ->
-                        updateState(
-                            DataResult.Error(
-                                ErrorResponse(
-                                    message = "Lỗi truy cập dữ liệu",
-                                    errorCode = 0,
-                                    errorType = ""
+                        if (error.errorCode == 400) {
+                            updateState(
+                                DataResult.Error(
+                                    ErrorResponse(
+                                        message = "Không được cập nhật cho ngày tương lai",
+                                        errorCode = 0,
+                                        errorType = ""
+                                    )
                                 )
                             )
-                        )
+                        } else {
+                            updateState(
+                                DataResult.Error(
+                                    ErrorResponse(
+                                        message = "Lỗi truy cập dữ liệu",
+                                        errorCode = 0,
+                                        errorType = ""
+                                    )
+                                )
+                            )
+                        }
                     }
                 }
             )

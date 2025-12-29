@@ -175,7 +175,7 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>() {
         viewBinding.cameraPreview.visibility = android.view.View.GONE
         viewBinding.imgCaptured.visibility = android.view.View.VISIBLE
         viewBinding.imgCaptured.setImageURI(uri)
-        
+
         viewBinding.btnTake.visibility = android.view.View.GONE
         viewBinding.btnUpload.visibility = android.view.View.GONE
     }
@@ -184,7 +184,7 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>() {
         // Show camera preview and hide captured image
         viewBinding.cameraPreview.visibility = android.view.View.VISIBLE
         viewBinding.imgCaptured.visibility = android.view.View.GONE
-        
+
         // Show the take photo button and upload button
         viewBinding.btnTake.visibility = android.view.View.VISIBLE
         viewBinding.btnUpload.visibility = android.view.View.VISIBLE
@@ -210,7 +210,13 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>() {
                 else -> {}
             }
         }
-        state?.doIfFailure { }
+        state?.doIfFailure {
+            Toast.makeText(
+                requireContext(),
+                it.message,
+                android.widget.Toast.LENGTH_LONG
+            ).show()
+        }
         state?.onLoading {
             viewBinding.progressBar.isVisible = true
         }
