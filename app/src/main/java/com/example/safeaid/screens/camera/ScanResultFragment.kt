@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.Window
 import android.widget.ImageView
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -14,15 +13,13 @@ import com.example.dermatology.databinding.ScanResultFragmentBinding
 import com.example.safeaid.core.response.PredictResponse
 import com.example.safeaid.core.ui.BaseFragment
 import com.example.safeaid.core.utils.setOnDebounceClick
-import com.example.safeaid.screens.home.adapter.ProductAdapter
-import com.example.safeaid.screens.main.MainViewModel
-import com.example.safeaid.screens.map.viewmodel.MapViewModel
+import com.example.safeaid.screens.home.adapter.ProductAdapter2
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
     private var predict: PredictResponse = PredictResponse()
-    private val adapter = ProductAdapter(listOf(), null)
+    private val adapter = ProductAdapter2(listOf(), null)
 
     companion object {
         const val argKey: String = "data"

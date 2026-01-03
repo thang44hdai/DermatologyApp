@@ -63,7 +63,7 @@ class MedicineDetailFragment : BaseFragment<FragmentMedicineDetailBinding>() {
             tvCategory.text = medicine.type ?: "Tuýp"
 
             // Set description (suitable_for)
-            tvDescription.text = medicine.suitableFor ?: "Sản phẩm hỗ trợ giảm mụn"
+            tvDescription.text = medicine.category?.name ?: "Không tên"
 
             // Set usage (description)
             tvUsage.text = medicine.description ?: "Gel dưỡng da cao ẩm, giúp giảm mụn, giảm thâm mụn, hỗ trợ thu nhỏ lỗ chân lông và làm da."

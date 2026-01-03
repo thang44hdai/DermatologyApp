@@ -85,6 +85,13 @@
             app:exitAnim="@anim/slide_out_right"
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_left" />
+        <action
+            android:id="@+id/action_mainScreen_to_categoryDetailFragment"
+            app:destination="@id/categoryDetailFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
     </fragment>
     <fragment
         android:id="@+id/cameraFragment"
@@ -198,4 +205,16 @@
         android:id="@+id/brandDetailFragment"
         android:name="com.example.safeaid.screens.brand.BrandDetailFragment"
         android:label="BrandDetailFragment" />
+    <fragment
+        android:id="@+id/categoryDetailFragment"
+        android:name="com.example.safeaid.screens.category.CategoryDetailFragment"
+        android:label="CategoryDetailFragment">
+        <action
+            android:id="@+id/action_categoryDetailFragment_to_medicineDetailFragment"
+            app:destination="@id/medicineDetailFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
+    </fragment>
 </navigation>

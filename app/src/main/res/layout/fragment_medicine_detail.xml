@@ -391,7 +391,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="20dp"
                         android:layout_marginTop="16dp"
-                        android:text="Quy cách"
+                        android:text="Liều lượng, cách dùng"
                         android:textColor="@color/black"
                         android:textSize="14sp"
                         android:textStyle="bold" />

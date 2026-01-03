@@ -1,6 +1,5 @@
 package com.example.safeaid.core.response
 
-
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 

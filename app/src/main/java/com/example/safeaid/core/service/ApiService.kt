@@ -4,16 +4,15 @@ import QuizCategoryResponse
 import com.example.safeaid.core.request.ChatRequest
 import com.example.safeaid.core.request.CreateReminderRequest
 import com.example.safeaid.core.request.FCMTokenRequest
-import com.example.safeaid.core.request.UpdateReminderStatusRequest
 import com.example.safeaid.core.response.ListMedicineResponse
 import com.example.safeaid.core.response.ListPharmacyResponse
 import com.example.safeaid.core.request.GoogleLoginRequest
 import com.example.safeaid.core.request.LoginRequest
 import com.example.safeaid.core.request.RefreshTokenRequest
 import com.example.safeaid.core.request.RegisterRequest
-import com.example.safeaid.core.response.Brand
 import com.example.safeaid.core.response.BrandDetailResponse
 import com.example.safeaid.core.response.BrandsResponse
+import com.example.safeaid.core.response.CategoryDetailResponse
 import com.example.safeaid.core.response.CategoryResponse
 import com.example.safeaid.core.response.ChatResponse
 import com.example.safeaid.core.response.ConversationResponse
@@ -191,4 +190,9 @@ interface ApiService {
     suspend fun getDetailsBrand(
         @Path("brand_id") brandId: String
     ): Response<BrandDetailResponse>
+
+    @GET("categories/{category_id}/medicines")
+    suspend fun getDetailsCategory(
+        @Path("category_id") categoryId: String
+    ): Response<CategoryDetailResponse>
 }

@@ -36,8 +36,8 @@
 
                 <ImageView
                     android:id="@+id/ic_back"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_margin="20dp"
                     android:src="@drawable/ic_go_to_location"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -77,19 +77,31 @@
                         android:gravity="center"
                         android:orientation="vertical">
 
-                        <ImageView
-                            android:id="@+id/imv1"
+                        <androidx.cardview.widget.CardView
                             android:layout_width="match_parent"
-                            android:layout_height="150dp"
-                            android:scaleType="centerCrop"
-                            tools:src="@drawable/bg_take" />
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="2dp"
+                            android:layout_marginVertical="2dp"
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="2dp">
+
+                            <ImageView
+                                android:id="@+id/imv1"
+                                android:layout_width="match_parent"
+                                android:layout_height="150dp"
+                                android:scaleType="centerCrop"
+                                tools:src="@drawable/bg_take" />
+
+                        </androidx.cardview.widget.CardView>
 
                         <TextView
                             android:id="@+id/tv1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:text="Ảnh quét" />
+                            android:layout_marginTop="8dp"
+                            android:text="Ảnh quét"
+                            android:textColor="@color/gray_neutral_4"
+                            android:textSize="14sp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -129,18 +141,31 @@
                     app:layout_constraintStart_toStartOf="@+id/tv_description"
                     app:layout_constraintTop_toBottomOf="@+id/tv_description">
 
-                    <ImageView
-                        android:id="@+id/imv2"
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
-                        android:layout_height="150dp"
-                        android:scaleType="centerCrop"
-                        tools:src="@drawable/bg_take" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="2dp"
+                        android:layout_marginVertical="2dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="2dp">
+
+                        <ImageView
+                            android:id="@+id/imv2"
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            android:scaleType="centerCrop"
+                            tools:src="@drawable/bg_take" />
+
+                    </androidx.cardview.widget.CardView>
 
                     <TextView
                         android:id="@+id/tv2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         android:text="Ảnh phân tích vùng bị bệnh"
+                        android:textColor="@color/gray_neutral_4"
+                        android:textSize="14sp"
                         android:textStyle="italic" />
                 </LinearLayout>
 
@@ -223,14 +248,14 @@
             android:id="@+id/btn_chat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
             android:layout_marginBottom="30dp"
             android:background="@drawable/bg_btn_scan"
             android:gravity="center_vertical"
             android:paddingHorizontal="30dp"
             android:paddingVertical="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <ImageView
                 android:layout_width="24dp"
@@ -242,7 +267,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="Hỏi AI về\nbệnh này"
+                android:text="Hỏi AI về bệnh này"
                 android:textColor="@color/white"
                 android:textSize="15sp"
                 android:textStyle="bold" />

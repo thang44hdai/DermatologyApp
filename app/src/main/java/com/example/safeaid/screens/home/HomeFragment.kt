@@ -51,11 +51,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         )
     }
     private val categoryAdapter = CategoryAdapter(listOf()) { category ->
-        android.widget.Toast.makeText(
-            requireContext(),
-            "Danh mục: ${category.name}",
-            android.widget.Toast.LENGTH_SHORT
-        ).show()
+        // Navigate to category detail
+        val bundle = Bundle()
+        bundle.putString("category_id", category.id.toString())
+        findNavController().navigate(
+            R.id.action_mainScreen_to_categoryDetailFragment,
+            bundle
+        )
     }
     private val viewModel: HomeViewModel by activityViewModels()
     private val brandViewModel: BrandViewModel by viewModels()

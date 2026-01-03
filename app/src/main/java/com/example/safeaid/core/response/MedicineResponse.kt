@@ -30,7 +30,9 @@ data class MedicineResponse(
     @SerializedName("suitable_for")
     var suitableFor: String? = null,
     @SerializedName("type")
-    var type: String? = null
+    var type: String? = null,
+    @SerializedName("category")
+    var category: CategoryResponse? = null,
 ) : Serializable
 
 data class BrandResponse(
