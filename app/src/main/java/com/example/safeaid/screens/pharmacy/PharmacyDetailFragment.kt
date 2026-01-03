@@ -14,7 +14,7 @@ import com.example.safeaid.core.response.PharmacyResponse
 import com.example.safeaid.core.ui.BaseFragment
 import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.doIfSuccess
-import com.example.safeaid.screens.home.adapter.ProductAdapter
+import com.example.safeaid.screens.home.adapter.ProductAdapter2
 import com.example.safeaid.screens.main.MainViewModel
 import com.example.safeaid.screens.map.viewmodel.MapViewModel
 import com.example.safeaid.screens.pharmacy.adapter.RateAdapter
@@ -29,7 +29,8 @@ class PharmacyDetailFragment : BaseFragment<FragmentPharmacyDetailBinding>() {
     private val mapViewModel: MapViewModel by activityViewModels()
     private val viewModel: PharmacyViewModel by viewModels()
     private var data: PharmacyResponse? = null
-    private val adapter = ProductAdapter(listOf(), null)
+    private val adapter = ProductAdapter2(listOf(), null)
+    private val rateAdapter = RateAdapter(listOf())
 
     companion object {
         const val ARG = "pharmacy"
@@ -59,6 +60,16 @@ class PharmacyDetailFragment : BaseFragment<FragmentPharmacyDetailBinding>() {
                     when (s) {
                         is PharmacyState.PharmacyDetail -> {
                             val medicines = s.data.medicines ?: listOf()
+                            val distance = data?.distanceKm ?: "Chưa xác định"
+                            val rating = data?.ratings ?: "Chưa có đánh giá"
+                            val count = medicines.size
+
+                            val data = listOf(
+                                RateItem(R.drawable.ic_location_pharmacy, "Km", "$distance"),
+                                RateItem(R.drawable.ic_star_pharmacy, "Đánh giá", "$rating"),
+                                RateItem(R.drawable.ic_milk, "Sản phẩm", "$count")
+                            )
+                            rateAdapter.updateData(data)
                             adapter.bindData(medicines)
                         }
                     }
@@ -84,12 +95,11 @@ class PharmacyDetailFragment : BaseFragment<FragmentPharmacyDetailBinding>() {
                 RateItem(R.drawable.ic_milk, "Sản phẩm", "$100+")
             )
 
-            val rateAdapter = RateAdapter(data)
-
             viewBinding.rcvRate.apply {
                 layoutManager = androidx.recyclerview.widget.GridLayoutManager(context, 3)
                 this.adapter = rateAdapter
             }
+            rateAdapter.updateData(data)
 
             val url = pharmacy.images?.firstOrNull()
             if (url.isNullOrEmpty()) {
@@ -99,12 +109,12 @@ class PharmacyDetailFragment : BaseFragment<FragmentPharmacyDetailBinding>() {
             }
 
             val logo = pharmacy.logoUrl
-            if (logo.isNullOrEmpty()) {
-                Glide.with(requireContext()).load(android.R.color.darker_gray)
-                    .into(viewBinding.logo)
-            } else {
-                Glide.with(requireContext()).load(logo).into(viewBinding.logo)
-            }
+                ?: "https://png.pngtree.com/template/20190926/ourmid/pngtree-medical-logo-design-health-care-logo-pharmacy-healthcare-vecto-image_309764.jpg"
+
+            Glide.with(requireContext()).load(logo)
+                .error(R.drawable.ic_image_error)
+                .into(viewBinding.logo)
+
 
             btnDirection.setOnClickListener {
                 mapViewModel.directionToLocation = this@PharmacyDetailFragment.data

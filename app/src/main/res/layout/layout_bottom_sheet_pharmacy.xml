@@ -97,7 +97,7 @@
             android:layout_marginEnd="10dp"
             android:layout_weight="1"
             android:background="@drawable/bg_btn_login"
-            android:drawableEnd="@drawable/ic_go_to_location"
+            android:drawableEnd="@drawable/ic_go_to_location_white"
             android:paddingHorizontal="20dp"
             android:text="Xem chi tiết"
             android:textColor="@color/white" />
@@ -109,7 +109,7 @@
             android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:background="@drawable/bg_btn_direction"
-            android:drawableEnd="@drawable/ic_location"
+            android:drawableEnd="@drawable/ic_location_blue"
             android:paddingHorizontal="20dp"
             android:text="Chỉ đường"
             android:textColor="@color/primary"

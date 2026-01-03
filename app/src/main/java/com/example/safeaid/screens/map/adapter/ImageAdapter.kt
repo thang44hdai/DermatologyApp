@@ -19,7 +19,7 @@ class ImageAdapter(
         fun bind(url: String) {
             Glide.with(binding.root.context)
                 .load(url)
-                .placeholder(R.drawable.ic_loading_placeholder)
+                .placeholder(R.drawable.ic_image_error)
                 .error(R.drawable.ic_image_error)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(binding.imv)

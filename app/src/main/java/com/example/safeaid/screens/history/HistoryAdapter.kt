@@ -51,7 +51,7 @@ class HistoryAdapter(
                 }
             }
             
-            tvDate.text = "Ngày: ${item.scanDate?.toCustomDateFormat() ?: "Không có"}"
+            tvDate.text = "Lúc: ${item.scanDate?.toCustomDateFormat() ?: "Không có"}"
 
             itemView.setOnClickListener {
                 onItemClick?.invoke(item)

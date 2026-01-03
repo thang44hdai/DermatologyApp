@@ -9,8 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.dermatology.R
 import com.example.safeaid.screens.pharmacy.data.RateItem
 
-class RateAdapter(private val items: List<RateItem>) :
+class RateAdapter(private var items: List<RateItem>) :
     RecyclerView.Adapter<RateAdapter.RateViewHolder>() {
+
+    fun updateData(newItems: List<RateItem>) {
+        items = newItems
+        notifyDataSetChanged()
+    }
 
     inner class RateViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val icon: ImageView = itemView.findViewById(R.id.ic)

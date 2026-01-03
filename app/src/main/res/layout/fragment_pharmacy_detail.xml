@@ -80,6 +80,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
+                    android:paddingHorizontal="20dp"
                     android:gravity="center_horizontal"
                     android:text="42 P. Ao Sen, P. Mộ Lao, Hà Đông, Hà Nội, Việt Nam"
                     android:textColor="@color/black"
@@ -118,7 +119,7 @@
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="15dp"
                     android:background="@drawable/bg_btn_login"
-                    android:drawableEnd="@drawable/ic_go_to_location"
+                    android:drawableEnd="@drawable/ic_go_to_location_white"
                     android:paddingHorizontal="100dp"
                     android:text="Chỉ đường"
                     android:textColor="@color/white"
@@ -167,7 +168,7 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/medicines"
-                tools:listitem="@layout/item_product" />
+                tools:listitem="@layout/item_product_2" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </layout>

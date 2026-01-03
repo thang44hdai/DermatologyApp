@@ -40,10 +40,10 @@ class PharmacySearchAdapter(
                 tvOpenStatus.text = PharmacyUtils.formatOpenStatus(pharmacy)
                 tvOpenStatus.setTextColor(root.context.getColor(R.color.primary))
 
-                // Load logo
+                val url = pharmacy.images?.firstOrNull()
                 Glide.with(root.context)
-                    .load(pharmacy.logoUrl)
-                    .placeholder(R.drawable.ic_location_map)
+                    .load(url)
+                    .placeholder(R.drawable.ic_image_error)
                     .error(R.drawable.ic_location_map)
                     .into(ivPharmacyLogo)
 
