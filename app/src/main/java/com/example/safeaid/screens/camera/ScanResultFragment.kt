@@ -60,7 +60,7 @@ class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
     private fun loadImageWithAnimation(url: String?, imageView: ImageView) {
         Glide.with(requireContext())
             .load(url)
-            .placeholder(R.drawable.ic_loading_placeholder)
+            .placeholder(R.drawable.ic_image_error)
             .error(R.drawable.ic_image_error)
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(imageView)

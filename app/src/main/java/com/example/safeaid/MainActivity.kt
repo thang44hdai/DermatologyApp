@@ -145,11 +145,6 @@ class MainActivity : AppCompatActivity() {
                 val result = fcmManager.initializeFCMToken()
                 result.onSuccess { token ->
                     Log.d("MainActivity", "✅ FCM đã sẵn sàng")
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Đã đăng ký nhận thông báo",
-                        Toast.LENGTH_SHORT
-                    ).show()
 //                    fcmManager.sendTestNotification()
                 }.onFailure { error ->
                     Log.e("MainActivity", "❌ Lỗi FCM", error)

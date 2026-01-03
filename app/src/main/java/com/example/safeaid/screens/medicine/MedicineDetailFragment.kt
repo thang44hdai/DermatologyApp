@@ -7,6 +7,7 @@ import com.example.dermatology.R
 import com.example.dermatology.databinding.FragmentMedicineDetailBinding
 import com.example.safeaid.core.response.MedicineResponse
 import com.example.safeaid.core.ui.BaseFragment
+import com.example.safeaid.core.utils.formatPrice
 import com.example.safeaid.screens.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -53,7 +54,7 @@ class MedicineDetailFragment : BaseFragment<FragmentMedicineDetailBinding>() {
             tvBrand.text = "Thương hiệu: $brandName"
 
             // Set price with Vietnamese format
-            tvPrice.text = formatPrice(medicine.price)
+            tvPrice.text = medicine.price?.formatPrice()
 
             // Set rating (mock data - replace with actual if available)
             tvRating.text = "3.6k"
@@ -66,13 +67,15 @@ class MedicineDetailFragment : BaseFragment<FragmentMedicineDetailBinding>() {
             tvDescription.text = medicine.category?.name ?: "Không tên"
 
             // Set usage (description)
-            tvUsage.text = medicine.description ?: "Gel dưỡng da cao ẩm, giúp giảm mụn, giảm thâm mụn, hỗ trợ thu nhỏ lỗ chân lông và làm da."
+            tvUsage.text = medicine.description
+                ?: "Gel dưỡng da cao ẩm, giúp giảm mụn, giảm thâm mụn, hỗ trợ thu nhỏ lỗ chân lông và làm da."
 
             // Set specification (dosage)
             tvSpecification.text = medicine.dosage ?: "40ml"
 
             // Set note (side_effects)
-            tvNote.text = medicine.sideEffects ?: "Một thông tin quan trọng cần chú ý tham khảo: Đọc kỹ hướng dẫn sử dụng trước khi dùng"
+            tvNote.text = medicine.sideEffects
+                ?: "Một thông tin quan trọng cần chú ý tham khảo: Đọc kỹ hướng dẫn sử dụng trước khi dùng"
 
             // Load product image
             val imageUrl = medicine.images.firstOrNull()
@@ -87,16 +90,6 @@ class MedicineDetailFragment : BaseFragment<FragmentMedicineDetailBinding>() {
                     .error(R.drawable.ic_default_avatar)
                     .into(imgProduct)
             }
-        }
-    }
-
-    private fun formatPrice(priceString: String?): String {
-        return try {
-            val price = priceString?.replace("[^0-9]".toRegex(), "")?.toLongOrNull() ?: 0
-            val formatter = java.text.DecimalFormat("#,###")
-            "${formatter.format(price)} VND/Hộp"
-        } catch (e: Exception) {
-            "0 VND/Hộp"
         }
     }
 }

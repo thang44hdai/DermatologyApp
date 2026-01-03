@@ -30,8 +30,8 @@ class HistoryAdapter(
         fun bind(item: Scan) {
             Glide.with(itemView.context)
                 .load(item.imageUrl)
-                .placeholder(R.drawable.bg_take)
-                .error(R.drawable.bg_take)
+                .placeholder(R.drawable.ic_image_error)
+                .error(R.drawable.ic_image_error)
                 .into(imv)
 
             tvName.text = item.disease?.diseaseName ?: "Không xác định"

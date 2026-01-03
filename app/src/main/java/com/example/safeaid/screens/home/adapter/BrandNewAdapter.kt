@@ -43,12 +43,8 @@ class BrandNewAdapter(
             if (!brand.logoPath.isNullOrEmpty()) {
                 Glide.with(itemView.context)
                     .load(brand.logoPath)
-                    .placeholder(R.drawable.ic_default_avatar)
-                    .error(R.drawable.ic_default_avatar)
                     .fitCenter()
                     .into(imgLogo)
-            } else {
-                imgLogo.setImageResource(R.drawable.ic_default_avatar)
             }
 
             // Set click listener

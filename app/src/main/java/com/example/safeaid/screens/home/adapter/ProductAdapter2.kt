@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.dermatology.R
 import com.example.safeaid.core.response.MedicineResponse
+import com.example.safeaid.core.utils.formatPrice
 
 class ProductAdapter2(
     private var items: List<MedicineResponse>,
@@ -38,7 +39,7 @@ class ProductAdapter2(
 
         fun bind(p: MedicineResponse) {
             name.text = p.name
-            price.text = formatPrice(p.price)
+            price.text = p.price?.formatPrice()
             val url = p.images.firstOrNull()
             if (url.isNullOrEmpty()) {
                 Glide.with(itemView.context).load(android.R.color.darker_gray).into(img)
@@ -48,16 +49,6 @@ class ProductAdapter2(
 
             itemView.setOnClickListener {
                 onItemClick?.invoke(p)
-            }
-        }
-
-        private fun formatPrice(priceString: String?): String {
-            return try {
-                val price = priceString?.replace("[^0-9]".toRegex(), "")?.toLongOrNull() ?: 0
-                val formatter = java.text.DecimalFormat("#,###")
-                "${formatter.format(price)} VND"
-            } catch (e: Exception) {
-                "0 VND"
             }
         }
     }

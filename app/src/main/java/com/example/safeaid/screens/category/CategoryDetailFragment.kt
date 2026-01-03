@@ -16,6 +16,7 @@ import com.example.safeaid.core.utils.DataResult
 import com.example.safeaid.core.utils.doIfFailure
 import com.example.safeaid.core.utils.doIfSuccess
 import com.example.safeaid.core.utils.setOnDebounceClick
+import com.example.safeaid.screens.home.adapter.ProductAdapter
 import com.example.safeaid.screens.home.adapter.ProductAdapter2
 import com.example.safeaid.screens.medicine.MedicineDetailFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,7 +28,7 @@ class CategoryDetailFragment : BaseFragment<FragmentCategoryDetailBinding>() {
     private val viewModel: CategoryDetailViewModel by viewModels()
     private var categoryId: String? = null
 
-    private val productsAdapter = ProductAdapter2(listOf()) { medicine ->
+    private val productsAdapter = ProductAdapter(listOf()) { medicine ->
         val bundle = Bundle()
         bundle.putSerializable(MedicineDetailFragment.ARG_MEDICINE, medicine)
         findNavController().navigate(
@@ -113,12 +114,12 @@ class CategoryDetailFragment : BaseFragment<FragmentCategoryDetailBinding>() {
             if (!category?.imageUrl.isNullOrEmpty()) {
                 Glide.with(requireContext())
                     .load(category?.imageUrl)
-                    .placeholder(R.drawable.ic_default_avatar)
-                    .error(R.drawable.ic_default_avatar)
+                    .placeholder(R.drawable.ic_image_error)
+                    .error(R.drawable.ic_image_error)
                     .centerInside()
                     .into(imgCategoryIcon)
             } else {
-                imgCategoryIcon.setImageResource(R.drawable.ic_milk)
+                imgCategoryIcon.setImageResource(R.drawable.ic_image_error)
             }
 
             // Update products

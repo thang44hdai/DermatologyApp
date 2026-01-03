@@ -18,7 +18,6 @@
         android:contentDescription="Brand Logo"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
-        android:background="@color/white"
-        android:src="@drawable/ic_default_avatar" />
+        android:background="@color/white" />
 
 </androidx.cardview.widget.CardView>
