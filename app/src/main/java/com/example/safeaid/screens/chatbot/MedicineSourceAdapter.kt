@@ -62,11 +62,11 @@ class MedicineSourceAdapter(
 
     private class DiffCallback : DiffUtil.ItemCallback<Source>() {
         override fun areItemsTheSame(oldItem: Source, newItem: Source): Boolean {
-            return oldItem.medicineId == newItem.medicineId
+            return false
         }
 
         override fun areContentsTheSame(oldItem: Source, newItem: Source): Boolean {
-            return oldItem == newItem
+            return false
         }
     }
 }

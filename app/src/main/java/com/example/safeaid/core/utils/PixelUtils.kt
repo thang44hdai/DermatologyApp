@@ -31,9 +31,6 @@ class PixelUtils {
 
 fun String.formatPrice(): String {
     return try {
-        // Loại bỏ tất cả ký tự không phải số
-
-        Log.i("hihihi", this)
         val cleanString = this.substring(0, this.length - 2)
 
         // Nếu rỗng hoặc không phải số → trả về 0 VND

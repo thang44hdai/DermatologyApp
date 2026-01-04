@@ -9,6 +9,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.example.dermatology.R
 import com.example.dermatology.databinding.ItemImageBinding
+import com.example.safeaid.core.utils.setOnDebounceClick
+import com.example.safeaid.core.utils.showImageZoom
 
 class ImageAdapter(
     private val imageList: List<String>
@@ -23,6 +25,10 @@ class ImageAdapter(
                 .error(R.drawable.ic_image_error)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(binding.imv)
+
+            binding.root.setOnDebounceClick {
+                binding.root.context.showImageZoom(url)
+            }
         }
     }
 

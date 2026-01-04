@@ -41,16 +41,22 @@ class BrandDetailFragment : BaseFragment<FragmentBrandDetailBinding>() {
 
     override fun onInit() {
         brandId = arguments?.getString(ARG_BRAND_ID)
-        
+
         // Setup RecyclerView
         medicineAdapter = BrandMedicineAdapter { medicine ->
+            val bundle = Bundle()
+            bundle.putSerializable(MedicineDetailFragment.ARG_MEDICINE, medicine)
+            findNavController().navigate(
+                R.id.action_brandDetailFragment_to_medicineDetailFragment,
+                bundle
+            )
         }
-        
+
         viewBinding.rvMedicines.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = medicineAdapter
         }
-        
+
         brandId?.let {
             viewModel.loadBrandDetail(it)
         }
@@ -82,6 +88,7 @@ class BrandDetailFragment : BaseFragment<FragmentBrandDetailBinding>() {
                 is BrandState.BrandDetail -> {
                     bindBrandData(data.data)
                 }
+
                 else -> {}
             }
         }
@@ -134,9 +141,11 @@ class BrandDetailFragment : BaseFragment<FragmentBrandDetailBinding>() {
     private fun formatDate(dateString: String): String {
         return try {
             // Parse ISO 8601 format: 2025-11-08T08:37:11
-            val inputFormat = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.getDefault())
-            val outputFormat = java.text.SimpleDateFormat("dd/MM/yyyy HH:mm", java.util.Locale.getDefault())
-            
+            val inputFormat =
+                java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.getDefault())
+            val outputFormat =
+                java.text.SimpleDateFormat("dd/MM/yyyy HH:mm", java.util.Locale.getDefault())
+
             val date = inputFormat.parse(dateString)
             if (date != null) {
                 outputFormat.format(date)

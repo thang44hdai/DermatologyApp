@@ -54,7 +54,6 @@ class ChatBotViewModel @Inject constructor(
     private val streamingContent = StringBuilder()
 
     init {
-        // Tự động connect WebSocket và load conversations khi khởi tạo
         connectWebSocket()
         loadConversations()
     }
@@ -75,16 +74,19 @@ class ChatBotViewModel @Inject constructor(
                                     _isConnected.value = true
                                     _connectionStatus.value = null
                                 }
+
                                 "disconnected" -> {
                                     _isConnected.value = false
                                     _connectionStatus.value = "Mất kết nối..."
                                 }
+
                                 "reconnecting" -> {
                                     _isConnected.value = false
                                     _connectionStatus.value = "Đang kết nối lại..."
                                 }
                             }
                         }
+
                         else -> handleSocketResponse(response)
                     }
                 }
@@ -161,7 +163,6 @@ class ChatBotViewModel @Inject constructor(
 
     fun selectConversation(session: Session) {
         _currentSession.value = session
-        _messages.value = emptyList()
         loadSessionMessages(session.id ?: "")
     }
 
@@ -179,7 +180,8 @@ class ChatBotViewModel @Inject constructor(
                                 content = msg.content ?: "",
                                 isSender = msg.role == "user",
                                 timestamp = System.currentTimeMillis(),
-                                sources = if (msg.role == "assistant") msg.sources else listOf()
+                                sources = if (msg.role == "assistant") msg.sources
+                                    ?: listOf() else listOf()
                             )
                         }
 
@@ -239,7 +241,6 @@ class ChatBotViewModel @Inject constructor(
             }
 
             is SocketResponse.End -> {
-                // Finalize message with sources
                 val finalContent = streamingContent.toString()
                 updateStreamingMessage(
                     content = finalContent,
@@ -250,7 +251,6 @@ class ChatBotViewModel @Inject constructor(
                 currentStreamingMessageId = null
                 _isLoading.value = false
 
-                // Reload conversations to update list
                 loadConversations()
             }
 

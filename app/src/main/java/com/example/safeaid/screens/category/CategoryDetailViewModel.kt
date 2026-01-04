@@ -21,6 +21,7 @@ class CategoryDetailViewModel @Inject constructor(
 ) : BaseViewModel<CategoryDetailState, CategoryDetailEvent>() {
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
+    var categoryId: String? = null
 
     fun loadCategoryDetail(categoryId: String) {
         viewModelScope.launch(Dispatchers.IO) {

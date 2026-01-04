@@ -3,13 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginVertical="2dp"
+    android:layout_marginStart="2dp"
     android:layout_marginEnd="10dp"
-    app:cardCornerRadius="20dp">
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imv"
         android:layout_width="200dp"
-        android:layout_height="100dp"
-        android:scaleType="centerCrop"
+        android:layout_height="150dp"
+        android:scaleType="fitCenter"
         android:src="@drawable/bg_take" />
 </androidx.cardview.widget.CardView>

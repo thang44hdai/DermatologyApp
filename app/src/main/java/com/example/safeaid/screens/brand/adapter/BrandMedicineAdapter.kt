@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.dermatology.R
 import com.example.safeaid.core.response.MedicineResponse
+import com.example.safeaid.core.utils.formatPrice
 import com.example.safeaid.core.utils.setOnDebounceClick
 
 class BrandMedicineAdapter(
@@ -49,7 +50,7 @@ class BrandMedicineAdapter(
             tvMedicineType.text = medicine.type ?: "Loại thuốc"
 
             // Set medicine price
-            tvMedicinePrice.text = "Giá: ${medicine.price ?: "Liên hệ"}"
+            tvMedicinePrice.text = "Giá: ${medicine.price?.formatPrice() ?: "Liên hệ"}"
 
             // Set dosage
             tvDosage.text = "Liều dùng: ${medicine.dosage ?: "Theo chỉ định bác sĩ"}"

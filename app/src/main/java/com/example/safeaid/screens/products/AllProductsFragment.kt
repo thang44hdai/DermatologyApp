@@ -25,7 +25,6 @@ import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
 class AllProductsFragment : BaseFragment<FragmentAllProductsBinding>() {
-    
     private val viewModel: HomeViewModel by activityViewModels()
     private val productsAdapter = ProductAdapter(listOf()) { medicine ->
         val bundle = Bundle()

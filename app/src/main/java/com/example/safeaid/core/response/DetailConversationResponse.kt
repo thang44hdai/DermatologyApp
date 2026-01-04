@@ -23,5 +23,5 @@ data class Message(
     @SerializedName("role")
     var role: String? = null,
     @SerializedName("sources")
-    var sources: List<Source> = listOf()
+    var sources: List<Source>? = listOf()
 ) : Serializable

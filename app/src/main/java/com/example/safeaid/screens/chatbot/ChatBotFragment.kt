@@ -16,8 +16,11 @@ import com.example.safeaid.core.ui.BaseFragment
 import com.example.safeaid.core.utils.KeyboardUtils
 import com.example.safeaid.core.utils.setOnDebounceClick
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class ChatBotFragment : BaseFragment<FragmentChatBotBinding>() {
@@ -55,8 +58,19 @@ class ChatBotFragment : BaseFragment<FragmentChatBotBinding>() {
             .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
             .onEach { messages ->
                 chatAdapter.submitList(messages)
-                if (messages.isNotEmpty()) {
-                    viewBinding.rcv.smoothScrollToPosition(messages.size - 1)
+                
+                // Show/hide empty state
+                if (messages.isEmpty()) {
+                    viewBinding.rcv.visibility = android.view.View.GONE
+                    viewBinding.layoutEmptyState.visibility = android.view.View.VISIBLE
+                } else {
+                    viewBinding.rcv.visibility = android.view.View.VISIBLE
+                    viewBinding.layoutEmptyState.visibility = android.view.View.GONE
+                    
+                    withContext(Dispatchers.Main) {
+                        delay(100)
+                        viewBinding.rcv.smoothScrollToPosition(messages.size - 1)
+                    }
                 }
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)

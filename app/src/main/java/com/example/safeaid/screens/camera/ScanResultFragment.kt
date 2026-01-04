@@ -1,9 +1,6 @@
 package com.example.safeaid.screens.camera
 
-import android.app.Dialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.view.Window
+import android.os.Bundle
 import android.widget.ImageView
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -13,13 +10,22 @@ import com.example.dermatology.databinding.ScanResultFragmentBinding
 import com.example.safeaid.core.response.PredictResponse
 import com.example.safeaid.core.ui.BaseFragment
 import com.example.safeaid.core.utils.setOnDebounceClick
+import com.example.safeaid.core.utils.showImageZoom
 import com.example.safeaid.screens.home.adapter.ProductAdapter2
+import com.example.safeaid.screens.medicine.MedicineDetailFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
     private var predict: PredictResponse = PredictResponse()
-    private val adapter = ProductAdapter2(listOf(), null)
+    private val adapter = ProductAdapter2(listOf()) { medicine ->
+        val bundle = Bundle()
+        bundle.putSerializable(MedicineDetailFragment.ARG_MEDICINE, medicine)
+        findNavController().navigate(
+            R.id.action_scanResultFragment_to_medicineDetailFragment,
+            bundle
+        )
+    }
 
     companion object {
         const val argKey: String = "data"
@@ -50,7 +56,7 @@ class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
             viewBinding.tvSymptomsDescription.text = predict.data?.disease?.symptoms
             viewBinding.tvTreatmentDescription.text = predict.data?.disease?.treatment
             adapter.bindData(predict.data?.disease?.medicines ?: listOf())
-            
+
             // Load images with loading animation
             loadImageWithAnimation(predict.data?.imageUrl, viewBinding.imv1)
             loadImageWithAnimation(predict.data?.highlightedImageUrl, viewBinding.imv2)
@@ -64,30 +70,6 @@ class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
             .error(R.drawable.ic_image_error)
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(imageView)
-    }
-
-    private fun showImageZoom(imageUrl: String?) {
-        val dialog = Dialog(requireContext())
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.dialog_image_zoom)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.window?.setLayout(
-            android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-            android.view.ViewGroup.LayoutParams.MATCH_PARENT
-        )
-
-        val imageView = dialog.findViewById<ImageView>(R.id.img_zoom)
-        val btnClose = dialog.findViewById<ImageView>(R.id.btn_close)
-
-        Glide.with(requireContext())
-            .load(imageUrl)
-            .into(imageView)
-
-        btnClose.setOnClickListener {
-            dialog.dismiss()
-        }
-
-        dialog.show()
     }
 
     override fun onInitObserver() {}
@@ -104,11 +86,11 @@ class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
 
         // Click to zoom images
         viewBinding.imv1.setOnDebounceClick {
-            showImageZoom(predict.data?.imageUrl)
+            requireContext().showImageZoom(predict.data?.imageUrl)
         }
 
         viewBinding.imv2.setOnDebounceClick {
-            showImageZoom(predict.data?.highlightedImageUrl)
+            requireContext().showImageZoom(predict.data?.highlightedImageUrl)
         }
     }
 }

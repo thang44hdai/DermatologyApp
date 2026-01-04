@@ -56,7 +56,10 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
         // Setup map
         viewBinding.mapView.setTileSource(TileSourceFactory.MAPNIK)
         viewBinding.mapView.setMultiTouchControls(true)
-        showCurrentLocationMarker(viewModel.currentLocation.latitude, viewModel.currentLocation.longitude)
+        showCurrentLocationMarker(
+            viewModel.currentLocation.latitude,
+            viewModel.currentLocation.longitude
+        )
         viewBinding.mapView.controller.setZoom(viewModel.zoomMap)
 
         // Initialize location client
@@ -184,15 +187,19 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
                     position = point
                     setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                     title = pharmacy.name
-                    subDescription = "${pharmacy.address}\nGiờ mở cửa: ${pharmacy.openTime}"
-                    icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_hospital)
+                    snippet = "${pharmacy.address}"
+                    subDescription = "Giờ mở cửa: ${pharmacy.openTime ?: "Không rõ"}"
 
-                    setOnMarkerClickListener { _, mapView ->
-                        mapView.controller.animateTo(position)
-                        viewModel.targetLocation = position
-                        showPharmacyBottomSheet(pharmacy)
-                        true
-                    }
+                    icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_plus_hospital)
+                }
+
+                marker.setOnMarkerClickListener { _, mapView ->
+                    mapView.controller.animateTo(marker.position)
+                    viewModel.targetLocation = marker.position
+                    showPharmacyBottomSheet(pharmacy)
+                    marker.showInfoWindow()
+
+                    true
                 }
 
                 viewBinding.mapView.overlays.add(marker)
@@ -252,11 +259,14 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
     private fun getCurrentLocation() {
         Log.d("MapLocation", "🔍 [1/4] START - Trying lastLocation...")
         val startTime = System.currentTimeMillis()
-        
+
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             val elapsed = System.currentTimeMillis() - startTime
             if (location != null) {
-                Log.d("MapLocation", "✅ [1/4] SUCCESS - Got lastLocation in ${elapsed}ms: (${location.latitude}, ${location.longitude})")
+                Log.d(
+                    "MapLocation",
+                    "✅ [1/4] SUCCESS - Got lastLocation in ${elapsed}ms: (${location.latitude}, ${location.longitude})"
+                )
                 handleLocationResult(location.latitude, location.longitude)
             } else {
                 Log.d("MapLocation", "⚠️ [1/4] NULL - lastLocation is null after ${elapsed}ms")
@@ -264,7 +274,10 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
             }
         }.addOnFailureListener { e ->
             val elapsed = System.currentTimeMillis() - startTime
-            Log.e("MapLocation", "❌ [1/4] FAIL - lastLocation failed after ${elapsed}ms: ${e.message}")
+            Log.e(
+                "MapLocation",
+                "❌ [1/4] FAIL - lastLocation failed after ${elapsed}ms: ${e.message}"
+            )
             requestCurrentLocation()
         }
     }
@@ -281,7 +294,10 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
         ).addOnSuccessListener { location ->
             val elapsed = System.currentTimeMillis() - startTime
             if (location != null) {
-                Log.d("MapLocation", "✅ [2/4] SUCCESS - Got BALANCED location in ${elapsed}ms: (${location.latitude}, ${location.longitude})")
+                Log.d(
+                    "MapLocation",
+                    "✅ [2/4] SUCCESS - Got BALANCED location in ${elapsed}ms: (${location.latitude}, ${location.longitude})"
+                )
                 handleLocationResult(location.latitude, location.longitude)
             } else {
                 Log.d("MapLocation", "⚠️ [2/4] NULL - BALANCED location is null after ${elapsed}ms")
@@ -289,7 +305,10 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
             }
         }.addOnFailureListener { e ->
             val elapsed = System.currentTimeMillis() - startTime
-            Log.e("MapLocation", "❌ [2/4] FAIL - BALANCED location failed after ${elapsed}ms: ${e.message}")
+            Log.e(
+                "MapLocation",
+                "❌ [2/4] FAIL - BALANCED location failed after ${elapsed}ms: ${e.message}"
+            )
             tryHighAccuracyLocation()
         }
     }
@@ -306,7 +325,10 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
         ).addOnSuccessListener { location ->
             val elapsed = System.currentTimeMillis() - startTime
             if (location != null) {
-                Log.d("MapLocation", "✅ [3/4] SUCCESS - Got HIGH_ACCURACY in ${elapsed}ms: (${location.latitude}, ${location.longitude})")
+                Log.d(
+                    "MapLocation",
+                    "✅ [3/4] SUCCESS - Got HIGH_ACCURACY in ${elapsed}ms: (${location.latitude}, ${location.longitude})"
+                )
                 handleLocationResult(location.latitude, location.longitude)
             } else {
                 Log.d("MapLocation", "⚠️ [3/4] NULL - HIGH_ACCURACY is null after ${elapsed}ms")
@@ -315,7 +337,10 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
             }
         }.addOnFailureListener { e ->
             val elapsed = System.currentTimeMillis() - startTime
-            Log.e("MapLocation", "❌ [3/4] FAIL - HIGH_ACCURACY failed after ${elapsed}ms: ${e.message}")
+            Log.e(
+                "MapLocation",
+                "❌ [3/4] FAIL - HIGH_ACCURACY failed after ${elapsed}ms: ${e.message}"
+            )
             tryLocationManager()
         }
     }
@@ -324,15 +349,16 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
     private fun tryLocationManager() {
         Log.d("MapLocation", "🔍 [4/4] START - Trying LocationManager (fallback)...")
         val startTime = System.currentTimeMillis()
-        
+
         try {
             val locationManager =
                 requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
             // Check if location is enabled
             val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-            val isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-            
+            val isNetworkEnabled =
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+
             Log.d("MapLocation", "📍 GPS enabled: $isGpsEnabled, Network enabled: $isNetworkEnabled")
 
             if (!isGpsEnabled && !isNetworkEnabled) {
@@ -344,19 +370,31 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
             // Try network provider first (faster)
             var location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
             val elapsed1 = System.currentTimeMillis() - startTime
-            
+
             if (location != null) {
-                Log.d("MapLocation", "✅ [4/4] SUCCESS - Got NETWORK location in ${elapsed1}ms: (${location.latitude}, ${location.longitude})")
+                Log.d(
+                    "MapLocation",
+                    "✅ [4/4] SUCCESS - Got NETWORK location in ${elapsed1}ms: (${location.latitude}, ${location.longitude})"
+                )
             } else {
-                Log.d("MapLocation", "⚠️ NETWORK location is null after ${elapsed1}ms, trying GPS...")
+                Log.d(
+                    "MapLocation",
+                    "⚠️ NETWORK location is null after ${elapsed1}ms, trying GPS..."
+                )
                 // If network provider fails, try GPS
                 location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                 val elapsed2 = System.currentTimeMillis() - startTime
-                
+
                 if (location != null) {
-                    Log.d("MapLocation", "✅ [4/4] SUCCESS - Got GPS location in ${elapsed2}ms: (${location.latitude}, ${location.longitude})")
+                    Log.d(
+                        "MapLocation",
+                        "✅ [4/4] SUCCESS - Got GPS location in ${elapsed2}ms: (${location.latitude}, ${location.longitude})"
+                    )
                 } else {
-                    Log.e("MapLocation", "❌ [4/4] FAIL - Both NETWORK and GPS returned null after ${elapsed2}ms")
+                    Log.e(
+                        "MapLocation",
+                        "❌ [4/4] FAIL - Both NETWORK and GPS returned null after ${elapsed2}ms"
+                    )
                 }
             }
 
@@ -413,7 +451,11 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
             icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_my_location)
         }
 
-        viewBinding.mapView.overlays.add(0, currentMarker) // Add at index 0 to show on top
+        viewBinding.mapView.overlays.add(0, currentMarker)
+
+        // Tự động hiển thị InfoWindow (title)
+        currentMarker.showInfoWindow()
+
         viewBinding.mapView.invalidate()
     }
 

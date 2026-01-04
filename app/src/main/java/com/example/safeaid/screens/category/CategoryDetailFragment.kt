@@ -1,6 +1,8 @@
 package com.example.safeaid.screens.category
 
 import android.os.Bundle
+import android.util.Log
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -25,8 +27,7 @@ import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
 class CategoryDetailFragment : BaseFragment<FragmentCategoryDetailBinding>() {
-    private val viewModel: CategoryDetailViewModel by viewModels()
-    private var categoryId: String? = null
+    private val viewModel: CategoryDetailViewModel by activityViewModels()
 
     private val productsAdapter = ProductAdapter(listOf()) { medicine ->
         val bundle = Bundle()
@@ -46,13 +47,13 @@ class CategoryDetailFragment : BaseFragment<FragmentCategoryDetailBinding>() {
     }
 
     override fun onInit() {
-        categoryId = arguments?.getString(ARG_CATEGORY_ID)
-        
+        viewModel.categoryId = arguments?.getString(ARG_CATEGORY_ID)
+
         // Setup RecyclerView
         viewBinding.rvProducts.layoutManager = GridLayoutManager(requireContext(), 2)
         viewBinding.rvProducts.adapter = productsAdapter
         
-        categoryId?.let {
+        viewModel.categoryId?.let {
             viewModel.loadCategoryDetail(it)
         }
     }
@@ -137,7 +138,7 @@ class CategoryDetailFragment : BaseFragment<FragmentCategoryDetailBinding>() {
     private fun showLoading() {
         with(viewBinding) {
             layoutLoading.visibility = android.view.View.VISIBLE
-            rvProducts.visibility = android.view.View.GONE
+//            rvProducts.visibility = android.view.View.GONE
             layoutEmptyState.visibility = android.view.View.GONE
         }
     }

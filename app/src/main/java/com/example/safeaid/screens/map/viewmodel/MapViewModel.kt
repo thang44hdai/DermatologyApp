@@ -24,7 +24,7 @@ import javax.inject.Inject
 class MapViewModel @Inject constructor(
     private val apiService: ApiService
 ) : BaseViewModel<MapState, MapEvent>() {
-    var currentLocation = GeoPoint(20.980983103228652, 105.788156785282)
+    var currentLocation = GeoPoint(20.980918, 105.7848416)
     var targetLocation = GeoPoint(0, 0)
     var zoomMap: Double = 20.0
     var isPredicted: Boolean = false

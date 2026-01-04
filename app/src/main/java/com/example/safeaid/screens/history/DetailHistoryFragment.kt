@@ -1,6 +1,7 @@
 package com.example.safeaid.screens.history
 
 import android.os.Build
+import android.os.Bundle
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
@@ -12,14 +13,23 @@ import com.example.dermatology.databinding.ScanResultFragmentBinding
 import com.example.safeaid.core.response.Scan
 import com.example.safeaid.core.ui.BaseFragment
 import com.example.safeaid.core.utils.setOnDebounceClick
+import com.example.safeaid.core.utils.showImageZoom
 import com.example.safeaid.core.utils.toCustomDateFormat
 import com.example.safeaid.screens.home.adapter.ProductAdapter2
+import com.example.safeaid.screens.medicine.MedicineDetailFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class DetailHistoryFragment : BaseFragment<ScanResultFragmentBinding>() {
     private lateinit var data: Scan
-    private val adapter = ProductAdapter2(listOf(), null)
+    private val adapter = ProductAdapter2(listOf()) { medicine ->
+        val bundle = Bundle()
+        bundle.putSerializable(MedicineDetailFragment.ARG_MEDICINE, medicine)
+        findNavController().navigate(
+            R.id.action_detailHistoryFragment_to_medicineDetailFragment,
+            bundle
+        )
+    }
 
     companion object {
         const val ARG: String = "scan"
@@ -34,7 +44,6 @@ class DetailHistoryFragment : BaseFragment<ScanResultFragmentBinding>() {
         viewBinding.icBack.isVisible = false
         viewBinding.btnChat.isVisible = false
         viewBinding.btnBack.isVisible = true
-        viewBinding.layoutImv.isVisible = false
         data = arguments?.getSerializable(ARG) as Scan
         loadImageWithAnimation(data?.imageUrl, viewBinding.imv1)
         loadImageWithAnimation(data?.highlightedImageUrl, viewBinding.imv2)
@@ -53,6 +62,15 @@ class DetailHistoryFragment : BaseFragment<ScanResultFragmentBinding>() {
     override fun onInitListener() {
         viewBinding.btnBack.setOnDebounceClick {
             findNavController().popBackStack()
+        }
+
+
+        viewBinding.imv1.setOnDebounceClick {
+            requireContext().showImageZoom(data.imageUrl)
+        }
+
+        viewBinding.imv2.setOnDebounceClick {
+            requireContext().showImageZoom(data.highlightedImageUrl)
         }
     }
 

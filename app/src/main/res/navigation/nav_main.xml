@@ -97,7 +97,6 @@
         android:id="@+id/cameraFragment"
         android:name="com.example.safeaid.screens.camera.CameraFragment"
         android:label="CameraFragment">
-
         <action
             android:id="@+id/action_cameraFragment_to_scanResultFragment"
             app:destination="@id/scanResultFragment"
@@ -108,6 +107,13 @@
         android:name="com.example.safeaid.screens.camera.ScanResultFragment"
         android:label="ScanResultFragment">
 
+        <action
+            android:id="@+id/action_scanResultFragment_to_medicineDetailFragment"
+            app:destination="@id/medicineDetailFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -136,11 +142,27 @@
     <fragment
         android:id="@+id/detailHistoryFragment"
         android:name="com.example.safeaid.screens.history.DetailHistoryFragment"
-        android:label="DetailHistoryFragment" />
+        android:label="DetailHistoryFragment">
+        <action
+            android:id="@+id/action_detailHistoryFragment_to_medicineDetailFragment"
+            app:destination="@id/medicineDetailFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
+    </fragment>
     <fragment
         android:id="@+id/pharmacyDetailFragment"
         android:name="com.example.safeaid.screens.pharmacy.PharmacyDetailFragment"
-        android:label="PharmacyDetailFragment" />
+        android:label="PharmacyDetailFragment">
+        <action
+            android:id="@+id/action_pharmacyDetailFragment_to_medicineDetailFragment"
+            app:destination="@id/medicineDetailFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
+    </fragment>
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.example.safeaid.screens.map.MapFragment"
@@ -204,7 +226,15 @@
     <fragment
         android:id="@+id/brandDetailFragment"
         android:name="com.example.safeaid.screens.brand.BrandDetailFragment"
-        android:label="BrandDetailFragment" />
+        android:label="BrandDetailFragment">
+        <action
+            android:id="@+id/action_brandDetailFragment_to_medicineDetailFragment"
+            app:destination="@id/medicineDetailFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
+    </fragment>
     <fragment
         android:id="@+id/categoryDetailFragment"
         android:name="com.example.safeaid.screens.category.CategoryDetailFragment"

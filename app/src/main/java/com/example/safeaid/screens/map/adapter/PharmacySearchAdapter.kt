@@ -41,6 +41,8 @@ class PharmacySearchAdapter(
                 tvOpenStatus.setTextColor(root.context.getColor(R.color.primary))
 
                 val url = pharmacy.images?.firstOrNull()
+                    ?: "https://png.pngtree.com/template/20190926/ourmid/pngtree-medical-logo-design-health-care-logo-pharmacy-healthcare-vecto-image_309764.jpg"
+
                 Glide.with(root.context)
                     .load(url)
                     .placeholder(R.drawable.ic_image_error)

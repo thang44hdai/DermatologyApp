@@ -1,5 +1,6 @@
 package com.example.safeaid.screens.pharmacy
 
+import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -17,6 +18,7 @@ import com.example.safeaid.core.utils.doIfSuccess
 import com.example.safeaid.screens.home.adapter.ProductAdapter2
 import com.example.safeaid.screens.main.MainViewModel
 import com.example.safeaid.screens.map.viewmodel.MapViewModel
+import com.example.safeaid.screens.medicine.MedicineDetailFragment
 import com.example.safeaid.screens.pharmacy.adapter.RateAdapter
 import com.example.safeaid.screens.pharmacy.data.RateItem
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,7 +31,14 @@ class PharmacyDetailFragment : BaseFragment<FragmentPharmacyDetailBinding>() {
     private val mapViewModel: MapViewModel by activityViewModels()
     private val viewModel: PharmacyViewModel by viewModels()
     private var data: PharmacyResponse? = null
-    private val adapter = ProductAdapter2(listOf(), null)
+    private val adapter = ProductAdapter2(listOf()) { medicine ->
+        val bundle = Bundle()
+        bundle.putSerializable(MedicineDetailFragment.ARG_MEDICINE, medicine)
+        findNavController().navigate(
+            R.id.action_pharmacyDetailFragment_to_medicineDetailFragment,
+            bundle
+        )
+    }
     private val rateAdapter = RateAdapter(listOf())
 
     companion object {

@@ -2,12 +2,13 @@ package com.example.safeaid.screens.medicine
 
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.Glide
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dermatology.R
 import com.example.dermatology.databinding.FragmentMedicineDetailBinding
 import com.example.safeaid.core.response.MedicineResponse
 import com.example.safeaid.core.ui.BaseFragment
 import com.example.safeaid.core.utils.formatPrice
+import com.example.safeaid.core.utils.showImageZoom
 import com.example.safeaid.screens.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -15,6 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MedicineDetailFragment : BaseFragment<FragmentMedicineDetailBinding>() {
     private val mainViewModel: MainViewModel by activityViewModels()
     private var medicine: MedicineResponse? = null
+    private lateinit var imageAdapter: MedicineImageAdapter
 
     companion object {
         const val ARG_MEDICINE = "medicine"
@@ -34,7 +36,7 @@ class MedicineDetailFragment : BaseFragment<FragmentMedicineDetailBinding>() {
 
     override fun onInitListener() {
         viewBinding.btnBack.setOnClickListener {
-            findNavController().popBackStack()
+            findNavController().navigateUp()
         }
 
         viewBinding.btnFindPharmacy.setOnClickListener {
@@ -77,19 +79,26 @@ class MedicineDetailFragment : BaseFragment<FragmentMedicineDetailBinding>() {
             tvNote.text = medicine.sideEffects
                 ?: "Một thông tin quan trọng cần chú ý tham khảo: Đọc kỹ hướng dẫn sử dụng trước khi dùng"
 
-            // Load product image
-            val imageUrl = medicine.images.firstOrNull()
-            if (imageUrl.isNullOrEmpty()) {
-                Glide.with(requireContext())
-                    .load(R.drawable.ic_default_avatar)
-                    .into(imgProduct)
-            } else {
-                Glide.with(requireContext())
-                    .load(imageUrl)
-                    .centerInside()
-                    .error(R.drawable.ic_default_avatar)
-                    .into(imgProduct)
-            }
+            // Setup image gallery
+            setupImageGallery(medicine.images)
+        }
+    }
+
+    private fun setupImageGallery(images: List<String>) {
+        val imageList = if (images.isNotEmpty()) {
+            images
+        } else {
+            // If no images, show placeholder
+            listOf("")
+        }
+
+        imageAdapter = MedicineImageAdapter(imageList) { imageUrl ->
+            requireContext().showImageZoom(imageUrl)
+        }
+
+        viewBinding.rvProductImages.apply {
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = imageAdapter
         }
     }
 }
