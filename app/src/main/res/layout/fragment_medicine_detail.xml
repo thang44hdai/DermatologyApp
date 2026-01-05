@@ -312,40 +312,13 @@
                     android:orientation="vertical"
                     app:layout_constraintTop_toBottomOf="@id/tv_category">
 
-                    <!-- Section Header -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="20dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Mô tả sản phẩm"
-                            android:textColor="@color/black"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/btn_view_all"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Xem chi tiết"
-                            android:textColor="@color/primary"
-                            android:textSize="13sp" />
-                    </LinearLayout>
-
                     <!-- Description -->
                     <TextView
                         android:id="@+id/tv_description_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="20dp"
-                        android:layout_marginTop="12dp"
-                        android:text="Danh mục"
+                        android:text="Mô tả sản phẩm"
                         android:textColor="@color/black"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -357,9 +330,26 @@
                         android:layout_marginHorizontal="20dp"
                         android:layout_marginTop="4dp"
                         android:lineSpacingExtra="4dp"
+                        android:ellipsize="end"
                         android:text="Sản phẩm hỗ trợ giảm mụn"
                         android:textColor="@color/gray_neutral_4"
                         android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/btn_see_more_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginTop="4dp"
+                        android:text="Xem thêm"
+                        android:textColor="@color/primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground"
+                        android:paddingVertical="4dp" />
 
                     <!-- Usage -->
                     <TextView

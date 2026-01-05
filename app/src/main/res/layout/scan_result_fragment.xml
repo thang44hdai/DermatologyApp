@@ -101,7 +101,8 @@
                             android:layout_marginTop="8dp"
                             android:text="Ảnh quét"
                             android:textColor="@color/gray_neutral_4"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"
+                            android:textStyle="italic" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -125,10 +126,28 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:ellipsize="end"
                     android:text="@string/tv_description"
                     app:layout_constraintEnd_toEndOf="@id/layout_image"
                     app:layout_constraintStart_toStartOf="@+id/tv_summary"
                     app:layout_constraintTop_toBottomOf="@id/tv_summary" />
+
+                <TextView
+                    android:id="@+id/btn_see_more_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingVertical="4dp"
+                    android:text="Xem thêm"
+                    android:textColor="@color/primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="@+id/tv_description"
+                    app:layout_constraintTop_toBottomOf="@id/tv_description" />
 
                 <LinearLayout
                     android:id="@+id/layout_imv"
@@ -139,7 +158,7 @@
                     android:orientation="vertical"
                     app:layout_constraintEnd_toEndOf="@+id/tv_description"
                     app:layout_constraintStart_toStartOf="@+id/tv_description"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_description">
+                    app:layout_constraintTop_toBottomOf="@+id/btn_see_more_description">
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
@@ -186,10 +205,28 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:ellipsize="end"
                     android:text="@string/tv_description"
                     app:layout_constraintEnd_toEndOf="@id/layout_image"
                     app:layout_constraintStart_toStartOf="@+id/tv_summary"
                     app:layout_constraintTop_toBottomOf="@id/tv_symptoms" />
+
+                <TextView
+                    android:id="@+id/btn_see_more_symptoms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingVertical="4dp"
+                    android:text="Xem thêm"
+                    android:textColor="@color/primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="@+id/tv_symptoms_description"
+                    app:layout_constraintTop_toBottomOf="@id/tv_symptoms_description" />
 
                 <TextView
                     android:id="@+id/tv_treatment"
@@ -201,17 +238,35 @@
                     android:textSize="15sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@id/tv_symptoms_description"
-                    app:layout_constraintTop_toBottomOf="@id/tv_symptoms_description" />
+                    app:layout_constraintTop_toBottomOf="@id/btn_see_more_symptoms" />
 
                 <TextView
                     android:id="@+id/tv_treatment_description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:ellipsize="end"
                     android:text="@string/tv_description"
                     app:layout_constraintEnd_toEndOf="@id/layout_image"
                     app:layout_constraintStart_toStartOf="@+id/tv_treatment"
                     app:layout_constraintTop_toBottomOf="@id/tv_treatment" />
+
+                <TextView
+                    android:id="@+id/btn_see_more_treatment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingVertical="4dp"
+                    android:text="Xem thêm"
+                    android:textColor="@color/primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="@+id/tv_treatment_description"
+                    app:layout_constraintTop_toBottomOf="@id/tv_treatment_description" />
 
                 <TextView
                     android:id="@+id/tv_medicine_suggest"
@@ -224,7 +279,7 @@
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="@id/layout_image"
                     app:layout_constraintStart_toStartOf="@+id/tv_treatment"
-                    app:layout_constraintTop_toBottomOf="@id/tv_treatment_description" />
+                    app:layout_constraintTop_toBottomOf="@id/btn_see_more_treatment" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_products"

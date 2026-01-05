@@ -2,6 +2,7 @@ package com.example.safeaid.screens.camera
 
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -26,6 +27,14 @@ class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
             bundle
         )
     }
+
+    // Variables for expand/collapse functionality
+    private var isDescriptionExpanded = false
+    private var isSymptomsExpanded = false
+    private var isTreatmentExpanded = false
+    private var fullDescription = ""
+    private var fullSymptoms = ""
+    private var fullTreatment = ""
 
     companion object {
         const val argKey: String = "data"
@@ -52,9 +61,16 @@ class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
             }
             viewBinding.tvTitle.text =
                 "${predict.data?.labelVi} (${predict.data?.labelEn})"
-            viewBinding.tvDescription.text = predict.data?.disease?.description
-            viewBinding.tvSymptomsDescription.text = predict.data?.disease?.symptoms
-            viewBinding.tvTreatmentDescription.text = predict.data?.disease?.treatment
+            
+            // Setup expandable descriptions
+            fullDescription = predict.data?.disease?.description ?: ""
+            fullSymptoms = predict.data?.disease?.symptoms ?: ""
+            fullTreatment = predict.data?.disease?.treatment ?: ""
+            
+            setupExpandableText(viewBinding.tvDescription, viewBinding.btnSeeMoreDescription, fullDescription)
+            setupExpandableText(viewBinding.tvSymptomsDescription, viewBinding.btnSeeMoreSymptoms, fullSymptoms)
+            setupExpandableText(viewBinding.tvTreatmentDescription, viewBinding.btnSeeMoreTreatment, fullTreatment)
+            
             adapter.bindData(predict.data?.disease?.medicines ?: listOf())
 
             // Load images with loading animation
@@ -70,6 +86,42 @@ class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
             .error(R.drawable.ic_image_error)
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(imageView)
+    }
+
+    private fun setupExpandableText(textView: TextView, button: TextView, fullText: String) {
+        textView.text = fullText
+        
+        textView.post {
+            val lineCount = textView.lineCount
+            if (lineCount > 5) {
+                // Text is longer than 5 lines, show "Xem thêm" button
+                button.visibility = android.view.View.VISIBLE
+                textView.maxLines = 5
+            } else {
+                // Text fits in 5 lines or less, hide "Xem thêm" button
+                button.visibility = android.view.View.GONE
+            }
+        }
+    }
+
+    private fun toggleTextExpansion(
+        textView: TextView,
+        button: TextView,
+        fullText: String,
+        isExpanded: Boolean,
+        updateState: (Boolean) -> Unit
+    ) {
+        if (isExpanded) {
+            // Collapse: show only 5 lines
+            textView.maxLines = 5
+            button.text = "Xem thêm"
+            updateState(false)
+        } else {
+            // Expand: show all lines
+            textView.maxLines = Int.MAX_VALUE
+            button.text = "Thu gọn"
+            updateState(true)
+        }
     }
 
     override fun onInitObserver() {}
@@ -91,6 +143,34 @@ class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
 
         viewBinding.imv2.setOnDebounceClick {
             requireContext().showImageZoom(predict.data?.highlightedImageUrl)
+        }
+
+        // Expand/collapse click listeners
+        viewBinding.btnSeeMoreDescription.setOnDebounceClick {
+            toggleTextExpansion(
+                viewBinding.tvDescription,
+                viewBinding.btnSeeMoreDescription,
+                fullDescription,
+                isDescriptionExpanded
+            ) { isDescriptionExpanded = it }
+        }
+
+        viewBinding.btnSeeMoreSymptoms.setOnDebounceClick {
+            toggleTextExpansion(
+                viewBinding.tvSymptomsDescription,
+                viewBinding.btnSeeMoreSymptoms,
+                fullSymptoms,
+                isSymptomsExpanded
+            ) { isSymptomsExpanded = it }
+        }
+
+        viewBinding.btnSeeMoreTreatment.setOnDebounceClick {
+            toggleTextExpansion(
+                viewBinding.tvTreatmentDescription,
+                viewBinding.btnSeeMoreTreatment,
+                fullTreatment,
+                isTreatmentExpanded
+            ) { isTreatmentExpanded = it }
         }
     }
 }

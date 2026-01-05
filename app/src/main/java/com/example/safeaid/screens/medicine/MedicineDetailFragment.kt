@@ -17,6 +17,8 @@ class MedicineDetailFragment : BaseFragment<FragmentMedicineDetailBinding>() {
     private val mainViewModel: MainViewModel by activityViewModels()
     private var medicine: MedicineResponse? = null
     private lateinit var imageAdapter: MedicineImageAdapter
+    private var isDescriptionExpanded = false
+    private var fullDescription = ""
 
     companion object {
         const val ARG_MEDICINE = "medicine"
@@ -44,6 +46,10 @@ class MedicineDetailFragment : BaseFragment<FragmentMedicineDetailBinding>() {
             mainViewModel.currentPage = 1
             findNavController().navigate(R.id.mainScreen)
         }
+
+        viewBinding.btnSeeMoreDescription.setOnClickListener {
+            toggleDescriptionExpansion()
+        }
     }
 
     private fun bindMedicineData(medicine: MedicineResponse) {
@@ -65,8 +71,9 @@ class MedicineDetailFragment : BaseFragment<FragmentMedicineDetailBinding>() {
             // Set category (type)
             tvCategory.text = medicine.type ?: "Tuýp"
 
-            // Set description (suitable_for)
-            tvDescription.text = medicine.category?.name ?: "Không tên"
+            // Set description with expand/collapse functionality
+            fullDescription = medicine.description ?: "Không có mô tả sản phẩm"
+            setupDescriptionWithExpandCollapse()
 
             // Set usage (description)
             tvUsage.text = medicine.description
@@ -99,6 +106,42 @@ class MedicineDetailFragment : BaseFragment<FragmentMedicineDetailBinding>() {
         viewBinding.rvProductImages.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = imageAdapter
+        }
+    }
+
+    private fun setupDescriptionWithExpandCollapse() {
+        with(viewBinding) {
+            tvDescription.text = fullDescription
+            
+            // Check if text needs to be truncated
+            tvDescription.post {
+                val lineCount = tvDescription.lineCount
+                if (lineCount > 5) {
+                    // Text is longer than 5 lines, show "Xem thêm" button
+                    btnSeeMoreDescription.visibility = android.view.View.VISIBLE
+                    tvDescription.maxLines = 5
+                    isDescriptionExpanded = false
+                } else {
+                    // Text fits in 5 lines or less, hide "Xem thêm" button
+                    btnSeeMoreDescription.visibility = android.view.View.GONE
+                }
+            }
+        }
+    }
+
+    private fun toggleDescriptionExpansion() {
+        with(viewBinding) {
+            if (isDescriptionExpanded) {
+                // Collapse: show only 5 lines
+                tvDescription.maxLines = 5
+                btnSeeMoreDescription.text = "Xem thêm"
+                isDescriptionExpanded = false
+            } else {
+                // Expand: show all lines
+                tvDescription.maxLines = Int.MAX_VALUE
+                btnSeeMoreDescription.text = "Thu gọn"
+                isDescriptionExpanded = true
+            }
         }
     }
 }

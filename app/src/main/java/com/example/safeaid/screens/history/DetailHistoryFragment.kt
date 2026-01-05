@@ -3,6 +3,7 @@ package com.example.safeaid.screens.history
 import android.os.Build
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
@@ -31,6 +32,14 @@ class DetailHistoryFragment : BaseFragment<ScanResultFragmentBinding>() {
         )
     }
 
+    // Variables for expand/collapse functionality
+    private var isDescriptionExpanded = false
+    private var isSymptomsExpanded = false
+    private var isTreatmentExpanded = false
+    private var fullDescription = ""
+    private var fullSymptoms = ""
+    private var fullTreatment = ""
+
     companion object {
         const val ARG: String = "scan"
     }
@@ -48,9 +57,16 @@ class DetailHistoryFragment : BaseFragment<ScanResultFragmentBinding>() {
         loadImageWithAnimation(data?.imageUrl, viewBinding.imv1)
         loadImageWithAnimation(data?.highlightedImageUrl, viewBinding.imv2)
         viewBinding.tvTitle.text = "${data?.disease?.diseaseName}"
-        viewBinding.tvDescription.text = "${data?.disease?.description}"
-        viewBinding.tvSymptomsDescription.text = "${data?.disease?.symptoms}"
-        viewBinding.tvTreatmentDescription.text = "${data?.disease?.treatment}"
+        
+        // Setup expandable descriptions
+        fullDescription = data?.disease?.description ?: ""
+        fullSymptoms = data?.disease?.symptoms ?: ""
+        fullTreatment = data?.disease?.treatment ?: ""
+        
+        setupExpandableText(viewBinding.tvDescription, viewBinding.btnSeeMoreDescription, fullDescription)
+        setupExpandableText(viewBinding.tvSymptomsDescription, viewBinding.btnSeeMoreSymptoms, fullSymptoms)
+        setupExpandableText(viewBinding.tvTreatmentDescription, viewBinding.btnSeeMoreTreatment, fullTreatment)
+        
         viewBinding.tv1.text = "Ảnh quét lúc " + data.scanDate?.toCustomDateFormat()
         viewBinding.rvProducts.adapter = adapter
         adapter.bindData(data?.disease?.medicines ?: listOf())
@@ -64,13 +80,40 @@ class DetailHistoryFragment : BaseFragment<ScanResultFragmentBinding>() {
             findNavController().popBackStack()
         }
 
-
         viewBinding.imv1.setOnDebounceClick {
             requireContext().showImageZoom(data.imageUrl)
         }
 
         viewBinding.imv2.setOnDebounceClick {
             requireContext().showImageZoom(data.highlightedImageUrl)
+        }
+
+        // Expand/collapse click listeners
+        viewBinding.btnSeeMoreDescription.setOnDebounceClick {
+            toggleTextExpansion(
+                viewBinding.tvDescription,
+                viewBinding.btnSeeMoreDescription,
+                fullDescription,
+                isDescriptionExpanded
+            ) { isDescriptionExpanded = it }
+        }
+
+        viewBinding.btnSeeMoreSymptoms.setOnDebounceClick {
+            toggleTextExpansion(
+                viewBinding.tvSymptomsDescription,
+                viewBinding.btnSeeMoreSymptoms,
+                fullSymptoms,
+                isSymptomsExpanded
+            ) { isSymptomsExpanded = it }
+        }
+
+        viewBinding.btnSeeMoreTreatment.setOnDebounceClick {
+            toggleTextExpansion(
+                viewBinding.tvTreatmentDescription,
+                viewBinding.btnSeeMoreTreatment,
+                fullTreatment,
+                isTreatmentExpanded
+            ) { isTreatmentExpanded = it }
         }
     }
 
@@ -81,5 +124,41 @@ class DetailHistoryFragment : BaseFragment<ScanResultFragmentBinding>() {
             .error(R.drawable.ic_image_error)
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(imageView)
+    }
+
+    private fun setupExpandableText(textView: TextView, button: TextView, fullText: String) {
+        textView.text = fullText
+        
+        textView.post {
+            val lineCount = textView.lineCount
+            if (lineCount > 5) {
+                // Text is longer than 5 lines, show "Xem thêm" button
+                button.visibility = android.view.View.VISIBLE
+                textView.maxLines = 5
+            } else {
+                // Text fits in 5 lines or less, hide "Xem thêm" button
+                button.visibility = android.view.View.GONE
+            }
+        }
+    }
+
+    private fun toggleTextExpansion(
+        textView: TextView,
+        button: TextView,
+        fullText: String,
+        isExpanded: Boolean,
+        updateState: (Boolean) -> Unit
+    ) {
+        if (isExpanded) {
+            // Collapse: show only 5 lines
+            textView.maxLines = 5
+            button.text = "Xem thêm"
+            updateState(false)
+        } else {
+            // Expand: show all lines
+            textView.maxLines = Int.MAX_VALUE
+            button.text = "Thu gọn"
+            updateState(true)
+        }
     }
 }
