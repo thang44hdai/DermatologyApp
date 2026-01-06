@@ -151,12 +151,11 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>() {
         imageCapture.takePicture(outputOptions, ContextCompat.getMainExecutor(requireContext()),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
-//                    Toast.makeText(
-//                        requireContext(),
-//                        "Chụp ảnh thất bại: ${exc.message}",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                    Log.e("CameraFragment", "takePhoto error: ${exc.message}")
+                    Toast.makeText(
+                        requireContext(),
+                        "Chụp ảnh thất bại, vui lòng chọn ảnh từ album",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {

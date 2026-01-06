@@ -101,7 +101,7 @@ class PredictViewModel @Inject constructor(
                 updateState(
                     DataResult.Error(
                         ErrorResponse(
-                            message = "Lỗi truy cập dữ liệu",
+                            message = "Lỗi truy cập dữ liệu local",
                             errorCode = 0,
                             errorType = ""
                         )
