@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,6 +33,7 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 Log.d("ProfileViewModel", "Updating profile - fullname: $fullname, gender: $gender, dateOfBirth: $dateOfBirth")
+                Log.d("ProfileViewModel", "Avatar file: ${avatarFile?.name}, size: ${avatarFile?.length()}, extension: ${avatarFile?.extension}")
                 
                 // Prepare form data
                 val fullnameBody = fullname?.let { 
@@ -44,10 +46,18 @@ class ProfileViewModel @Inject constructor(
                     okhttp3.RequestBody.create("text/plain".toMediaTypeOrNull(), it)
                 }
                 
-                // Prepare avatar file
+                // Prepare avatar file with correct MIME type
                 val avatarPart = avatarFile?.let { file ->
-                    val requestFile = okhttp3.RequestBody.create(
-                        "image/*".toMediaTypeOrNull(),
+                    // Determine MIME type based on file extension
+                    val mimeType = when (file.extension.lowercase()) {
+                        "jpg", "jpeg" -> "image/jpeg"
+                        "png" -> "image/png"
+                        "webp" -> "image/webp"
+                        else -> "image/jpeg" // Default to jpeg
+                    }
+                    
+                    val requestFile = RequestBody.create(
+                        mimeType.toMediaTypeOrNull(),
                         file
                     )
                     MultipartBody.Part.createFormData("avatar", file.name, requestFile)

@@ -224,11 +224,34 @@ class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>() {
     }
     
     private fun showImagePicker() {
+        // Only allow specific image types that server supports
         pickImageLauncher.launch("image/*")
     }
     
     private fun handleSelectedImage(uri: Uri) {
         try {
+            // Get the actual MIME type from ContentResolver
+            val mimeType = requireContext().contentResolver.getType(uri)
+            
+            // Validate supported image types
+            val supportedTypes = listOf("image/jpeg", "image/jpg", "image/png", "image/webp")
+            if (mimeType !in supportedTypes) {
+                Toast.makeText(
+                    requireContext(),
+                    "Định dạng ảnh không được hỗ trợ. Vui lòng chọn ảnh JPEG, PNG hoặc WebP",
+                    Toast.LENGTH_LONG
+                ).show()
+                return
+            }
+            
+            val fileExtension = when (mimeType) {
+                "image/jpeg" -> ".jpg"
+                "image/jpg" -> ".jpg"
+                "image/png" -> ".png"
+                "image/webp" -> ".webp"
+                else -> ".jpg" // Default to jpg if unknown
+            }
+            
             // Display selected image
             Glide.with(requireContext())
                 .load(uri)
@@ -236,9 +259,9 @@ class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>() {
                 .placeholder(R.drawable.ic_default_avatar)
                 .into(viewBinding.imgAvatar)
             
-            // Convert URI to File
+            // Convert URI to File with proper extension
             val inputStream = requireContext().contentResolver.openInputStream(uri)
-            val file = File(requireContext().cacheDir, "avatar_${System.currentTimeMillis()}.jpg")
+            val file = File(requireContext().cacheDir, "avatar_${System.currentTimeMillis()}$fileExtension")
             val outputStream = FileOutputStream(file)
             
             inputStream?.use { input ->
