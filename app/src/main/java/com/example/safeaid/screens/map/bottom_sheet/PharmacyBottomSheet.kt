@@ -79,8 +79,9 @@ class PharmacyBottomSheet : BottomSheetDialogFragment() {
         pharmacy?.let { item ->
             binding.tvTitle.text = item.name ?: "Tên hiệu thuốc không rõ"
             binding.tvAddress.text = item.address ?: "Không có địa chỉ"
-            binding.tvSdt.text = item.phone ?: "Không có số điện thoại"
-            binding.tvTime.text = "Giờ mở cửa: ${item.openTime ?: "Chưa cập nhật"}"
+            binding.tvSdt.text = "Số điện thoại: ${item.phone ?: "Không có"}"
+            binding.tvTime.text =
+                if (item.isOpen247 == true) "7:00 - 23:00" else "${item.openTime?.substring(0,6) ?: "Chưa cập nhật"} - ${item.closeTime?.substring(0,6) ?: "Chưa cập nhật"}"
             binding.tvNumberImage.text = "Hình ảnh (${(item.images ?: listOf()).size})"
 
             binding.rcv.apply {

@@ -10,6 +10,7 @@ import com.example.safeaid.core.request.GoogleLoginRequest
 import com.example.safeaid.core.request.LoginRequest
 import com.example.safeaid.core.request.RefreshTokenRequest
 import com.example.safeaid.core.request.RegisterRequest
+import com.example.safeaid.core.response.Brand
 import com.example.safeaid.core.response.BrandDetailResponse
 import com.example.safeaid.core.response.BrandsResponse
 import com.example.safeaid.core.response.CategoryDetailResponse
@@ -88,7 +89,10 @@ interface ApiService {
     ): Response<List<PharmacyResponse>>
 
     @GET("medicines/")
-    suspend fun getMedicines(): Response<ListMedicineResponse>
+    suspend fun getMedicines(
+        @Query("skip") skip: String? = null,
+        @Query("limit") limit: String? = null
+    ): Response<ListMedicineResponse>
 
     @GET("pharmacies/")
     suspend fun getPharmacies(): Response<ListPharmacyResponse>
@@ -187,7 +191,7 @@ interface ApiService {
     suspend fun getBrand(): Response<BrandsResponse>
 
     @GET("brands/{brand_id}/medicines")
-    suspend fun getDetailsBrand(
+    suspend fun getDetailsBrandMedicine(
         @Path("brand_id") brandId: String
     ): Response<BrandDetailResponse>
 
@@ -195,4 +199,9 @@ interface ApiService {
     suspend fun getDetailsCategory(
         @Path("category_id") categoryId: String
     ): Response<CategoryDetailResponse>
+
+    @GET("brands/{brand_id}")
+    suspend fun getDetailsBrand(
+        @Path("brand_id") brandId: String
+    ): Response<Brand>
 }

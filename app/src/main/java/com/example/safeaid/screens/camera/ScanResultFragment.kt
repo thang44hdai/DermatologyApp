@@ -112,16 +112,90 @@ class ScanResultFragment() : BaseFragment<ScanResultFragmentBinding>() {
         updateState: (Boolean) -> Unit
     ) {
         if (isExpanded) {
-            // Collapse: show only 5 lines
-            textView.maxLines = 5
+            // Collapse: show only 5 lines with animation
             button.text = "Xem thêm"
-            updateState(false)
+            animateTextCollapse(textView) {
+                textView.maxLines = 5
+                updateState(false)
+            }
         } else {
-            // Expand: show all lines
-            textView.maxLines = Int.MAX_VALUE
+            // Expand: show all lines with animation
             button.text = "Thu gọn"
-            updateState(true)
+            animateTextExpand(textView) {
+                textView.maxLines = Int.MAX_VALUE
+                updateState(true)
+            }
         }
+    }
+
+    private fun animateTextExpand(textView: TextView, onComplete: () -> Unit) {
+        // Get current height
+        val initialHeight = textView.height
+        
+        // Temporarily set maxLines to unlimited to measure full height
+        textView.maxLines = Int.MAX_VALUE
+        textView.measure(
+            android.view.View.MeasureSpec.makeMeasureSpec(textView.width, android.view.View.MeasureSpec.EXACTLY),
+            android.view.View.MeasureSpec.makeMeasureSpec(0, android.view.View.MeasureSpec.UNSPECIFIED)
+        )
+        val targetHeight = textView.measuredHeight
+        
+        // Reset to initial state
+        textView.maxLines = 5
+        textView.layoutParams.height = initialHeight
+        
+        // Create animator
+        val animator = android.animation.ValueAnimator.ofInt(initialHeight, targetHeight)
+        animator.duration = 300
+        animator.interpolator = android.view.animation.DecelerateInterpolator()
+        
+        animator.addUpdateListener { animation ->
+            val animatedValue = animation.animatedValue as Int
+            textView.layoutParams.height = animatedValue
+            textView.requestLayout()
+        }
+        
+        animator.addListener(object : android.animation.AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: android.animation.Animator) {
+                textView.layoutParams.height = android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+                onComplete()
+            }
+        })
+        
+        animator.start()
+    }
+
+    private fun animateTextCollapse(textView: TextView, onComplete: () -> Unit) {
+        // Get current height
+        val initialHeight = textView.height
+        
+        // Measure height with 5 lines
+        textView.maxLines = 5
+        textView.measure(
+            android.view.View.MeasureSpec.makeMeasureSpec(textView.width, android.view.View.MeasureSpec.EXACTLY),
+            android.view.View.MeasureSpec.makeMeasureSpec(0, android.view.View.MeasureSpec.UNSPECIFIED)
+        )
+        val targetHeight = textView.measuredHeight
+        
+        // Create animator
+        val animator = android.animation.ValueAnimator.ofInt(initialHeight, targetHeight)
+        animator.duration = 300
+        animator.interpolator = android.view.animation.DecelerateInterpolator()
+        
+        animator.addUpdateListener { animation ->
+            val animatedValue = animation.animatedValue as Int
+            textView.layoutParams.height = animatedValue
+            textView.requestLayout()
+        }
+        
+        animator.addListener(object : android.animation.AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: android.animation.Animator) {
+                textView.layoutParams.height = android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+                onComplete()
+            }
+        })
+        
+        animator.start()
     }
 
     override fun onInitObserver() {}

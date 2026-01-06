@@ -162,6 +162,12 @@ class MapFragment : BaseFragment<FragmentMapBinding>() {
             when (data) {
                 is MapState.PharmaciesNearBy -> {
                     addMarkers(data.data)
+                    if (viewModel.directionToLocation != null) {
+                        val current = viewModel.currentLocation
+                        val data = viewModel.directionToLocation
+                        val dest = data?.let { GeoPoint(it.latitude, data.longitude) }
+                        dest?.let { viewModel.getRoute(current, it) }
+                    }
                 }
             }
         }

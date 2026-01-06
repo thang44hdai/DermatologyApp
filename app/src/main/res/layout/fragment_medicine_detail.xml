@@ -34,19 +34,53 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/btn_back" />
             <!-- Product Images Gallery -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_product_images"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_image_gallery"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
                 android:layout_marginTop="10dp"
                 android:background="@color/white"
-                tools:listitem="@layout/item_medicine_image"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                android:paddingHorizontal="20dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintHeight_percent="0.5"
-                app:layout_constraintTop_toBottomOf="@+id/btn_back" />
+                app:layout_constraintTop_toBottomOf="@+id/btn_back">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/vp_product_images"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingHorizontal="20dp"
+                    android:clipToPadding="false"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- Page Indicators -->
+                <LinearLayout
+                    android:id="@+id/layout_indicators"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <!-- Image Counter -->
+                <TextView
+                    android:id="@+id/tv_image_counter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:background="@drawable/bg_image_counter"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:text="1/5"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!-- Authenticity Badge -->
             <TextView
@@ -60,7 +94,7 @@
                 android:text="Sản phẩm 100% chính hãng, mẫu mã có thể thay đổi theo lô hàng"
                 android:textColor="@color/primary"
                 android:textSize="11sp"
-                app:layout_constraintTop_toBottomOf="@+id/rv_product_images" />
+                app:layout_constraintTop_toBottomOf="@+id/layout_image_gallery" />
 
             <!-- Product Details Container -->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -69,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:paddingVertical="20dp"
-                app:layout_constraintTop_toBottomOf="@id/rv_product_images">
+                app:layout_constraintTop_toBottomOf="@id/layout_image_gallery">
 
                 <!-- Product Title -->
                 <TextView

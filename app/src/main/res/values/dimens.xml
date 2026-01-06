@@ -3,4 +3,6 @@
     <dimen name="title_padding">12dp</dimen>
     <dimen name="corner_radius_group_item">10dp</dimen>
     <dimen name="group_item_margin">10dp</dimen>
+    <dimen name="indicator_size">8dp</dimen>
+    <dimen name="indicator_margin">4dp</dimen>
 </resources>

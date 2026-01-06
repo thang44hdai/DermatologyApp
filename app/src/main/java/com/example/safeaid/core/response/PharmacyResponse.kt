@@ -29,4 +29,6 @@ data class PharmacyResponse(
     var images: List<String>? = listOf(),
     @SerializedName("logo_url")
     var logoUrl: String? = null,
+    @SerializedName("is_open_247")
+    var isOpen247: Boolean? = null,
 ) : Serializable

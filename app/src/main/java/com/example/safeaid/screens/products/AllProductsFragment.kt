@@ -14,7 +14,9 @@ import com.example.dermatology.R
 import com.example.dermatology.databinding.FragmentAllProductsBinding
 import com.example.safeaid.core.response.MedicineResponse
 import com.example.safeaid.core.ui.BaseFragment
+import com.example.safeaid.core.utils.doIfSuccess
 import com.example.safeaid.core.utils.setOnDebounceClick
+import com.example.safeaid.screens.home.HomeState
 import com.example.safeaid.screens.home.HomeViewModel
 import com.example.safeaid.screens.home.adapter.ProductAdapter
 import com.example.safeaid.screens.home.utils.MedicineUtils
@@ -38,6 +40,7 @@ class AllProductsFragment : BaseFragment<FragmentAllProductsBinding>() {
     private var allMedicines = listOf<MedicineResponse>()
     private var currentSearchQuery = ""
     private var sortType = SortType.NONE
+    private var isLoadingMore = false
     
     enum class SortType {
         NONE, PRICE_ASC, PRICE_DESC, NAME_ASC, NAME_DESC
@@ -48,6 +51,12 @@ class AllProductsFragment : BaseFragment<FragmentAllProductsBinding>() {
     override fun onInit() {
         setupToolbar()
         setupRecyclerView()
+        setupLoadMore()
+        
+        // Load initial data if not already loaded
+        if (allMedicines.isEmpty()) {
+            viewModel.loadMedicines(reset = true)
+        }
     }
     
     private fun setupToolbar() {
@@ -63,13 +72,43 @@ class AllProductsFragment : BaseFragment<FragmentAllProductsBinding>() {
         }
     }
     
+    private fun setupLoadMore() {
+        viewBinding.rvAllProducts.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                
+                val layoutManager = recyclerView.layoutManager as GridLayoutManager
+                val visibleItemCount = layoutManager.childCount
+                val totalItemCount = layoutManager.itemCount
+                val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+                
+                if (!isLoadingMore &&
+                    (visibleItemCount + firstVisibleItemPosition) >= totalItemCount - 4 &&
+                    firstVisibleItemPosition >= 0 &&
+                    currentSearchQuery.isEmpty()) {
+                    
+                    viewModel.loadMoreMedicines()
+                }
+            }
+        })
+    }
+    
     override fun onInitObserver() {
+        // Observe medicines data
         viewModel._medicineResponse
             .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
             .onEach { data ->
                 allMedicines = data
                 updateProductCount()
                 applyFiltersAndSort()
+            }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
+            
+        viewModel.isLoadingMore
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+            .onEach { loading ->
+                isLoadingMore = loading
+                viewBinding.progressBar.isVisible = loading
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)
     }
@@ -93,6 +132,12 @@ class AllProductsFragment : BaseFragment<FragmentAllProductsBinding>() {
         // Clear search button
         viewBinding.btnClearSearch.setOnClickListener {
             viewBinding.edtSearch.text?.clear()
+        }
+        
+        // Pull to refresh (if you have SwipeRefreshLayout)
+        viewBinding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.loadMedicines(reset = true)
+            viewBinding.swipeRefreshLayout.isRefreshing = false
         }
     }
     

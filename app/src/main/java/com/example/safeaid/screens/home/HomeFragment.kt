@@ -186,7 +186,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         viewModel._medicineResponse
             .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
             .onEach { data ->
-                allMedicines = data
+                allMedicines = data.take(10)
                 applyFiltersAndSort()
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)
@@ -232,6 +232,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 currentSearchQuery = s.toString()
                 applyFiltersAndSort()
             }
+
             override fun afterTextChanged(s: Editable?) {}
         })
 
@@ -308,7 +309,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 } else {
                     allBrands.filter { brand ->
                         brand.name?.contains(currentSearchQuery, ignoreCase = true) == true ||
-                        brand.description?.contains(currentSearchQuery, ignoreCase = true) == true
+                                brand.description?.contains(
+                                    currentSearchQuery,
+                                    ignoreCase = true
+                                ) == true
                     }
                 }
                 brandNewAdapter.updateData(filteredBrands)
@@ -321,12 +325,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         // Filter products
         when (searchMode) {
             SearchMode.ALL, SearchMode.PRODUCTS -> {
-                var filteredProducts = MedicineUtils.filterMedicines(allMedicines, currentSearchQuery)
-                
+                var filteredProducts =
+                    MedicineUtils.filterMedicines(allMedicines, currentSearchQuery)
+
                 // Show button only if there are more than INITIAL_PRODUCT_COUNT items
                 if (filteredProducts.size > INITIAL_PRODUCT_COUNT) {
                     viewBinding.btnShowMore.isVisible = true
-                    
+
                     // Limit to INITIAL_PRODUCT_COUNT if not expanded
                     if (!isProductsExpanded) {
                         filteredProducts = filteredProducts.take(INITIAL_PRODUCT_COUNT)
@@ -334,10 +339,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 } else {
                     viewBinding.btnShowMore.isVisible = false
                 }
-                
+
                 medicinesAdapter.bindData(filteredProducts)
                 updateShowMoreButton()
             }
+
             SearchMode.BRANDS -> {
                 // Hide products section
                 viewBinding.btnShowMore.isVisible = false
@@ -367,6 +373,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 is HomeState.PharmaciesList -> {
                     // No longer using pharmacies as brands
                 }
+
+                else -> {}
             }
         }
         state?.doIfFailure { }

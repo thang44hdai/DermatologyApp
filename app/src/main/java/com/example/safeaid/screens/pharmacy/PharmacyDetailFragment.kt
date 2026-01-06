@@ -24,6 +24,7 @@ import com.example.safeaid.screens.pharmacy.data.RateItem
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.osmdroid.util.GeoPoint
 
 @AndroidEntryPoint
 class PharmacyDetailFragment : BaseFragment<FragmentPharmacyDetailBinding>() {

@@ -1,8 +1,11 @@
 package com.example.safeaid.screens.medicine
 
+import android.widget.ImageView
+import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager2.widget.ViewPager2
 import com.example.dermatology.R
 import com.example.dermatology.databinding.FragmentMedicineDetailBinding
 import com.example.safeaid.core.response.MedicineResponse
@@ -16,7 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MedicineDetailFragment : BaseFragment<FragmentMedicineDetailBinding>() {
     private val mainViewModel: MainViewModel by activityViewModels()
     private var medicine: MedicineResponse? = null
-    private lateinit var imageAdapter: MedicineImageAdapter
+    private lateinit var imageAdapter: MedicineImagePagerAdapter
     private var isDescriptionExpanded = false
     private var fullDescription = ""
 
@@ -86,7 +89,7 @@ class MedicineDetailFragment : BaseFragment<FragmentMedicineDetailBinding>() {
             tvNote.text = medicine.sideEffects
                 ?: "Một thông tin quan trọng cần chú ý tham khảo: Đọc kỹ hướng dẫn sử dụng trước khi dùng"
 
-            // Setup image gallery
+            // Setup image gallery with ViewPager2
             setupImageGallery(medicine.images)
         }
     }
@@ -99,14 +102,78 @@ class MedicineDetailFragment : BaseFragment<FragmentMedicineDetailBinding>() {
             listOf("")
         }
 
-        imageAdapter = MedicineImageAdapter(imageList) { imageUrl ->
+        imageAdapter = MedicineImagePagerAdapter(imageList) { imageUrl ->
             requireContext().showImageZoom(imageUrl)
         }
 
-        viewBinding.rvProductImages.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = imageAdapter
+        with(viewBinding) {
+            vpProductImages.adapter = imageAdapter
+            
+            updateImageCounter(0, imageList.size)
+            
+            setupPageIndicators(imageList.size)
+            
+            vpProductImages.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    updateImageCounter(position, imageList.size)
+                    updatePageIndicators(position)
+                }
+            })
         }
+    }
+
+    private fun setupPageIndicators(imageCount: Int) {
+        with(viewBinding.layoutIndicators) {
+            removeAllViews()
+            
+            if (imageCount <= 1) {
+                visibility = android.view.View.GONE
+                return
+            }
+            
+            visibility = android.view.View.VISIBLE
+            
+            for (i in 0 until imageCount) {
+                val indicator = ImageView(context)
+                val layoutParams = LinearLayout.LayoutParams(
+                    resources.getDimensionPixelSize(R.dimen.indicator_size),
+                    resources.getDimensionPixelSize(R.dimen.indicator_size)
+                )
+                layoutParams.setMargins(
+                    resources.getDimensionPixelSize(R.dimen.indicator_margin),
+                    0,
+                    resources.getDimensionPixelSize(R.dimen.indicator_margin),
+                    0
+                )
+                indicator.layoutParams = layoutParams
+                indicator.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        requireContext(),
+                        if (i == 0) R.drawable.indicator_active else R.drawable.indicator_inactive
+                    )
+                )
+                addView(indicator)
+            }
+        }
+    }
+
+    private fun updatePageIndicators(currentPosition: Int) {
+        with(viewBinding.layoutIndicators) {
+            for (i in 0 until childCount) {
+                val indicator = getChildAt(i) as ImageView
+                indicator.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        requireContext(),
+                        if (i == currentPosition) R.drawable.indicator_active else R.drawable.indicator_inactive
+                    )
+                )
+            }
+        }
+    }
+
+    private fun updateImageCounter(currentPosition: Int, totalImages: Int) {
+        viewBinding.tvImageCounter.text = "${currentPosition + 1}/$totalImages"
     }
 
     private fun setupDescriptionWithExpandCollapse() {

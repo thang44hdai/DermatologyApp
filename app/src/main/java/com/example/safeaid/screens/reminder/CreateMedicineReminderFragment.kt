@@ -184,11 +184,20 @@ class CreateMedicineReminderFragment : BaseFragment<FragmentCreateMedicineRemind
     }
 
     private fun showMedicineDialog(medicines: List<MedicineResponse>) {
-        val medicineNames = medicines.map { it.name ?: "Unknown" }.toTypedArray()
+        val medicineNames = medicines.map {
+            var name = it.name ?: "Unknown"
+            if (name.length > 40)
+                name = name.take(40) + "..."
+
+            name
+        }.toTypedArray()
+
+        // Find currently selected medicine index
+        val selectedIndex = medicines.indexOfFirst { it.id == selectedMedicine?.id }
 
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Chọn thuốc")
-        builder.setItems(medicineNames) { dialog, which ->
+        builder.setSingleChoiceItems(medicineNames, selectedIndex) { dialog, which ->
             selectedMedicine = medicines.getOrNull(which)
             selectedMedicine?.let { medicine ->
                 viewBinding.tvMedicineDropdown.text = medicine.name

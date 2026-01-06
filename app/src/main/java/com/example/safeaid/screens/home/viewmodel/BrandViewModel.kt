@@ -2,7 +2,6 @@ package com.example.safeaid.screens.home.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.example.safeaid.core.base.BaseViewModel
-import com.example.safeaid.core.data.MockDataSource
 import com.example.safeaid.core.response.BrandDetailResponse
 import com.example.safeaid.core.response.BrandsResponse
 import com.example.safeaid.core.service.ApiService
@@ -25,6 +24,8 @@ class BrandViewModel @Inject constructor(
 
     private val _brands = MutableStateFlow<BrandsResponse>(BrandsResponse())
     val brands = _brands.asStateFlow()
+
+    private var detailBrand = BrandDetailResponse()
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
@@ -60,11 +61,37 @@ class BrandViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _isLoading.value = true
             ApiCaller.safeApiCall(
+                apiCall = { apiService.getDetailsBrandMedicine(brandId) },
+                callback = { result ->
+                    _isLoading.value = false
+                    result.doIfSuccess { data ->
+                        detailBrand = detailBrand.copy(medicines = data.medicines)
+                        updateState(DataResult.Success(BrandState.BrandDetail(detailBrand)))
+                    }
+                    result.doIfFailure { error ->
+                        updateState(
+                            DataResult.Error(
+                                ErrorResponse(
+                                    message = "Lỗi truy cập dữ liệu",
+                                    errorCode = 0,
+                                    errorType = ""
+                                )
+                            )
+                        )
+                    }
+                }
+            )
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            _isLoading.value = true
+            ApiCaller.safeApiCall(
                 apiCall = { apiService.getDetailsBrand(brandId) },
                 callback = { result ->
                     _isLoading.value = false
                     result.doIfSuccess { data ->
-                        updateState(DataResult.Success(BrandState.BrandDetail(data)))
+                        detailBrand = detailBrand.copy(brand = data)
+                        updateState(DataResult.Success(BrandState.BrandDetail(detailBrand)))
                     }
                     result.doIfFailure { error ->
                         updateState(

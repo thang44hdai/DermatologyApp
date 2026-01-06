@@ -31,6 +31,15 @@ class HomeViewModel @Inject constructor(
     private val categories = MutableStateFlow<List<CategoryResponse>>(listOf())
     val _categories = categories.asStateFlow()
 
+    private val _isLoadingMore = MutableStateFlow(false)
+    val isLoadingMore = _isLoadingMore.asStateFlow()
+    
+    private val _hasMoreData = MutableStateFlow(true)
+    val hasMoreData = _hasMoreData.asStateFlow()
+    
+    private var currentSkip = 0
+    private val pageSize = 20
+
     fun loadHomeData() {
         // Load user info
         viewModelScope.launch(Dispatchers.IO) {
@@ -102,6 +111,57 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun loadMedicines(reset: Boolean = false) {
+        if (reset) {
+            currentSkip = 0
+            _hasMoreData.value = true
+        }
+
+        if (!_hasMoreData.value) return
+        
+        _isLoadingMore.value = true
+        
+        viewModelScope.launch(Dispatchers.IO) {
+            ApiCaller.safeApiCall(
+                apiCall = { 
+                    apiService.getMedicines(
+                        skip = currentSkip.toString(),
+                        limit = pageSize.toString()
+                    )
+                },
+                callback = { result ->
+                    _isLoadingMore.value = false
+                    result.doIfSuccess { data ->
+                        val newMedicines = data.medicines
+                        
+                        if (reset) {
+                            medicineResponse.value = newMedicines
+                        } else {
+                            medicineResponse.value = medicineResponse.value + newMedicines
+                        }
+                        
+                        // Update pagination state
+                        currentSkip += newMedicines.size
+                        _hasMoreData.value = newMedicines.size == pageSize
+                        
+                        updateState(DataResult.Success(HomeState.MedicinesLoaded(
+                            medicines = medicineResponse.value,
+                            isLoadMore = !reset
+                        )))
+                    }
+                    result.doIfFailure { error ->
+                    }
+                }
+            )
+        }
+    }
+
+    fun loadMoreMedicines() {
+        if (!_isLoadingMore.value && _hasMoreData.value) {
+            loadMedicines(reset = false)
+        }
+    }
+
     override fun onTriggerEvent(event: HomeEvent) {
 
     }
@@ -109,6 +169,7 @@ class HomeViewModel @Inject constructor(
 
 sealed class HomeState {
     class PharmaciesList(val data: ListPharmacyResponse) : HomeState()
+    class MedicinesLoaded(val medicines: List<MedicineResponse>, val isLoadMore: Boolean) : HomeState()
 }
 
 sealed class HomeEvent {}

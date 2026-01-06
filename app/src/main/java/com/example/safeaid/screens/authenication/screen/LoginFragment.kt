@@ -50,7 +50,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
     override fun onInit() {
         credentialManager = CredentialManager.create(requireContext())
         viewModel.verifyToken()
-        
+
         // Setup hide keyboard on touch outside
         KeyboardUtils.setupHideKeyboardOnTouchOutside(
             this,
@@ -74,7 +74,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                 viewModel.login(userName, pw)
             }
         }
-        
+
         viewBinding.tvSignUp.setOnDebounceClick {
             findNavController().navigate(R.id.signUpFragment)
         }
@@ -106,7 +106,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
         // Update loading message for Google login
         viewBinding.tvLoadingMessage.text = "Đăng nhập Google..."
         viewBinding.tvLoadingSubtitle.text = "Đang xác thực tài khoản"
-        
+
         val googleIdOption =
             GetSignInWithGoogleOption.Builder(getString(R.string.default_web_client_id))
                 .build()
@@ -203,11 +203,13 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
     private fun togglePasswordVisibility(editText: EditText, toggleIcon: ImageView) {
         if (editText.inputType == (android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
             // Show password
-            editText.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            editText.inputType =
+                android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
             toggleIcon.setImageResource(R.drawable.ic_eye_on)
         } else {
             // Hide password
-            editText.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
+            editText.inputType =
+                android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
             toggleIcon.setImageResource(R.drawable.ic_eye_off)
         }
         // Move cursor to end
@@ -236,7 +238,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                         // Show success message briefly before navigation
                         viewBinding.tvLoadingMessage.text = "Đăng nhập thành công!"
                         viewBinding.tvLoadingSubtitle.text = "Chuyển hướng..."
-                        
+
                         // Delay navigation for better UX
                         viewBinding.root.postDelayed({
                             findNavController().navigate(R.id.mainScreen)
@@ -250,10 +252,14 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
         }
         state?.doIfFailure { error ->
             hideLoading()
+            val message =
+                if (error.errorType == "NETWORK_ERROR") "Không có kết nối internet" else "Tài khoản hoặc mật khẩu không chính xác"
             requireContext().showErrorDialog(
                 title = "Đăng nhập thất bại",
-                message = "Tài khoản hoặc mật khẩu không chính xác"
-            )
+                message = message
+            ) {
+                viewModel.updateState(null)
+            }
         }
         state?.onLoading {
             showLoading()

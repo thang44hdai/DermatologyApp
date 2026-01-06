@@ -309,10 +309,14 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>() {
         }
         state?.doIfFailure { error ->
             hideLoading()
+            val message =
+                if (error.errorType == "NETWORK_ERROR") "Không có kết nối internet" else "Lỗi đăng kí"
             requireContext().showErrorDialog(
                 title = "Lỗi đăng ký",
-                message = error.message ?: "Có lỗi xảy ra. Vui lòng thử lại."
-            )
+                message = message
+            ) {
+                viewModel.updateState(null)
+            }
         }
     }
 }

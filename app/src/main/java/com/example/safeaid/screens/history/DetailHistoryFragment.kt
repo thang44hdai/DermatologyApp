@@ -88,7 +88,6 @@ class DetailHistoryFragment : BaseFragment<ScanResultFragmentBinding>() {
             requireContext().showImageZoom(data.highlightedImageUrl)
         }
 
-        // Expand/collapse click listeners
         viewBinding.btnSeeMoreDescription.setOnDebounceClick {
             toggleTextExpansion(
                 viewBinding.tvDescription,
@@ -132,11 +131,9 @@ class DetailHistoryFragment : BaseFragment<ScanResultFragmentBinding>() {
         textView.post {
             val lineCount = textView.lineCount
             if (lineCount > 5) {
-                // Text is longer than 5 lines, show "Xem thêm" button
                 button.visibility = android.view.View.VISIBLE
                 textView.maxLines = 5
             } else {
-                // Text fits in 5 lines or less, hide "Xem thêm" button
                 button.visibility = android.view.View.GONE
             }
         }
@@ -150,15 +147,81 @@ class DetailHistoryFragment : BaseFragment<ScanResultFragmentBinding>() {
         updateState: (Boolean) -> Unit
     ) {
         if (isExpanded) {
-            // Collapse: show only 5 lines
-            textView.maxLines = 5
             button.text = "Xem thêm"
-            updateState(false)
+            animateTextCollapse(textView) {
+                textView.maxLines = 5
+                updateState(false)
+            }
         } else {
-            // Expand: show all lines
-            textView.maxLines = Int.MAX_VALUE
             button.text = "Thu gọn"
-            updateState(true)
+            animateTextExpand(textView) {
+                textView.maxLines = Int.MAX_VALUE
+                updateState(true)
+            }
         }
+    }
+
+    private fun animateTextExpand(textView: TextView, onComplete: () -> Unit) {
+        // Get current height
+        val initialHeight = textView.height
+        
+        textView.maxLines = Int.MAX_VALUE
+        textView.measure(
+            android.view.View.MeasureSpec.makeMeasureSpec(textView.width, android.view.View.MeasureSpec.EXACTLY),
+            android.view.View.MeasureSpec.makeMeasureSpec(0, android.view.View.MeasureSpec.UNSPECIFIED)
+        )
+        val targetHeight = textView.measuredHeight
+        
+        textView.maxLines = 5
+        textView.layoutParams.height = initialHeight
+        
+        val animator = android.animation.ValueAnimator.ofInt(initialHeight, targetHeight)
+        animator.duration = 300
+        animator.interpolator = android.view.animation.DecelerateInterpolator()
+        
+        animator.addUpdateListener { animation ->
+            val animatedValue = animation.animatedValue as Int
+            textView.layoutParams.height = animatedValue
+            textView.requestLayout()
+        }
+        
+        animator.addListener(object : android.animation.AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: android.animation.Animator) {
+                textView.layoutParams.height = android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+                onComplete()
+            }
+        })
+        
+        animator.start()
+    }
+
+    private fun animateTextCollapse(textView: TextView, onComplete: () -> Unit) {
+        val initialHeight = textView.height
+        
+        textView.maxLines = 5
+        textView.measure(
+            android.view.View.MeasureSpec.makeMeasureSpec(textView.width, android.view.View.MeasureSpec.EXACTLY),
+            android.view.View.MeasureSpec.makeMeasureSpec(0, android.view.View.MeasureSpec.UNSPECIFIED)
+        )
+        val targetHeight = textView.measuredHeight
+        
+        val animator = android.animation.ValueAnimator.ofInt(initialHeight, targetHeight)
+        animator.duration = 300
+        animator.interpolator = android.view.animation.DecelerateInterpolator()
+        
+        animator.addUpdateListener { animation ->
+            val animatedValue = animation.animatedValue as Int
+            textView.layoutParams.height = animatedValue
+            textView.requestLayout()
+        }
+        
+        animator.addListener(object : android.animation.AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: android.animation.Animator) {
+                textView.layoutParams.height = android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+                onComplete()
+            }
+        })
+        
+        animator.start()
     }
 }

@@ -24,7 +24,7 @@
         android:id="@+id/iv_check"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:src="@drawable/ic_check_circle"
+        android:src="@drawable/ic_check_circle_blue"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
