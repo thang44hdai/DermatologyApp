@@ -10,6 +10,7 @@ import com.example.safeaid.core.request.GoogleLoginRequest
 import com.example.safeaid.core.request.LoginRequest
 import com.example.safeaid.core.request.RefreshTokenRequest
 import com.example.safeaid.core.request.RegisterRequest
+import com.example.safeaid.core.request.UpdateProfileReq
 import com.example.safeaid.core.response.Brand
 import com.example.safeaid.core.response.BrandDetailResponse
 import com.example.safeaid.core.response.BrandsResponse
@@ -36,6 +37,7 @@ import com.example.safeaid.core.response.FCMTokenResponse
 import com.example.safeaid.core.response.RunningChallengeResponse
 import com.example.safeaid.core.response.SaveRunningSessionResponse
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -43,6 +45,7 @@ import retrofit2.http.Path
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Query
 
@@ -204,4 +207,13 @@ interface ApiService {
     suspend fun getDetailsBrand(
         @Path("brand_id") brandId: String
     ): Response<Brand>
+
+    @Multipart
+    @PUT("users/me")
+    suspend fun updateProfile(
+        @Part("fullname") fullname: RequestBody?,
+        @Part("gender") gender: RequestBody?,
+        @Part("date_of_birth") dateOfBirth: RequestBody?,
+        @Part avatar: MultipartBody.Part?
+    ): Response<RegisterResponse>
 }

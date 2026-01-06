@@ -48,11 +48,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     override fun onInitListener() {
         // Profile edit button
         viewBinding.btnEditProfile.setOnDebounceClick {
-            android.widget.Toast.makeText(
-                requireContext(),
-                "Chức năng đang phát triển",
-                android.widget.Toast.LENGTH_SHORT
-            ).show()
+            findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
         }
 
         // History button
