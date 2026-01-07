@@ -56,3 +56,30 @@ fun String.formatPrice(): String {
         "0 VND"
     }
 }
+
+fun String.formatPrice2(): String {
+    return try {
+        val cleanString = this
+        // Nếu rỗng hoặc không phải số → trả về 0 VND
+        if (cleanString.isEmpty()) return "0 VND"
+
+        val price = cleanString.toLong()
+        val s = price.toString()
+
+        // Xây dựng chuỗi từ phải sang trái
+        val result = StringBuilder()
+        for (i in s.indices.reversed()) {
+            result.append(s[i])
+            // Mỗi 3 ký tự (tính từ phải) và chưa phải vị trí đầu tiên thì thêm dấu chấm
+            if ((s.length - i) % 3 == 0 && i > 0) {
+                result.append('.')
+            }
+        }
+
+        // Đảo ngược lại và thêm " VND"
+        result.reverse()
+        "$result VND"
+    } catch (e: Exception) {
+        "0 VND"
+    }
+}

@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.example.dermatology.R
 import com.example.safeaid.core.response.MedicineResponse
 import com.example.safeaid.core.utils.formatPrice
+import com.example.safeaid.core.utils.formatPrice2
 
 class ProductAdapter2(
     private var items: List<MedicineResponse>,
@@ -39,7 +40,7 @@ class ProductAdapter2(
 
         fun bind(p: MedicineResponse) {
             name.text = p.name
-            price.text = p.price?.formatPrice()
+            price.text = p.price?.formatPrice2()
             val url = p.images.firstOrNull()
             if (url.isNullOrEmpty()) {
                 Glide.with(itemView.context).load(android.R.color.darker_gray).into(img)
